@@ -12,10 +12,6 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
 
 
-fun <T> Response<T>.isCache(): Boolean {
-    return raw().cacheResponse != null
-}
-
 class RetrofitTool<T> {
 
     companion object {
@@ -154,6 +150,10 @@ class RetrofitTool<T> {
 
         return mApi ?: throw RuntimeException("The \"buildApi\" function must be called before using this function...")
     }
+}
+
+fun <T> Response<T>.isCache(): Boolean {
+    return raw().cacheResponse != null
 }
 
 class ConnectionInterceptor(private val context : Context) : Interceptor {
