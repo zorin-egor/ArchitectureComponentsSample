@@ -1,0 +1,19 @@
+package com.sample.architecturecomponent.di
+
+import com.sample.architecturecomponent.ui.fragments.SplashFragment
+import com.sample.architecturecomponent.ui.fragments.UsersFragment
+
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
+
+
+@Module
+abstract class FragmentsModule {
+
+    @ContributesAndroidInjector
+    abstract fun contributeSplashFragment(): SplashFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUsersFragment(): UsersFragment
+
+}
