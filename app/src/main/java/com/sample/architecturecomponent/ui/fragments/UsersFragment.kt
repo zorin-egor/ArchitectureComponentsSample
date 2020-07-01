@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
+import com.sample.architecturecomponent.binding.FragmentDataBindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
 import com.sample.architecturecomponent.ui.adapters.UsersAdapter
 import com.sample.architecturecomponent.viewmodels.UsersViewModel
@@ -30,6 +32,8 @@ class UsersFragment : BaseFragment() {
 
     @Inject
     lateinit var appExecutors: AppExecutors
+
+    var bindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     private val mViewModel: UsersViewModel by viewModels {
         viewModelFactory
@@ -51,7 +55,7 @@ class UsersFragment : BaseFragment() {
 
     private fun init(savedInstanceState: Bundle?) {
         recyclerView.apply {
-            adapter = UsersAdapter(appExecutors).also { mAdapter = it }
+            adapter = UsersAdapter(appExecutors, bindingComponent).also { mAdapter = it }
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

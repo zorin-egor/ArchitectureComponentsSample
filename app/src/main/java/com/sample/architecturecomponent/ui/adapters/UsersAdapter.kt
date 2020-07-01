@@ -2,6 +2,7 @@ package com.sample.architecturecomponent.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
@@ -13,9 +14,11 @@ import com.sample.architecturecomponent.databinding.ItemListUserBinding
 import com.sample.architecturecomponent.vo.UserItem
 
 
-class UsersAdapter : ListAdapter<UserItem, UserItemViewHolder> {
-
-    constructor(appExecutors: AppExecutors): super(AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<UserItem>() {
+class UsersAdapter(
+    val appExecutors: AppExecutors,
+    val bindingComponent: DataBindingComponent
+) : ListAdapter<UserItem, UserItemViewHolder>(
+    AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<UserItem>() {
         override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
             return oldItem.id == newItem.id
         }
@@ -25,12 +28,17 @@ class UsersAdapter : ListAdapter<UserItem, UserItemViewHolder> {
                     oldItem.login == newItem.id &&
                     oldItem.avatar_url == newItem.avatar_url
         }
-    }).setBackgroundThreadExecutor(appExecutors.diskIO()).build())
+    }).setBackgroundThreadExecutor(appExecutors.diskIO()).build()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
-        val binding = DataBindingUtil.inflate<ItemListUserBinding>(LayoutInflater.from(parent.context), R.layout.item_list_user, parent, false)
-
-        return UserItemViewHolder(binding)
+        return UserItemViewHolder(DataBindingUtil.inflate<ItemListUserBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.item_list_user,
+            parent,
+            false,
+            bindingComponent
+        ))
     }
 
     override fun onBindViewHolder(holder: UserItemViewHolder, position: Int) {
