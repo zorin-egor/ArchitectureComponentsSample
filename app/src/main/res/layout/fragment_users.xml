@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewmodel"
-            type="com.sample.architecturecomponent.viewmodels.UsersViewModel" />
+            type="com.sample.architecturecomponent.ui.fragments.users.UsersViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +19,7 @@
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:swipeRefreshing="@{viewmodel.isSwipe}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +48,7 @@
             android:layout_marginRight="8dp"
             android:background="@android:color/transparent"
             android:indeterminate="true"
-            android:visibility="@{viewmodel.progress? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewmodel.isProgress? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

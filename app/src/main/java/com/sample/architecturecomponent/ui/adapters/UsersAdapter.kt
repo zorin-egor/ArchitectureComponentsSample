@@ -15,36 +15,39 @@ import com.sample.architecturecomponent.vo.UserItem
 
 
 class UsersAdapter(
-    val appExecutors: AppExecutors,
-    val bindingComponent: DataBindingComponent
+    private val appExecutors: AppExecutors,
+    private val bindingComponent: DataBindingComponent
 ) : ListAdapter<UserItem, UserItemViewHolder>(
-    AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<UserItem>() {
-        override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
+        AsyncDifferConfig.Builder(DiffCallback())
+            .setBackgroundThreadExecutor(appExecutors.diskIO())
+            .build()
+) {
+
+    private class DiffCallback : DiffUtil.ItemCallback<UserItem>() {
+        override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean{
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-            return oldItem.id == newItem.id &&
-                    oldItem.login == newItem.id &&
-                    oldItem.avatar_url == newItem.avatar_url
+            return oldItem == newItem
         }
-    }).setBackgroundThreadExecutor(appExecutors.diskIO()).build()
-) {
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
-        return UserItemViewHolder(DataBindingUtil.inflate<ItemListUserBinding>(
-            LayoutInflater.from(parent.context),
-            R.layout.item_list_user,
-            parent,
-            false,
-            bindingComponent
-        ))
+        return UserItemViewHolder(
+            DataBindingUtil.inflate<ItemListUserBinding>(
+                LayoutInflater.from(parent.context),
+                R.layout.item_list_user,
+                parent,
+                false,
+                bindingComponent
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: UserItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }
 
 class UserItemViewHolder(val binding: ItemListUserBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -54,3 +57,4 @@ class UserItemViewHolder(val binding: ItemListUserBinding) : RecyclerView.ViewHo
         }
     }
 }
+

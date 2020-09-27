@@ -1,20 +1,10 @@
 package com.sample.architecturecomponent.vo
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
+import kotlinx.android.parcel.Parcelize
 
-class DetailsItem : UserItem {
-
-    companion object CREATOR : Parcelable.Creator<DetailsItem> {
-        override fun createFromParcel(parcel: Parcel): DetailsItem {
-            return DetailsItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<DetailsItem?> {
-            return arrayOfNulls(size)
-        }
-    }
+@Parcelize
+class DetailsItem : UserItem() {
 
     @Expose
     var name: String? = null
@@ -49,37 +39,20 @@ class DetailsItem : UserItem {
     @Expose
     var createdAt: String? = null
 
-    constructor(parcel: Parcel) : super(parcel) {
-        name = parcel.readString()
-        company = parcel.readString()
-        blog = parcel.readString()
-        location = parcel.readString()
-        email = parcel.readString()
-        bio = parcel.readString()
-        publicRepos = parcel.readString()
-        publicGists = parcel.readString()
-        followers = parcel.readString()
-        following = parcel.readString()
-        createdAt = parcel.readString()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        super.writeToParcel(parcel, flags)
-        parcel.writeString(name)
-        parcel.writeString(company)
-        parcel.writeString(blog)
-        parcel.writeString(location)
-        parcel.writeString(email)
-        parcel.writeString(bio)
-        parcel.writeString(publicRepos)
-        parcel.writeString(publicGists)
-        parcel.writeString(followers)
-        parcel.writeString(following)
-        parcel.writeString(createdAt)
-    }
-
-    override fun describeContents(): Int {
-        return 0
+    override fun equals(other: Any?): Boolean {
+        return other is DetailsItem &&
+            super.equals(other) &&
+            name == other.name &&
+            company == other.company &&
+            blog == other.blog &&
+            location == other.location &&
+            email == other.email &&
+            bio == other.bio &&
+            publicRepos == other.publicRepos &&
+            publicGists == other.publicGists &&
+            followers == other.followers &&
+            following == other.following &&
+            createdAt == other.createdAt
     }
 
 }

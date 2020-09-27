@@ -1,4 +1,6 @@
-package com.sample.architecturecomponent.viewmodels
+package com.sample.architecturecomponent.ui.fragments.details
+
+import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
 
 
 class DetailsViewModel() : BaseViewModel() {

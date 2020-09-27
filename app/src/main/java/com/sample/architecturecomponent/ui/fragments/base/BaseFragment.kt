@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.ui.fragments
+package com.sample.architecturecomponent.ui.fragments.base
 
 import android.os.Bundle
 import android.view.View

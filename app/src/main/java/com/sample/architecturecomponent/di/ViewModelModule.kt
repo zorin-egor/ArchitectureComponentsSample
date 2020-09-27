@@ -2,8 +2,8 @@ package com.sample.architecturecomponent.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sample.architecturecomponent.viewmodels.BaseViewModelFactory
-import com.sample.architecturecomponent.viewmodels.UsersViewModel
+import com.sample.architecturecomponent.ui.fragments.base.BaseViewModelFactory
+import com.sample.architecturecomponent.ui.fragments.users.UsersViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,7 +1,7 @@
 package com.sample.architecturecomponent.di
 
-import com.sample.architecturecomponent.ui.fragments.SplashFragment
-import com.sample.architecturecomponent.ui.fragments.UsersFragment
+import com.sample.architecturecomponent.ui.fragments.splash.SplashFragment
+import com.sample.architecturecomponent.ui.fragments.users.UsersFragment
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

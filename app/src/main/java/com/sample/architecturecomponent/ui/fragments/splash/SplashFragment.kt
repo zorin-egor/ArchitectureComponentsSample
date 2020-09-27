@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.ui.fragments
+package com.sample.architecturecomponent.ui.fragments.splash
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.FragmentSplashBinding
-import com.sample.architecturecomponent.viewmodels.SplashViewModel
+import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 
 
 class SplashFragment : BaseFragment() {

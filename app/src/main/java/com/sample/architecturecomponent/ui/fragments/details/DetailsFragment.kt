@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.ui.fragments
+package com.sample.architecturecomponent.ui.fragments.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.FragmentDetailsBinding
-import com.sample.architecturecomponent.viewmodels.DetailsViewModel
+import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 
 class DetailsFragment : BaseFragment() {
 

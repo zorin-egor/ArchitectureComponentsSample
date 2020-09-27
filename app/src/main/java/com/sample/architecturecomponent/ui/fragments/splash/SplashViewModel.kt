@@ -1,0 +1,27 @@
+package com.sample.architecturecomponent.ui.fragments.splash
+
+import androidx.lifecycle.liveData
+import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
+import kotlinx.coroutines.delay
+
+
+class SplashViewModel() : BaseViewModel() {
+
+    companion object {
+        val TAG = SplashViewModel::class.java.simpleName
+
+        private val TIMER_MAX = 1000
+        private val TIMER_DELAY = 100
+    }
+
+    var progress = loading()
+
+    private fun loading() = liveData {
+        repeat(TIMER_MAX / TIMER_DELAY + 1) {
+            emit(Pair(it * TIMER_DELAY, TIMER_MAX))
+            delay(TIMER_DELAY.toLong())
+        }
+        navigate.value = null
+    }
+
+}

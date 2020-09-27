@@ -3,7 +3,7 @@ package com.sample.architecturecomponent.api
 import com.sample.architecturecomponent.vo.UserItem
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.QueryMap
+import retrofit2.http.Query
 
 interface Api {
 
@@ -12,6 +12,6 @@ interface Api {
     }
 
     @GET("users")
-    suspend fun getUsers(@QueryMap args: Map<String, String>): Response<List<UserItem>>
+    suspend fun getUsers(@Query("since") since: String): Response<List<UserItem>>
 
 }

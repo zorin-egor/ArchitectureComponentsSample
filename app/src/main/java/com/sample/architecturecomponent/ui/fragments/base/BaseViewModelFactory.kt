@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.viewmodels
+package com.sample.architecturecomponent.ui.fragments.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
