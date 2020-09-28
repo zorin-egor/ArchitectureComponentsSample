@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
+import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.components.UsersBindingComponent
@@ -34,7 +35,7 @@ class UsersFragment : BaseFragment() {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             val lastPosition = layoutManager.findLastVisibleItemPosition()
             if (lastPosition + prefetchIndex >= adapter.itemCount - 1) {
-                mViewModel.next()
+                viewModel.next()
             }
         }
     }
@@ -49,7 +50,7 @@ class UsersFragment : BaseFragment() {
         UsersBindingComponent(this)
     }
 
-    private val mViewModel: UsersViewModel by viewModels {
+    private val viewModel: UsersViewModel by viewModels {
         viewModelFactory
     }
 
@@ -65,7 +66,7 @@ class UsersFragment : BaseFragment() {
             bindingComponent
         ).apply {
             lifecycleOwner = this@UsersFragment
-            viewmodel = mViewModel
+            viewmodel = viewModel
         }.root
     }
 
@@ -76,16 +77,23 @@ class UsersFragment : BaseFragment() {
 
     private fun init(savedInstanceState: Bundle?) {
         recyclerView.apply {
-            adapter = UsersAdapter(appExecutors, bindingComponent).also { this@UsersFragment.adapter = it }
-            layoutManager = LinearLayoutManager(context)
             addOnScrollListener(OnEndScroll())
+            layoutManager = LinearLayoutManager(context)
+            adapter = UsersAdapter(
+                appExecutors,
+                bindingComponent
+            ).apply {
+                this@UsersFragment.adapter = this
+                onClickListener = viewModel::userClick
+                onLongClickListener = viewModel::userLongClick
+            }
         }
 
         swipeRefreshLayout.setOnRefreshListener {
-            mViewModel.refresh()
+            viewModel.refresh()
         }
 
-        mViewModel.isResult.observe(viewLifecycleOwner, Observer {
+        viewModel.isResult.observe(viewLifecycleOwner, Observer {
             if (it) {
                 skeleton?.hide()
             } else {
@@ -96,8 +104,14 @@ class UsersFragment : BaseFragment() {
             }
         })
 
-        mViewModel.results.observe(viewLifecycleOwner, Observer {
+        viewModel.results.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
+        })
+
+        viewModel.message.observe(viewLifecycleOwner, Observer {
+            Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.snackbar_action_title, it.second)
+                .show()
         })
     }
 

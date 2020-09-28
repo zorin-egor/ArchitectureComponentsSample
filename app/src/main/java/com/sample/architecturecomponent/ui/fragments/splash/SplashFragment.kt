@@ -23,7 +23,7 @@ class SplashFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DataBindingUtil.inflate<FragmentSplashBinding>(inflater, R.layout.fragment_splash, container, false).apply {
             lifecycleOwner = this@SplashFragment
-            viewmodel = mViewModel
+            viewModel = mViewModel
         }.root
     }
 

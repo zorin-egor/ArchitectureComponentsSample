@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">ArchitectureComponentsSample</string>
-
     <string name="splash_title">Splash progress...</string>
+    <string name="snackbar_action_title">Undo</string>
 
 </resources>

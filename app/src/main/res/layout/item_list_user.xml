@@ -8,12 +8,18 @@
         <variable
             name="userItem"
             type="com.sample.architecturecomponent.vo.UserItem" />
+
+        <variable
+            name="viewModel"
+            type="com.sample.architecturecomponent.ui.fragments.splash.SplashViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/userLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:foreground="@drawable/drawable_ripple_borderless"
+        android:clickable="true"
         android:layout_margin="5dp"
         app:cardCornerRadius="20dp">
 

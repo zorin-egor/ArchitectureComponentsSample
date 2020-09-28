@@ -1,6 +1,7 @@
 package com.sample.architecturecomponent.binding.adapters
 
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
@@ -19,6 +20,11 @@ class CommonAdapters(val fragment: Fragment) {
     @BindingAdapter(value = ["app:swipeRefreshing"])
     fun bindSwipeRefresh(swipeView: SwipeRefreshLayout, isRefreshing: Boolean) {
         swipeView.isRefreshing = isRefreshing
+    }
+
+    @BindingAdapter(value = ["app:onLongClick"])
+    fun bindLongClick(view: View, listener: (View) -> Boolean) {
+        view.setOnLongClickListener(listener)
     }
 
 }

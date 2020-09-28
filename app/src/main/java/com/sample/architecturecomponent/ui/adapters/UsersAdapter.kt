@@ -33,6 +33,10 @@ class UsersAdapter(
         }
     }
 
+    var onClickListener: ((Int, UserItem) -> Unit)? = null
+
+    var onLongClickListener: ((Int, UserItem) -> Boolean)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
         return UserItemViewHolder(
             DataBindingUtil.inflate<ItemListUserBinding>(
@@ -41,7 +45,9 @@ class UsersAdapter(
                 parent,
                 false,
                 bindingComponent
-            )
+            ),
+            onClickListener,
+            onLongClickListener
         )
     }
 
@@ -50,11 +56,25 @@ class UsersAdapter(
     }
 }
 
-class UserItemViewHolder(val binding: ItemListUserBinding) : RecyclerView.ViewHolder(binding.root) {
+class UserItemViewHolder(
+    val binding: ItemListUserBinding,
+    val onClickListener: ((Int, UserItem) -> Unit)? = null,
+    val onLongClickListener: ((Int, UserItem) -> Boolean)? = null
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UserItem?) {
         item?.let {
-            binding.userItem = it
+            binding.apply {
+                userItem = it
+                userLayout.setOnClickListener {
+                    onClickListener?.invoke(layoutPosition, item)
+                }
+                userLayout.setOnLongClickListener {
+                    onLongClickListener?.invoke(layoutPosition, item) ?: false
+                }
+            }
         }
     }
 }
+
+
 

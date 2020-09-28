@@ -10,6 +10,7 @@
         android:name="com.sample.architecturecomponent.ui.fragments.splash.SplashFragment"
         android:label="splash_fragment"
         app:layout="@layout/fragment_splash">
+
         <action
             android:id="@+id/splash_to_main_action_screen"
             app:destination="@id/main_screen"

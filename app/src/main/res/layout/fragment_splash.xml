@@ -6,7 +6,7 @@
 
     <data>
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="com.sample.architecturecomponent.ui.fragments.splash.SplashViewModel" />
     </data>
 
@@ -30,8 +30,8 @@
             android:layout_height="wrap_content"
             android:indeterminate="false"
             android:min="0"
-            android:max="@{viewmodel.progress.second}"
-            android:progress="@{viewmodel.progress.first}"
+            android:max="@{viewModel.progress.second}"
+            android:progress="@{viewModel.progress.first}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -45,7 +45,7 @@
             android:id="@+id/splashProgressText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{viewmodel.progress.first + "/" + viewmodel.progress.second}'
+            android:text='@{viewModel.progress.first + "/" + viewModel.progress.second}'
             app:layout_constraintRight_toRightOf="@+id/splashProgress"
             app:layout_constraintTop_toBottomOf="@+id/splashProgress"
             tools:text="0/0"
