@@ -10,6 +10,6 @@ abstract class BaseViewModel : ViewModel() {
         val TAG = BaseViewModel::class.java.simpleName
     }
 
-    open val navigate = SingleLiveEvent<Any?>()
+    open val navigate = SingleLiveEvent<Any>()
 
 }
