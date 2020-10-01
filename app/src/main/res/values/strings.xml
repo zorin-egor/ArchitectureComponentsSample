@@ -4,4 +4,6 @@
     <string name="splash_title">Splash progress...</string>
     <string name="snackbar_action_title">Undo</string>
 
+    <string name="screens_bundles_args_user_item" translatable="false">UserItem</string>
+
 </resources>

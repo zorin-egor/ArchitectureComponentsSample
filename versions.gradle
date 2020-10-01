@@ -1,0 +1,33 @@
+ext {
+    GRADLE = '4.0.0'
+    KOTLIN = '1.4.10'
+}
+
+ext {
+    SDK_MIN = 21
+    SDK_MAX = 29
+    BUILD_TOOL = '29.0.3'
+    KOTLIN_COROUTINES = '1.3.9'
+}
+
+ext {
+    XAPPCOMPAT = '1.2.0'
+    XCONSTRAINT = '2.0.1'
+    XLIFECYCLE = '2.2.0'
+    XNAVIGATION = '2.3.0'
+    XCORE = '1.3.1'
+    XFRAGMENT = '1.1.0'
+}
+
+ext {
+    DAGGER = '2.29.1'
+    GLIDE = '4.11.0'
+    OKHTTP = '4.9.0'
+    RETROFIT = '2.9.0'
+    GSON = '2.8.6'
+    SKELETON = '1.1.2'
+    SHIMMER = '2.1.0'
+    JUNIT = '4.13'
+    JUNIT_EXT = '1.1.2'
+    ESPRESSO = '3.3.0'
+}

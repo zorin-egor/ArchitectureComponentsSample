@@ -1,6 +1,6 @@
 package com.sample.architecturecomponent.api
 
-import com.sample.architecturecomponent.vo.UserItem
+import com.sample.architecturecomponent.model.UserItem
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

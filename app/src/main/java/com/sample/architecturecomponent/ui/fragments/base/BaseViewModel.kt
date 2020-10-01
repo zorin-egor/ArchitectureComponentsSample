@@ -1,7 +1,7 @@
 package com.sample.architecturecomponent.ui.fragments.base
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 
 
 abstract class BaseViewModel : ViewModel() {
@@ -10,6 +10,6 @@ abstract class BaseViewModel : ViewModel() {
         val TAG = BaseViewModel::class.java.simpleName
     }
 
-    open val navigate = MutableLiveData<Int?>()
+    open val navigate = SingleLiveEvent<Any?>()
 
 }

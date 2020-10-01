@@ -7,11 +7,7 @@
     <data>
         <variable
             name="userItem"
-            type="com.sample.architecturecomponent.vo.UserItem" />
-
-        <variable
-            name="viewModel"
-            type="com.sample.architecturecomponent.ui.fragments.splash.SplashViewModel" />
+            type="com.sample.architecturecomponent.model.UserItem" />
     </data>
 
     <androidx.cardview.widget.CardView

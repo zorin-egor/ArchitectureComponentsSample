@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.vo
+package com.sample.architecturecomponent.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

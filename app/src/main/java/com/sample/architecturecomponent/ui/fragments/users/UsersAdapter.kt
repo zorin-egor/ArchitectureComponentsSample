@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.ui.adapters
+package com.sample.architecturecomponent.ui.fragments.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.ItemListUserBinding
-import com.sample.architecturecomponent.vo.UserItem
+import com.sample.architecturecomponent.model.UserItem
 
 
 class UsersAdapter(

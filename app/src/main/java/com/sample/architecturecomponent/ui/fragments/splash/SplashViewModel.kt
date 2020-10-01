@@ -1,11 +1,15 @@
 package com.sample.architecturecomponent.ui.fragments.splash
 
+import android.content.Context
 import androidx.lifecycle.liveData
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
 
-class SplashViewModel() : BaseViewModel() {
+class SplashViewModel @Inject constructor(
+   val context: Context
+) : BaseViewModel() {
 
     companion object {
         val TAG = SplashViewModel::class.java.simpleName

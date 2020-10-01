@@ -6,7 +6,7 @@ import androidx.databinding.BindingAdapter
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
-import com.sample.architecturecomponent.vo.UserItem
+import com.sample.architecturecomponent.model.UserItem
 
 
 class UsersAdapters {

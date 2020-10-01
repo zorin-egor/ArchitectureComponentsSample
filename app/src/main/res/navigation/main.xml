@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Navigation issue:
+        https://github.com/googlecodelabs/android-navigation/issues/70
+-->
+
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation_main"
-    app:startDestination="@id/users_screen">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigationMain"
+    app:startDestination="@+id/usersScreen">
 
     <fragment
-        android:id="@+id/users_screen"
+        android:id="@+id/usersScreen"
         android:name="com.sample.architecturecomponent.ui.fragments.users.UsersFragment"
         android:label="users_fragment"
-        app:layout="@layout/fragment_users">
+        tools:layout="@layout/fragment_users">
+        <action
+            android:id="@+id/usersToDetailsScreen"
+            app:destination="@+id/detailsScreen"
+            />
     </fragment>
 
     <fragment
-        android:id="@+id/details_screen"
+        android:id="@+id/detailsScreen"
         android:name="com.sample.architecturecomponent.ui.fragments.details.DetailsFragment"
         android:label="details_fragment"
-        app:layout="@layout/fragment_details">
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="@string/screens_bundles_args_user_item"
+            app:argType="com.sample.architecturecomponent.model.UserItem"
+            />
     </fragment>
 
 </navigation>

@@ -8,11 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.api.Api
+import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
 import com.sample.architecturecomponent.managers.tools.RetrofitTool
+import com.sample.architecturecomponent.model.UserItem
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
-import com.sample.architecturecomponent.vo.UserItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -31,29 +32,29 @@ class UsersViewModel @Inject constructor(
         private const val DEFAULT_USER_ID = "0"
     }
 
-    val isProgress = MutableLiveData<Boolean>()
+    val isProgress = SingleLiveEvent<Boolean>()
 
-    val isSwipe = MutableLiveData<Boolean>()
+    val isSwipe = SingleLiveEvent<Boolean>()
 
-    val isResult = MutableLiveData<Boolean>()
+    val isResult = SingleLiveEvent<Boolean>()
+
+    val message = SingleLiveEvent<Pair<CharSequence, View.OnClickListener?>>()
 
     val results = MutableLiveData<List<UserItem>>()
-
-    val message = MutableLiveData<Pair<CharSequence, View.OnClickListener?>>()
 
     private var usersJob: Job? = null
     private var since: String = DEFAULT_USER_ID
     private val users: MutableList<UserItem> = mutableListOf()
 
     init {
-        refresh()
+        refresh(false)
     }
 
-    fun refresh() {
+    fun refresh(isSwipeEnabled: Boolean = true) {
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
             isResult.value = false
-            isSwipe.value = true
+            isSwipe.value = isSwipeEnabled
             since = DEFAULT_USER_ID
 
             withContext(Dispatchers.IO) {
@@ -111,7 +112,7 @@ class UsersViewModel @Inject constructor(
     }
 
     fun userClick(index: Int, userItem: UserItem) {
-        message.value = Pair(userItem.toSpanned(), null)
+        navigate.value = userItem
     }
 
     fun userLongClick(index: Int, userItem: UserItem): Boolean {

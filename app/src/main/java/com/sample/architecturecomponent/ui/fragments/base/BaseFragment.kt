@@ -1,35 +1,47 @@
 package com.sample.architecturecomponent.ui.fragments.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.fragment.findNavController
+import com.sample.architecturecomponent.di.Injectable
 
 
-abstract class BaseFragment : Fragment(), HasAndroidInjector {
+abstract class BaseFragment : Fragment(), Injectable {
 
     companion object {
         val TAG = BaseFragment::class.java.simpleName
     }
 
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
-    protected val fragmentHost by lazy {
-        NavHostFragment.findNavController(this)
-    }
+    protected val navigation: NavController
+        get() = findNavController()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(savedInstanceState)
     }
 
-    override fun androidInjector() = androidInjector
-
     private fun init(savedInstanceState: Bundle?) {
-        // Stub
+        navigation.addOnDestinationChangedListener { controller, destination, arguments ->
+            onDestinationChange(destination)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (onBackPressed()) {
+                navigation.popBackStack()
+            }
+        }
+    }
+
+    protected open fun onBackPressed(): Boolean {
+        return true
+    }
+
+    protected open fun onDestinationChange(navDestination: NavDestination) {
+        Log.d(TAG, "onDestinationChange($navDestination)")
     }
 }

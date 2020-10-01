@@ -2,26 +2,26 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation_splash"
-    app:startDestination="@id/splash_screen">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigationSplash"
+    app:startDestination="@+id/splashScreen">
 
     <fragment
-        android:id="@+id/splash_screen"
+        android:id="@+id/splashScreen"
         android:name="com.sample.architecturecomponent.ui.fragments.splash.SplashFragment"
         android:label="splash_fragment"
-        app:layout="@layout/fragment_splash">
-
+        tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/splash_to_main_action_screen"
-            app:destination="@id/main_screen"
+            android:id="@+id/splashToMainScreen"
+            app:destination="@+id/mainScreen"
             />
     </fragment>
 
     <activity
-        android:id="@+id/main_screen"
+        android:id="@+id/mainScreen"
         android:name="com.sample.architecturecomponent.ui.activities.MainActivity"
         android:label="activity_main"
-        app:layout="@layout/activity_main"
+        tools:layout="@layout/activity_main"
         />
 
 </navigation>

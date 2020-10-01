@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,8 @@ import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.components.UsersBindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
-import com.sample.architecturecomponent.ui.adapters.UsersAdapter
+import com.sample.architecturecomponent.managers.tools.autoCleared
+import com.sample.architecturecomponent.model.UserItem
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -54,7 +54,8 @@ class UsersFragment : BaseFragment() {
         viewModelFactory
     }
 
-    private lateinit var adapter: UsersAdapter
+    private var binding by autoCleared<FragmentUsersBinding>()
+    private var adapter by autoCleared<UsersAdapter>()
     private var skeleton: RecyclerViewSkeletonScreen? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +66,7 @@ class UsersFragment : BaseFragment() {
             false,
             bindingComponent
         ).apply {
+            binding = this
             lifecycleOwner = this@UsersFragment
             viewmodel = viewModel
         }.root
@@ -93,7 +95,13 @@ class UsersFragment : BaseFragment() {
             viewModel.refresh()
         }
 
-        viewModel.isResult.observe(viewLifecycleOwner, Observer {
+        viewModel.navigate.observe(viewLifecycleOwner) {
+            (it as? UserItem)?.also { item ->
+                navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(item))
+            }
+        }
+
+        viewModel.isResult.observe(viewLifecycleOwner) {
             if (it) {
                 skeleton?.hide()
             } else {
@@ -102,17 +110,17 @@ class UsersFragment : BaseFragment() {
                     .load(R.layout.item_list_user)
                     .show()
             }
-        })
+        }
 
-        viewModel.results.observe(viewLifecycleOwner, Observer {
+        viewModel.results.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-        })
+        }
 
-        viewModel.message.observe(viewLifecycleOwner, Observer {
+        viewModel.message.observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.snackbar_action_title, it.second)
                 .show()
-        })
+        }
     }
 
 }

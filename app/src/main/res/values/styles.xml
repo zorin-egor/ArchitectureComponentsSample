@@ -17,6 +17,6 @@
     </style>
 
     <style name="SplashActivity" parent="NoActionBarTheme"/>
-    <style name="MainActivity" parent="NoActionBarTheme"/>
+    <style name="MainActivity" parent="AppTheme"/>
 
 </resources>

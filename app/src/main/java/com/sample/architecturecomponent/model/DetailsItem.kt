@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.vo
+package com.sample.architecturecomponent.model
 
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
