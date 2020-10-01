@@ -32,7 +32,9 @@ abstract class BaseFragment : Fragment(), Injectable {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (onBackPressed()) {
-                navigation.popBackStack()
+                if (!navigation.navigateUp()) {
+                    requireActivity().finish()
+                }
             }
         }
     }
