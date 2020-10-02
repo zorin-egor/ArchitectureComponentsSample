@@ -1,9 +1,11 @@
 package com.sample.architecturecomponent.ui.fragments.users
 
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
@@ -17,14 +19,16 @@ import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.components.UsersBindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
+import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.model.UserItem
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import com.sample.qr.ui.views.toolbars.CollapseToolbarEvent
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
 
-class UsersFragment : BaseFragment() {
+class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
 
     companion object {
         val TAG = UsersFragment::class.java.simpleName
@@ -35,7 +39,7 @@ class UsersFragment : BaseFragment() {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             val lastPosition = layoutManager.findLastVisibleItemPosition()
             if (lastPosition + prefetchIndex >= adapter.itemCount - 1) {
-                viewModel.next()
+//                viewModel.next()
             }
         }
     }
@@ -52,6 +56,10 @@ class UsersFragment : BaseFragment() {
 
     private val viewModel: UsersViewModel by viewModels {
         viewModelFactory
+    }
+
+    private val collapseToolbarEvent: CollapseToolbarEvent by lazy {
+        CollapseToolbarEvent(this)
     }
 
     private var binding by autoCleared<FragmentUsersBinding>()
@@ -77,7 +85,27 @@ class UsersFragment : BaseFragment() {
         init(savedInstanceState)
     }
 
+    override fun onToolbarChange(verticalOffset: Int) {
+        TransitionManager.beginDelayedTransition(collapsingToolbar)
+        collapsingToolbarText.visibility = View.INVISIBLE
+    }
+
+    override fun onToolbarCollapse() {
+        TransitionManager.beginDelayedTransition(collapsingToolbar)
+        collapsingToolbarText.visibility = View.VISIBLE
+    }
+
     private fun init(savedInstanceState: Bundle?) {
+        usersLayout.setOnApplyWindowInsetsListener { view, insets ->
+            collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
+            recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
+            collapsingContentLayout.updatePadding(
+                top = (insets.systemWindowInsetTop * 1.5).toInt(),
+                bottom = (insets.systemWindowInsetTop * 0.5).toInt()
+            )
+            insets
+        }
+
         recyclerView.apply {
             addOnScrollListener(OnEndScroll())
             layoutManager = LinearLayoutManager(context)
@@ -91,10 +119,16 @@ class UsersFragment : BaseFragment() {
             }
         }
 
+        appBarLayout.addOnOffsetChangedListener(collapseToolbarEvent)
+
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
 
+        initLiveData()
+    }
+
+    private fun initLiveData() {
         viewModel.navigate.observe(viewLifecycleOwner) {
             (it as? UserItem)?.also { item ->
                 navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(item))

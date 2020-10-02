@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class DetailsViewModel @Inject constructor(
     val context: Context
-) : BaseViewModel() {
+) : BaseViewModel(context) {
 
     companion object {
         val TAG = DetailsViewModel::class.java.simpleName

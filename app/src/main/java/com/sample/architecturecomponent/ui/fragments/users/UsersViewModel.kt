@@ -24,7 +24,7 @@ import javax.inject.Inject
 class UsersViewModel @Inject constructor(
     val context: Context,
     val retrofitTool: RetrofitTool<Api>
-) : BaseViewModel() {
+) : BaseViewModel(context) {
 
     companion object {
         val TAG = UsersViewModel::class.java.simpleName
@@ -38,7 +38,7 @@ class UsersViewModel @Inject constructor(
 
     val isResult = SingleLiveEvent<Boolean>()
 
-    val message = SingleLiveEvent<Pair<CharSequence, View.OnClickListener?>>()
+
 
     val results = MutableLiveData<List<UserItem>>()
 
@@ -69,6 +69,7 @@ class UsersViewModel @Inject constructor(
                         toMutableList()
                     }
                 } else {
+                    handleError(response.errorBody())
                     null
                 }
             }?.also {
@@ -100,6 +101,7 @@ class UsersViewModel @Inject constructor(
                         toMutableList()
                     }
                 } else {
+                    handleError(response.errorBody())
                     null
                 }
 

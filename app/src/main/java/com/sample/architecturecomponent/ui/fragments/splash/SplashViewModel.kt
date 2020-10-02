@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class SplashViewModel @Inject constructor(
    val context: Context
-) : BaseViewModel() {
+) : BaseViewModel(context) {
 
     companion object {
         val TAG = SplashViewModel::class.java.simpleName
