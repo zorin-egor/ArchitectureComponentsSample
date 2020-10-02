@@ -32,7 +32,7 @@
         android:label="details_fragment"
         tools:layout="@layout/fragment_details">
         <argument
-            android:name="@string/screens_bundles_args_user_item"
+            android:name="userItem"
             app:argType="com.sample.architecturecomponent.model.UserItem"
             />
     </fragment>

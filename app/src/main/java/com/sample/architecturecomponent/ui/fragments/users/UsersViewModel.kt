@@ -34,11 +34,9 @@ class UsersViewModel @Inject constructor(
 
     val isProgress = SingleLiveEvent<Boolean>()
 
-    val isSwipe = SingleLiveEvent<Boolean>()
-
     val isResult = SingleLiveEvent<Boolean>()
 
-
+    val isSwipe = MutableLiveData<Boolean>()
 
     val results = MutableLiveData<List<UserItem>>()
 

@@ -5,6 +5,4 @@
     <string name="snackbar_action_title">Undo</string>
     <string name="error_unknown">Unknown error</string>
 
-    <string name="screens_bundles_args_user_item" translatable="false">UserItem</string>
-
 </resources>

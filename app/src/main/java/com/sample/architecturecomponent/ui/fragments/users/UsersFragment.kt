@@ -2,10 +2,7 @@ package com.sample.architecturecomponent.ui.fragments.users
 
 import android.os.Bundle
 import android.transition.TransitionManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
@@ -18,7 +15,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.binding.components.UsersBindingComponent
+import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
 import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
@@ -52,7 +49,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
     lateinit var appExecutors: AppExecutors
 
     private val bindingComponent: DataBindingComponent by lazy {
-        UsersBindingComponent(this)
+        BindingComponent(this)
     }
 
     private val viewModel: UsersViewModel by viewModels {
@@ -97,18 +94,18 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
         collapsingToolbarText.visibility = View.VISIBLE
     }
 
-    private fun init(savedInstanceState: Bundle?) {
-        usersLayout.setOnApplyWindowInsetsListener { view, insets ->
-            bottomInsets = insets.systemWindowInsetBottom
-            collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
-            recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
-            collapsingContentLayout.updatePadding(
-                top = (insets.systemWindowInsetTop * 1.5).toInt(),
-                bottom = (insets.systemWindowInsetTop * 0.5).toInt()
-            )
-            insets
-        }
+    override fun onInsets(view: View, insets: WindowInsets) {
+        super.onInsets(view, insets)
+        bottomInsets = insets.systemWindowInsetBottom
+        collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
+        recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
+        collapsingContentLayout.updatePadding(
+            top = (insets.systemWindowInsetTop * 1.5).toInt(),
+            bottom = (insets.systemWindowInsetTop * 0.5).toInt()
+        )
+    }
 
+    private fun init(savedInstanceState: Bundle?) {
         recyclerView.apply {
             addOnScrollListener(OnEndScroll())
             layoutManager = LinearLayoutManager(context)
@@ -164,8 +161,8 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
 
         viewModel.message.observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT).apply {
-                view.updateMargins(bottom = bottomInsets)
                 setAction(R.string.snackbar_action_title, it.second)
+                view.updateMargins(bottom = bottomInsets)
             }.show()
         }
     }

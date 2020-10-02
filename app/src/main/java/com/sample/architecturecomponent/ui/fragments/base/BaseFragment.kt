@@ -3,6 +3,7 @@ package com.sample.architecturecomponent.ui.fragments.base
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -26,8 +27,9 @@ abstract class BaseFragment : Fragment(), Injectable {
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        navigation.addOnDestinationChangedListener { controller, destination, arguments ->
-            onDestinationChange(destination)
+        requireView().setOnApplyWindowInsetsListener { view, insets ->
+            onInsets(view, insets)
+            insets
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
@@ -37,6 +39,10 @@ abstract class BaseFragment : Fragment(), Injectable {
                 }
             }
         }
+
+        navigation.addOnDestinationChangedListener { controller, destination, arguments ->
+            onDestinationChange(destination)
+        }
     }
 
     protected open fun onBackPressed(): Boolean {
@@ -45,5 +51,9 @@ abstract class BaseFragment : Fragment(), Injectable {
 
     protected open fun onDestinationChange(navDestination: NavDestination) {
         Log.d(TAG, "onDestinationChange($navDestination)")
+    }
+
+    protected open fun onInsets(view: View, insets: WindowInsets) {
+        Log.d(TAG, "onInsets($view, $insets)")
     }
 }
