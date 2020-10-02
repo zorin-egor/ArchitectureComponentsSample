@@ -5,6 +5,7 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
@@ -23,12 +24,12 @@ import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.model.UserItem
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
-import com.sample.qr.ui.views.toolbars.CollapseToolbarEvent
+import com.sample.qr.ui.views.toolbars.CollapseToolbarListener
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
 
-class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
+class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener {
 
     companion object {
         val TAG = UsersFragment::class.java.simpleName
@@ -58,13 +59,14 @@ class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
         viewModelFactory
     }
 
-    private val collapseToolbarEvent: CollapseToolbarEvent by lazy {
-        CollapseToolbarEvent(this)
+    private val collapseToolbarListener: CollapseToolbarListener by lazy {
+        CollapseToolbarListener(this)
     }
 
     private var binding by autoCleared<FragmentUsersBinding>()
     private var adapter by autoCleared<UsersAdapter>()
     private var skeleton: RecyclerViewSkeletonScreen? = null
+    private var bottomInsets: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DataBindingUtil.inflate<FragmentUsersBinding>(
@@ -85,7 +87,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
         init(savedInstanceState)
     }
 
-    override fun onToolbarChange(verticalOffset: Int) {
+    override fun onToolbarExpand() {
         TransitionManager.beginDelayedTransition(collapsingToolbar)
         collapsingToolbarText.visibility = View.INVISIBLE
     }
@@ -97,6 +99,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
 
     private fun init(savedInstanceState: Bundle?) {
         usersLayout.setOnApplyWindowInsetsListener { view, insets ->
+            bottomInsets = insets.systemWindowInsetBottom
             collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
             recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
             collapsingContentLayout.updatePadding(
@@ -119,7 +122,16 @@ class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
             }
         }
 
-        appBarLayout.addOnOffsetChangedListener(collapseToolbarEvent)
+        // Workaround bug back press
+        appBarLayout.apply {
+            addOnOffsetChangedListener(collapseToolbarListener)
+            viewTreeObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    collapseToolbarListener.onOffsetChanged(appBarLayout, appBarLayout.height)
+                }
+            })
+        }
 
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
@@ -151,9 +163,10 @@ class UsersFragment : BaseFragment(), CollapseToolbarEvent.OnCollapseToolbar {
         }
 
         viewModel.message.observe(viewLifecycleOwner) {
-            Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.snackbar_action_title, it.second)
-                .show()
+            Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT).apply {
+                view.updateMargins(bottom = bottomInsets)
+                setAction(R.string.snackbar_action_title, it.second)
+            }.show()
         }
     }
 
