@@ -35,6 +35,23 @@
             android:name="userItem"
             app:argType="com.sample.architecturecomponent.model.UserItem"
             />
+        <action
+            android:id="@+id/detailsToOpenUrlScreen"
+            app:destination="@+id/openUrlScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            />
     </fragment>
 
+    <dialog
+        android:id="@+id/openUrlScreen"
+        android:name="com.sample.architecturecomponent.ui.fragments.dialogs.OpenUrlDialog"
+        android:label="open_url_fragment">
+        <argument
+            android:name="url"
+            app:argType="string"
+            />
+    </dialog>
 </navigation>

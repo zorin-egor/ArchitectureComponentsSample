@@ -2,6 +2,7 @@ package com.sample.architecturecomponent.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -20,7 +21,8 @@ open class UserItem : Parcelable {
     var url: String? = null
 
     @Expose
-    var avatar_url: String? = null
+    @SerializedName("avatar_url")
+    var avatarUrl: String? = null
 
     override fun equals(other: Any?): Boolean {
         return other is UserItem &&
@@ -28,6 +30,6 @@ open class UserItem : Parcelable {
             nodeId == other.nodeId &&
             login == other.login &&
             url == other.url &&
-            avatar_url == other.avatar_url
+            avatarUrl == other.avatarUrl
     }
 }

@@ -5,4 +5,8 @@
     <string name="snackbar_action_title">Undo</string>
     <string name="error_unknown">Unknown error</string>
 
+    <string name="text_open">Open</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_open_url">Open url</string>
+
 </resources>

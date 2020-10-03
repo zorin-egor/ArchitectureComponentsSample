@@ -1,6 +1,9 @@
 package com.sample.architecturecomponent.managers.extensions
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
@@ -103,4 +106,11 @@ fun View.updateMargins(@Px start: Int? = null, @Px top: Int? = null, @Px end: In
         end?.also { updateMarginsRelative(end = it) }
         bottom?.also { updateMarginsRelative(bottom = it) }
     }
+}
+
+fun Context.showBrowser(url: String, title: String? = null) {
+    startActivity(Intent.createChooser(Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse(url)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }, title))
 }

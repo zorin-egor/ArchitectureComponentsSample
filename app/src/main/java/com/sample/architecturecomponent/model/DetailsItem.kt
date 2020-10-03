@@ -1,6 +1,7 @@
 package com.sample.architecturecomponent.model
 
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -25,9 +26,11 @@ class DetailsItem : UserItem() {
     var bio: String? = null
 
     @Expose
+    @SerializedName("public_repos")
     var publicRepos: String? = null
 
     @Expose
+    @SerializedName("public_gists")
     var publicGists: String? = null
 
     @Expose
@@ -37,6 +40,7 @@ class DetailsItem : UserItem() {
     var following: String? = null
 
     @Expose
+    @SerializedName("created_at")
     var createdAt: String? = null
 
     override fun equals(other: Any?): Boolean {

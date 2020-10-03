@@ -12,7 +12,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:swipeRefreshing="@{viewmodel.isSwipe}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detailsLayout"
@@ -24,12 +25,25 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{viewmodel.item.avatar_url}"
+                app:imageUrl="@{viewmodel.item.avatarUrl}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/guideline"
                 tools:src="@drawable/ic_launcher_background"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_large"
+                android:foreground="@drawable/drawable_ripple_circle"
+                android:background="@null"
+                android:tint="@android:color/darker_gray"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 />
 
             <androidx.constraintlayout.widget.Guideline

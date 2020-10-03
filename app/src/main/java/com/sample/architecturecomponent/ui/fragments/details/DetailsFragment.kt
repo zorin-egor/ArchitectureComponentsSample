@@ -1,6 +1,8 @@
 package com.sample.architecturecomponent.ui.fragments.details
 
 import android.os.Bundle
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,7 @@ import androidx.transition.TransitionManager
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentDetailsBinding
+import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -64,19 +67,39 @@ class DetailsFragment : BaseFragment() {
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
         titlesScroll.updatePadding(bottom = insets.systemWindowInsetBottom)
+        backButton.updateMargins(top = insets.systemWindowInsetTop)
     }
 
     private fun init(savedInstanceState: Bundle?) {
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh()
+        }
+
+        backButton.setOnClickListener {
+            navigation.navigateUp()
+        }
+
         viewModel.item = DetailsFragmentArgs.fromBundle(requireArguments()).userItem
+        viewModel.navigate.observe(viewLifecycleOwner) {
+            (it as? String)?.also { url ->
+                navigation.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(url))
+            }
+        }
         viewModel.titles.observe(viewLifecycleOwner) {
             addTitleView(it)
         }
+        viewModel.clear.observe(viewLifecycleOwner) {
+            titlesLayout.removeAllViews()
+        }
     }
 
-    private fun addTitleView(pair: Pair<String, String>) {
+    private fun addTitleView(pair: Pair<String, Spanned>) {
         LayoutInflater.from(requireContext()).inflate(R.layout.view_details_titles, null).also { view ->
             view.detailsNameTitle.text = "${pair.first}: "
-            view.detailsValueTitle.text = pair.second
+            view.detailsValueTitle.also { value ->
+                value.text = pair.second
+                value.movementMethod = LinkMovementMethod.getInstance()
+            }
             view.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         }.also {
             TransitionManager.beginDelayedTransition(titlesLayout)

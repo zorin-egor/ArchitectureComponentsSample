@@ -1,6 +1,7 @@
 package com.sample.architecturecomponent.di
 
 import com.sample.architecturecomponent.ui.fragments.details.DetailsFragment
+import com.sample.architecturecomponent.ui.fragments.dialogs.OpenUrlDialog
 import com.sample.architecturecomponent.ui.fragments.splash.SplashFragment
 import com.sample.architecturecomponent.ui.fragments.users.UsersFragment
 
@@ -19,5 +20,8 @@ abstract class FragmentsModule {
 
     @ContributesAndroidInjector
     abstract fun contributeDetailsFragment(): DetailsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeOpenUrlFragment(): OpenUrlDialog
 
 }

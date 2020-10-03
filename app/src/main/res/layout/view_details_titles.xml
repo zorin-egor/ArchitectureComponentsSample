@@ -32,7 +32,6 @@
             android:textColor="@color/colorPrimary"
             android:lines="1"
             android:ellipsize="end"
-            android:autoLink="web"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detailsNameTitle"
             app:layout_constraintBottom_toBottomOf="parent"
