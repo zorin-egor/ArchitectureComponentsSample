@@ -104,8 +104,6 @@ class DetailsFragment : BaseFragment() {
                     Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.snackbar_action_title, it.action)
                 }
-            }.apply {
-                view.updateMargins(bottom = insets?.systemWindowInsetBottom)
             }.show()
         }
     }

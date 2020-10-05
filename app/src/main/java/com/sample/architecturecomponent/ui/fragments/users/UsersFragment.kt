@@ -172,7 +172,15 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
                         .setAction(R.string.snackbar_action_title, it.action)
                 }
             }.apply {
-                view.updateMargins(bottom = insets?.systemWindowInsetBottom)
+//                view.updateMargins(bottom = insets?.systemWindowInsetBottom)
+
+                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        view.layoutParams.height = view.height + (insets?.systemWindowInsetBottom ?: 0)
+                        view.requestLayout()
+                    }
+                })
             }.show()
         }
     }
