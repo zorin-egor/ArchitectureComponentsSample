@@ -1,6 +1,6 @@
 # Architecture components sample
 
-<b>ArchitectureComponentsSample</b> - sample app dev with android architecture components.
+<b>ArchitectureComponentsSample</b> - sample app developed with android architecture components.
 
 ## Screenshots
 <p align="center">
