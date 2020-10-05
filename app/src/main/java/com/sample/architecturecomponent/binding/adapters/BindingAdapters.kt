@@ -36,7 +36,7 @@ class BindingAdapters(val fragment: Fragment) {
     @BindingAdapter(value = ["app:userTitle"])
     fun bindUserTitle(textView: TextView, item: User?) {
         textView.text = (item?.login ?: "-").plus( ": ").toSpanned(textView.context, R.color.colorPrimaryDark, Typeface.BOLD) +
-                (item?.id?.toString() ?: "-").toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
+                (item?.userId?.toString() ?: "-").toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
     }
 
 }

@@ -11,7 +11,7 @@ import com.sample.architecturecomponent.model.User
         User::class,
         Details::class
     ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

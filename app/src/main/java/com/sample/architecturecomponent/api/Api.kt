@@ -14,7 +14,7 @@ interface Api {
     }
 
     @GET("users")
-    suspend fun getUsers(@Query("since") since: Long): Response<List<User>>
+    suspend fun getUsers(@Query("since") since: String): Response<List<User>>
 
     @GET
     suspend fun getDetails(@Url url: String): Response<Details>

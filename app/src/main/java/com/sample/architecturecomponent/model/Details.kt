@@ -1,7 +1,8 @@
 package com.sample.architecturecomponent.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
+import android.os.Parcelable
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -9,59 +10,75 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(
-    tableName = "Details"
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = User::class,
-//            parentColumns = ["id"],
-//            childColumns = ["id"]
-//        )
-//    ]
+    tableName = "Details",
+    indices = [
+        Index(value = ["user_id"], unique = true),
+        Index(value = ["name"])
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["user_id"],
+            childColumns = ["user_id"],
+            onDelete = CASCADE,
+            onUpdate = CASCADE
+        )
+    ]
 )
-class Details : User() {
+class Details(
+
+    @PrimaryKey(autoGenerate = true)
+    val id: Long
+
+) : Parcelable, Comparable<Details> {
 
     @Expose
-    var name: String = ""
+    @SerializedName("id")
+    @ColumnInfo(name = "user_id")
+    var userId: String? = null
 
     @Expose
-    var company: String = ""
+    var name: String? = null
 
     @Expose
-    var blog: String = ""
+    var company: String? = null
 
     @Expose
-    var location: String = ""
+    var blog: String? = null
 
     @Expose
-    var email: String = ""
+    var location: String? = null
 
     @Expose
-    var bio: String = ""
+    var email: String? = null
+
+    @Expose
+    var bio: String? = null
 
     @Expose
     @SerializedName("public_repos")
     @ColumnInfo(name = "public_repos")
-    var publicRepos: String = ""
+    var publicRepos: String? = null
 
     @Expose
     @SerializedName("public_gists")
     @ColumnInfo(name = "public_gists")
-    var publicGists: String = ""
+    var publicGists: String? = null
 
     @Expose
-    var followers: String = ""
+    var followers: String? = null
 
     @Expose
-    var following: String = ""
+    var following: String? = null
 
     @Expose
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: String = ""
+    var createdAt: String? = null
 
     override fun equals(other: Any?): Boolean {
         return other is Details &&
-            super.equals(other) &&
+            userId == other.userId &&
             name == other.name &&
             company == other.company &&
             blog == other.blog &&
@@ -73,6 +90,10 @@ class Details : User() {
             followers == other.followers &&
             following == other.following &&
             createdAt == other.createdAt
+    }
+
+    override fun compareTo(other: Details): Int {
+        return compareValues(id, other.id)
     }
 
 }

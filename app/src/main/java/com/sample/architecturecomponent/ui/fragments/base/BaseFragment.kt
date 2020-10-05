@@ -21,6 +21,8 @@ abstract class BaseFragment : Fragment(), Injectable {
     protected val navigation: NavController
         get() = findNavController()
 
+    protected var insets: WindowInsets? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(savedInstanceState)
@@ -55,5 +57,6 @@ abstract class BaseFragment : Fragment(), Injectable {
 
     protected open fun onInsets(view: View, insets: WindowInsets) {
         Log.d(TAG, "onInsets($view, $insets)")
+        this@BaseFragment.insets = insets
     }
 }

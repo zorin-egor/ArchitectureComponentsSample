@@ -9,21 +9,27 @@ import android.webkit.URLUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.annotations.Expose
-import com.sample.architecturecomponent.api.Api
+import com.sample.architecturecomponent.R
+import com.sample.architecturecomponent.api.ApiDatabaseResponse
+import com.sample.architecturecomponent.api.ApiErrorResponse
+import com.sample.architecturecomponent.api.ApiSuccessResponse
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
-import com.sample.architecturecomponent.managers.tools.RetrofitTool
 import com.sample.architecturecomponent.model.Details
 import com.sample.architecturecomponent.model.User
+import com.sample.architecturecomponent.repository.DetailsRepository
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
+import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
 import java.lang.reflect.Field
 import javax.inject.Inject
 
 
 class DetailsViewModel @Inject constructor(
     val context: Context,
-    val retrofitTool: RetrofitTool<Api>
+    val detailsRepository: DetailsRepository
 ) : BaseViewModel(context) {
 
     companion object {
@@ -52,37 +58,44 @@ class DetailsViewModel @Inject constructor(
     private fun getDetails(item: User) {
         detailsJob?.cancel()
         detailsJob = viewModelScope.launch {
-            item.url?.also { url ->
-                isSwipe.value = true
-
-                withContext(Dispatchers.IO) {
-                    val response = retrofitTool.getApi().getDetails(url)
-                    val result = response.body()
-
-                    if (response.isSuccessful && result != null) {
-                        result
-                    } else {
-                        null
+            detailsRepository.getDetails(item)
+                .onStart {
+                    isSwipe.value = true
+                }
+                .collect {
+                    isSwipe.value = false
+                    when (it) {
+                        is ApiSuccessResponse -> {
+                            handleItem(item, it.value)
+                        }
+                        is ApiDatabaseResponse -> {
+                            message.value = Message.Text(context.getString(R.string.error_cache))
+                            handleItem(item, it.value)
+                        }
+                        is ApiErrorResponse -> {
+                            handleItem(User(0), Details(0))
+                            message.value = Message.Text(
+                                it.error ?: context.getString(R.string.error_unknown)
+                            )
+                        }
                     }
-                }?.also(::handleItem)
-
-                isSwipe.value = false
-            }
+                }
         }
     }
 
-    private fun handleItem(item: Details) {
+    private fun handleItem(user: User, details: Details) {
         handleJob?.cancel()
         handleJob = viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 clear.call()
             }
-            getClassFields(item, item.javaClass.superclass as Class<Details>)
-            getClassFields(item, item.javaClass)
+            getClassFields(user, user.javaClass)
+            getClassFields(details, details.javaClass.superclass as Class<Details>)
+            getClassFields(details, details.javaClass)
         }
     }
 
-    private suspend fun <T> getClassFields(item: Details, clazz: Class<in T>) {
+    private suspend fun <T> getClassFields(item: Any, clazz: Class<in T>) {
         clazz.declaredFields.asSequence().filter(::fieldFilter).forEach { field ->
             field.isAccessible = true
 

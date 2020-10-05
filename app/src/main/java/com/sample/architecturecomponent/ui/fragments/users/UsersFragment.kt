@@ -22,6 +22,7 @@ import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.model.User
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import com.sample.architecturecomponent.ui.fragments.base.Message
+import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import com.sample.qr.ui.views.toolbars.CollapseToolbarListener
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -64,7 +65,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
     private var binding by autoCleared<FragmentUsersBinding>()
     private var adapter by autoCleared<UsersAdapter>()
     private var skeleton: RecyclerViewSkeletonScreen? = null
-    private var bottomInsets: Int = 0
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DataBindingUtil.inflate<FragmentUsersBinding>(
@@ -97,7 +98,6 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
 
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
-        bottomInsets = insets.systemWindowInsetBottom
         collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
         recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
         collapsingContentLayout.updatePadding(
@@ -140,8 +140,10 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
 
     private fun initLiveData() {
         viewModel.navigate.observe(viewLifecycleOwner) {
-            (it as? User)?.also { item ->
-                navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(item))
+            when (it) {
+                is Navigate.Screen<*> -> {
+                    navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(it.arg as User))
+                }
             }
         }
 
@@ -170,7 +172,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
                         .setAction(R.string.snackbar_action_title, it.action)
                 }
             }.apply {
-                view.updateMargins(bottom = bottomInsets)
+                view.updateMargins(bottom = insets?.systemWindowInsetBottom)
             }.show()
         }
     }

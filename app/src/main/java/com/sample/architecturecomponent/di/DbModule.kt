@@ -1,7 +1,6 @@
 package com.sample.architecturecomponent.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import com.sample.architecturecomponent.api.Api
 import com.sample.architecturecomponent.db.AppDatabase
@@ -35,8 +34,8 @@ class DbModule {
 
     @Provides
     @Singleton
-    fun provideUsersRepository(context: Context, retrofit: RetrofitTool<Api>, usersDao: UsersDao): UsersRepository {
-        return UsersRepository(context, retrofit, usersDao)
+    fun provideUsersRepository(retrofit: RetrofitTool<Api>, usersDao: UsersDao): UsersRepository {
+        return UsersRepository(retrofit, usersDao)
     }
 
     @Provides
@@ -46,8 +45,8 @@ class DbModule {
 
     @Provides
     @Singleton
-    fun provideDetailsRepository(context: Context, retrofit: RetrofitTool<Api>, detailsDao: DetailsDao): DetailsRepository {
-        return DetailsRepository(context, retrofit, detailsDao)
+    fun provideDetailsRepository(retrofit: RetrofitTool<Api>, detailsDao: DetailsDao): DetailsRepository {
+        return DetailsRepository(retrofit, detailsDao)
     }
 
 }

@@ -16,12 +16,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
+import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentDetailsBinding
 import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.view_details_titles.view.*
@@ -45,6 +47,7 @@ class DetailsFragment : BaseFragment() {
     }
 
     private var binding by autoCleared<FragmentDetailsBinding>()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DataBindingUtil.inflate<FragmentDetailsBinding>(
@@ -91,6 +94,19 @@ class DetailsFragment : BaseFragment() {
         }
         viewModel.clear.observe(viewLifecycleOwner) {
             titlesLayout.removeAllViews()
+        }
+        viewModel.message.observe(viewLifecycleOwner) {
+            when (it) {
+                is Message.Text -> {
+                    Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                }
+                is Message.Action -> {
+                    Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.snackbar_action_title, it.action)
+                }
+            }.apply {
+                view.updateMargins(bottom = insets?.systemWindowInsetBottom)
+            }.show()
         }
     }
 

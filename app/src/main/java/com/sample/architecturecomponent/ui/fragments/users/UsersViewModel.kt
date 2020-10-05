@@ -120,7 +120,7 @@ class UsersViewModel @Inject constructor(
                         results.value = it.value
                     }
                     message.value = Message.Action(user.toSpanned()) {
-                        addUser(user)
+                        addUser(index, user)
                     }
                 }
         }
@@ -128,9 +128,9 @@ class UsersViewModel @Inject constructor(
         return true
     }
 
-    private fun addUser(item: User) {
+    private fun addUser(index: Int, item: User) {
         viewModelScope.launch {
-            usersRepository.addUser(item)
+            usersRepository.addUser(index, item)
                 .collect {
                     (it as? ApiSuccessResponse)?.also {
                         results.value = it.value
@@ -143,7 +143,7 @@ class UsersViewModel @Inject constructor(
         return "User ".toSpanned(context, android.R.color.white, Typeface.BOLD) +
                 (login ?: "-").toSpanned(context, R.color.colorAccent, Typeface.BOLD) +
                 " with id ".toSpanned(context, android.R.color.white, Typeface.BOLD) +
-                (id ?: "-").toString().toSpanned(context, R.color.colorAccent, Typeface.BOLD)
+                (userId ?: "-").toString().toSpanned(context, R.color.colorAccent, Typeface.BOLD)
     }
 
 }
