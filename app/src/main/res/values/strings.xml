@@ -4,7 +4,7 @@
     <string name="splash_title">Splash progress...</string>
     <string name="snackbar_action_title">Undo</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="error_cache">Cache used</string>
+    <string name="error_cache">Loaded from cache</string>
 
     <string name="text_open">Open</string>
     <string name="text_cancel">Cancel</string>
