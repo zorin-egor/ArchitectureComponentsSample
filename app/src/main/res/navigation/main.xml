@@ -3,7 +3,6 @@
     Navigation issue:
         https://github.com/googlecodelabs/android-navigation/issues/70
 -->
-
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -33,7 +32,7 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="userItem"
-            app:argType="com.sample.architecturecomponent.model.UserItem"
+            app:argType="com.sample.architecturecomponent.model.User"
             />
         <action
             android:id="@+id/detailsToOpenUrlScreen"

@@ -1,7 +1,7 @@
 package com.sample.architecturecomponent.api
 
-import com.sample.architecturecomponent.model.DetailsItem
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.Details
+import com.sample.architecturecomponent.model.User
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,9 +14,9 @@ interface Api {
     }
 
     @GET("users")
-    suspend fun getUsers(@Query("since") since: String): Response<List<UserItem>>
+    suspend fun getUsers(@Query("since") since: Long): Response<List<User>>
 
     @GET
-    suspend fun getDetails(@Url url: String): Response<DetailsItem>
+    suspend fun getDetails(@Url url: String): Response<Details>
 
 }

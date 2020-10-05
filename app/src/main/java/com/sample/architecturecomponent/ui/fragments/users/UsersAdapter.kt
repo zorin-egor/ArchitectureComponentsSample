@@ -11,31 +11,31 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sample.architecturecomponent.AppExecutors
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.ItemListUserBinding
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.User
 
 
 class UsersAdapter(
     private val appExecutors: AppExecutors,
     private val bindingComponent: DataBindingComponent
-) : ListAdapter<UserItem, UserItemViewHolder>(
+) : ListAdapter<User, UserItemViewHolder>(
         AsyncDifferConfig.Builder(DiffCallback())
             .setBackgroundThreadExecutor(appExecutors.diskIO())
             .build()
 ) {
 
-    private class DiffCallback : DiffUtil.ItemCallback<UserItem>() {
-        override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean{
-            return oldItem.id == newItem.id
+    private class DiffCallback : DiffUtil.ItemCallback<User>() {
+        override fun areItemsTheSame(old: User, aNew: User): Boolean{
+            return old.id == aNew.id
         }
 
-        override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(old: User, aNew: User): Boolean {
+            return old == aNew
         }
     }
 
-    var onClickListener: ((Int, UserItem) -> Unit)? = null
+    var onClickListener: ((Int, User) -> Unit)? = null
 
-    var onLongClickListener: ((Int, UserItem) -> Boolean)? = null
+    var onLongClickListener: ((Int, User) -> Boolean)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
         return UserItemViewHolder(
@@ -58,10 +58,10 @@ class UsersAdapter(
 
 class UserItemViewHolder(
     val binding: ItemListUserBinding,
-    val onClickListener: ((Int, UserItem) -> Unit)? = null,
-    val onLongClickListener: ((Int, UserItem) -> Boolean)? = null
+    val onClickListener: ((Int, User) -> Unit)? = null,
+    val onLongClickListener: ((Int, User) -> Boolean)? = null
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: UserItem?) {
+    fun bind(item: User?) {
         item?.let {
             binding.apply {
                 userItem = it

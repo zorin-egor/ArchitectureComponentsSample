@@ -2,12 +2,12 @@ package com.sample.architecturecomponent.managers.tools
 
 import android.content.Context
 import com.google.gson.GsonBuilder
-import com.sample.architecturecomponent.managers.exceptions.ConnectionException
 import com.sample.architecturecomponent.managers.extensions.isOnline
 import okhttp3.*
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
 
@@ -154,6 +154,18 @@ class RetrofitTool<T> {
 
 fun <T> Response<T>.isCache(): Boolean {
     return raw().cacheResponse != null
+}
+
+class ConnectionException : IOException {
+
+    constructor() : super()
+
+    constructor(cause: Throwable) : super(cause)
+
+    constructor(message: String) : super(message)
+
+    constructor(message: String, cause: Throwable) : super(message, cause)
+
 }
 
 class ConnectionInterceptor(private val context : Context) : Interceptor {

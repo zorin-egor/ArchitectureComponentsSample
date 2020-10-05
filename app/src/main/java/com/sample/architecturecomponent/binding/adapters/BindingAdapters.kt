@@ -13,7 +13,7 @@ import com.bumptech.glide.request.RequestListener
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.User
 
 
 class BindingAdapters(val fragment: Fragment) {
@@ -34,9 +34,9 @@ class BindingAdapters(val fragment: Fragment) {
     }
 
     @BindingAdapter(value = ["app:userTitle"])
-    fun bindUserTitle(textView: TextView, item: UserItem?) {
+    fun bindUserTitle(textView: TextView, item: User?) {
         textView.text = (item?.login ?: "-").plus( ": ").toSpanned(textView.context, R.color.colorPrimaryDark, Typeface.BOLD) +
-                (item?.id ?: "-").toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
+                (item?.id?.toString() ?: "-").toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
     }
 
 }

@@ -21,6 +21,7 @@ ext {
 
 ext {
     DAGGER = '2.29.1'
+    ROOM = '2.1.0'
     GLIDE = '4.11.0'
     OKHTTP = '4.9.0'
     RETROFIT = '2.9.0'

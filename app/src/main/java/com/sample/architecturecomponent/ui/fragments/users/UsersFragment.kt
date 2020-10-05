@@ -19,8 +19,9 @@ import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
 import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.User
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.qr.ui.views.toolbars.CollapseToolbarListener
 import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             val lastPosition = layoutManager.findLastVisibleItemPosition()
             if (lastPosition + prefetchIndex >= adapter.itemCount - 1) {
-//                viewModel.next()
+                viewModel.next()
             }
         }
     }
@@ -139,7 +140,7 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
 
     private fun initLiveData() {
         viewModel.navigate.observe(viewLifecycleOwner) {
-            (it as? UserItem)?.also { item ->
+            (it as? User)?.also { item ->
                 navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(item))
             }
         }
@@ -160,8 +161,15 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
         }
 
         viewModel.message.observe(viewLifecycleOwner) {
-            Snackbar.make(requireView(), it.first, Snackbar.LENGTH_SHORT).apply {
-                setAction(R.string.snackbar_action_title, it.second)
+            when (it) {
+                is Message.Text -> {
+                    Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                }
+                is Message.Action -> {
+                    Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.snackbar_action_title, it.action)
+                }
+            }.apply {
                 view.updateMargins(bottom = bottomInsets)
             }.show()
         }

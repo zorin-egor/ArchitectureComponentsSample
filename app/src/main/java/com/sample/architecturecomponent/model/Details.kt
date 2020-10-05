@@ -1,50 +1,66 @@
 package com.sample.architecturecomponent.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+
 @Parcelize
-class DetailsItem : UserItem() {
+@Entity(
+    tableName = "Details"
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = User::class,
+//            parentColumns = ["id"],
+//            childColumns = ["id"]
+//        )
+//    ]
+)
+class Details : User() {
 
     @Expose
-    var name: String? = null
+    var name: String = ""
 
     @Expose
-    var company: String? = null
+    var company: String = ""
 
     @Expose
-    var blog: String? = null
+    var blog: String = ""
 
     @Expose
-    var location: String? = null
+    var location: String = ""
 
     @Expose
-    var email: String? = null
+    var email: String = ""
 
     @Expose
-    var bio: String? = null
+    var bio: String = ""
 
     @Expose
     @SerializedName("public_repos")
-    var publicRepos: String? = null
+    @ColumnInfo(name = "public_repos")
+    var publicRepos: String = ""
 
     @Expose
     @SerializedName("public_gists")
-    var publicGists: String? = null
+    @ColumnInfo(name = "public_gists")
+    var publicGists: String = ""
 
     @Expose
-    var followers: String? = null
+    var followers: String = ""
 
     @Expose
-    var following: String? = null
+    var following: String = ""
 
     @Expose
     @SerializedName("created_at")
-    var createdAt: String? = null
+    @ColumnInfo(name = "created_at")
+    var createdAt: String = ""
 
     override fun equals(other: Any?): Boolean {
-        return other is DetailsItem &&
+        return other is Details &&
             super.equals(other) &&
             name == other.name &&
             company == other.company &&

@@ -22,6 +22,7 @@ import com.sample.architecturecomponent.databinding.FragmentDetailsBinding
 import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.view_details_titles.view.*
 import javax.inject.Inject
@@ -81,8 +82,8 @@ class DetailsFragment : BaseFragment() {
 
         viewModel.item = DetailsFragmentArgs.fromBundle(requireArguments()).userItem
         viewModel.navigate.observe(viewLifecycleOwner) {
-            (it as? String)?.also { url ->
-                navigation.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(url))
+            if (it is Navigate.Screen<*> && it.arg is String) {
+                navigation.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(it.arg))
             }
         }
         viewModel.titles.observe(viewLifecycleOwner) {

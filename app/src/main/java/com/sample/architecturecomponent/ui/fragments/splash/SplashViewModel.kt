@@ -3,6 +3,7 @@ package com.sample.architecturecomponent.ui.fragments.splash
 import android.content.Context
 import androidx.lifecycle.liveData
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
+import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class SplashViewModel @Inject constructor(
             emit(Pair(it * TIMER_DELAY, TIMER_MAX))
             delay(TIMER_DELAY.toLong())
         }
-        navigate.value = null
+        navigate.value = Navigate.Default
     }
 
 }

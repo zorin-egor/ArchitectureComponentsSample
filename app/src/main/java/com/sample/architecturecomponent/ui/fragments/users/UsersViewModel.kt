@@ -3,33 +3,34 @@ package com.sample.architecturecomponent.ui.fragments.users
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Spanned
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.api.Api
+import com.sample.architecturecomponent.api.ApiDatabaseResponse
+import com.sample.architecturecomponent.api.ApiErrorResponse
+import com.sample.architecturecomponent.api.ApiSuccessResponse
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
-import com.sample.architecturecomponent.managers.tools.RetrofitTool
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.User
+import com.sample.architecturecomponent.repository.UsersRepository
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
-import kotlinx.coroutines.Dispatchers
+import com.sample.architecturecomponent.ui.fragments.base.Message
+import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 class UsersViewModel @Inject constructor(
     val context: Context,
-    val retrofitTool: RetrofitTool<Api>
+    val usersRepository: UsersRepository
 ) : BaseViewModel(context) {
 
     companion object {
         val TAG = UsersViewModel::class.java.simpleName
-
-        private const val DEFAULT_USER_ID = "0"
     }
 
     val isProgress = SingleLiveEvent<Boolean>()
@@ -38,11 +39,9 @@ class UsersViewModel @Inject constructor(
 
     val isSwipe = MutableLiveData<Boolean>()
 
-    val results = MutableLiveData<List<UserItem>>()
+    val results = MutableLiveData<List<User>>()
 
     private var usersJob: Job? = null
-    private var since: String = DEFAULT_USER_ID
-    private val users: MutableList<UserItem> = mutableListOf()
 
     init {
         refresh(false)
@@ -51,31 +50,30 @@ class UsersViewModel @Inject constructor(
     fun refresh(isSwipeEnabled: Boolean = true) {
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
-            isResult.value = false
-            isSwipe.value = isSwipeEnabled
-            since = DEFAULT_USER_ID
-
-            withContext(Dispatchers.IO) {
-                val response = retrofitTool.getApi().getUsers(since)
-                val result = response.body()
-
-                if (response.isSuccessful && result != null) {
-                    since = result?.last()?.id ?: DEFAULT_USER_ID
-                    users.run {
-                        clear()
-                        addAll(result)
-                        toMutableList()
-                    }
-                } else {
-                    handleError(response.errorBody())
-                    null
+            usersRepository.getUsers()
+                .onStart {
+                    isResult.value = false
+                    isSwipe.value = isSwipeEnabled
                 }
-            }?.also {
-                results.value = it
-            }
+                .collect {
+                    isResult.value = true
+                    isSwipe.value = false
 
-            isResult.value = true
-            isSwipe.value = false
+                    when (it) {
+                        is ApiSuccessResponse -> {
+                            results.value = it.value
+                        }
+                        is ApiDatabaseResponse -> {
+                            results.value = it.value
+                            message.value = Message.Text(context.getString(R.string.error_cache))
+                        }
+                        is ApiErrorResponse -> {
+                            message.value = Message.Text(
+                                it.error ?: context.getString(R.string.error_unknown)
+                            )
+                        }
+                    }
+                }
         }
     }
 
@@ -86,61 +84,62 @@ class UsersViewModel @Inject constructor(
 
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
-            isProgress.value = true
-
-            withContext(Dispatchers.IO) {
-                val response = retrofitTool.getApi().getUsers(since)
-                val result = response.body()
-
-                if (response.isSuccessful && result != null) {
-                    since = result?.last()?.id ?: since
-                    users.run {
-                        addAll(result)
-                        toMutableList()
-                    }
-                } else {
-                    handleError(response.errorBody())
-                    null
+            usersRepository.getNextUsers()
+                .onStart {
+                    isProgress.value = true
                 }
-
-            }?.also {
-                results.value = it
-            }
-
-            isProgress.value = false
-        }
-    }
-
-    fun userClick(index: Int, userItem: UserItem) {
-        navigate.value = userItem
-    }
-
-    fun userLongClick(index: Int, userItem: UserItem): Boolean {
-        viewModelScope.launch {
-            val item = withContext(Dispatchers.IO) {
-                users.removeAt(index).also {
-                    withContext(Dispatchers.Main) {
-                        results.value = users.toMutableList()
-                    }
-                }
-            }
-
-            message.value = Pair(userItem.toSpanned(), View.OnClickListener {
-                viewModelScope.launch {
-                    results.value = withContext(Dispatchers.IO) {
-                        users.run {
-                            add(index, item)
-                            toMutableList()
+                .collect {
+                    isProgress.value = false
+                    when (it) {
+                        is ApiSuccessResponse -> {
+                            results.value = it.value
+                        }
+                        is ApiDatabaseResponse -> {
+                            results.value = it.value
+                            message.value = Message.Text(context.getString(R.string.error_cache))
+                        }
+                        is ApiErrorResponse -> {
+                            message.value = Message.Text(
+                                it.error ?: context.getString(R.string.error_unknown)
+                            )
                         }
                     }
                 }
-            })
+        }
+    }
+
+    fun userClick(index: Int, user: User) {
+        navigate.value = Navigate.Screen(arg = user)
+    }
+
+    fun userLongClick(index: Int, user: User): Boolean {
+        viewModelScope.launch {
+            usersRepository.removeUser(user)
+                .collect {
+                    (it as? ApiSuccessResponse)?.also {
+                        results.value = it.value
+                    }
+                    message.value = Message.Action(user.toSpanned()) {
+                        addUser(user)
+                    }
+                }
         }
 
         return true
     }
 
-    private fun UserItem.toSpanned(): Spanned {
+    private fun addUser(item: User) {
+        viewModelScope.launch {
+            usersRepository.addUser(item)
+                .collect {
+                    (it as? ApiSuccessResponse)?.also {
+                        results.value = it.value
+                    }
+                }
+        }
+    }
+
+    private fun User.toSpanned(): Spanned {
         return "User ".toSpanned(context, android.R.color.white, Typeface.BOLD) +
                 (login ?: "-").toSpanned(context, R.color.colorAccent, Typeface.BOLD) +
                 " with id ".toSpanned(context, android.R.color.white, Typeface.BOLD) +

@@ -12,9 +12,10 @@ import com.google.gson.annotations.Expose
 import com.sample.architecturecomponent.api.Api
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.managers.tools.RetrofitTool
-import com.sample.architecturecomponent.model.DetailsItem
-import com.sample.architecturecomponent.model.UserItem
+import com.sample.architecturecomponent.model.Details
+import com.sample.architecturecomponent.model.User
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
+import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import kotlinx.coroutines.*
 import java.lang.reflect.Field
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class DetailsViewModel @Inject constructor(
         val TAG = DetailsViewModel::class.java.simpleName
     }
 
-    var item: UserItem? = null
+    var item: User? = null
         set(value) {
             field = value
             value?.also(::getDetails)
@@ -48,7 +49,7 @@ class DetailsViewModel @Inject constructor(
         item = item
     }
 
-    private fun getDetails(item: UserItem) {
+    private fun getDetails(item: User) {
         detailsJob?.cancel()
         detailsJob = viewModelScope.launch {
             item.url?.also { url ->
@@ -61,7 +62,6 @@ class DetailsViewModel @Inject constructor(
                     if (response.isSuccessful && result != null) {
                         result
                     } else {
-                        handleError(response.errorBody())
                         null
                     }
                 }?.also(::handleItem)
@@ -71,18 +71,18 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleItem(item: DetailsItem) {
+    private fun handleItem(item: Details) {
         handleJob?.cancel()
         handleJob = viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 clear.call()
             }
-            getClassFields(item, item.javaClass.superclass as Class<DetailsItem>)
+            getClassFields(item, item.javaClass.superclass as Class<Details>)
             getClassFields(item, item.javaClass)
         }
     }
 
-    private suspend fun <T> getClassFields(item: DetailsItem, clazz: Class<in T>) {
+    private suspend fun <T> getClassFields(item: Details, clazz: Class<in T>) {
         clazz.declaredFields.asSequence().filter(::fieldFilter).forEach { field ->
             field.isAccessible = true
 
@@ -93,7 +93,7 @@ class DetailsViewModel @Inject constructor(
                     if (URLUtil.isNetworkUrl(value)) {
                         setSpan(object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                navigate.value = value
+                                navigate.value = Navigate.Screen(arg = value)
                             }
                         }, 0, value.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }

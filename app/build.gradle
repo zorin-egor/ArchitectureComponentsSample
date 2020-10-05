@@ -60,6 +60,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$XLIFECYCLE"
     implementation "androidx.lifecycle:lifecycle-common-java8:$XLIFECYCLE"
 
+    implementation "androidx.room:room-runtime:$ROOM"
+    implementation "androidx.room:room-ktx:$ROOM"
+    kapt "androidx.room:room-compiler:$ROOM"
+
     implementation "com.google.dagger:dagger:$DAGGER"
     implementation "com.google.dagger:dagger-android:$DAGGER"
     implementation "com.google.dagger:dagger-android-support:$DAGGER"
