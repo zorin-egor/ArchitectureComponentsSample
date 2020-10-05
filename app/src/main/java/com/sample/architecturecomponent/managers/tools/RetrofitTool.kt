@@ -173,7 +173,7 @@ class ConnectionInterceptor(private val context : Context) : Interceptor {
     @Throws(ConnectionException::class)
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         if (!context.isOnline()) {
-            throw ConnectionException()
+            throw ConnectionException("No connection")
         }
 
         return chain.proceed(chain.request())
