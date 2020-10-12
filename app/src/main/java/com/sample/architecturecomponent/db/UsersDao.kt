@@ -13,10 +13,10 @@ interface UsersDao {
     @Query("SELECT * FROM users ORDER BY id LIMIT :count OFFSET :from")
     suspend fun getUsersPage(from: Int, count: Int = 30): List<User>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: User)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(plants: List<User>)
 
     @Delete

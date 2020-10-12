@@ -10,7 +10,7 @@ interface DetailsDao {
     @Query("SELECT * FROM details WHERE user_id = :id")
     suspend fun getDetailsById(id: String): Details
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: Details)
 
     @Delete
