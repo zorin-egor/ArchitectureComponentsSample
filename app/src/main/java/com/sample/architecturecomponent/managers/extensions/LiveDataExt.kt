@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.managers.extensions
+    package com.sample.architecturecomponent.managers.extensions
 
 import android.util.Log
 import androidx.annotation.MainThread
@@ -16,18 +16,16 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 open class Event<out T>(private val content: T?) {
 
-    var isHandled = false
-        private set // Allow external read but not write
+    private val isHandled = AtomicBoolean(false)
 
     /**
      * Returns the content and prevents its use again.
      */
     fun getContent(): T? {
-        return if (isHandled) {
-            null
-        } else {
-            isHandled = true
+        return if (isHandled.compareAndSet(false, true)) {
             content
+        } else {
+            null
         }
     }
 
@@ -59,7 +57,7 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
         private val TAG = SingleLiveEvent::class.java.simpleName
     }
 
-    private val mPending = AtomicBoolean(false)
+    private val isHandled = AtomicBoolean(false)
 
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
@@ -69,7 +67,7 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
 
         // Observe the internal MutableLiveData
         super.observe(owner) {
-            if (mPending.compareAndSet(true, false)) {
+            if (isHandled.compareAndSet(false, true)) {
                 observer.onChanged(value)
             }
         }
@@ -77,7 +75,7 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
 
     @MainThread
     override fun setValue(@Nullable t: T?) {
-        mPending.set(true)
+        isHandled.set(false)
         super.setValue(t)
     }
 
