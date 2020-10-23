@@ -1,6 +1,7 @@
 package com.sample.architecturecomponent.ui.fragments.users
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
@@ -33,7 +34,7 @@ class UsersAdapter(
         }
     }
 
-    var onClickListener: ((Int, User) -> Unit)? = null
+    var onClickListener: ((Int, User, View) -> Unit)? = null
 
     var onLongClickListener: ((Int, User) -> Boolean)? = null
 
@@ -58,7 +59,7 @@ class UsersAdapter(
 
 class UserItemViewHolder(
     val binding: ItemListUserBinding,
-    val onClickListener: ((Int, User) -> Unit)? = null,
+    val onClickListener: ((Int, User, View) -> Unit)? = null,
     val onLongClickListener: ((Int, User) -> Boolean)? = null
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: User?) {
@@ -66,7 +67,7 @@ class UserItemViewHolder(
             binding.apply {
                 userItem = it
                 userLayout.setOnClickListener {
-                    onClickListener?.invoke(layoutPosition, item)
+                    onClickListener?.invoke(layoutPosition, item, it)
                 }
                 userLayout.setOnLongClickListener {
                     onLongClickListener?.invoke(layoutPosition, item) ?: false

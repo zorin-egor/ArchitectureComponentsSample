@@ -35,10 +35,10 @@ class SplashFragment : BaseFragment() {
             R.layout.fragment_splash,
             container,
             false
-        ).apply {
-            binding = this
-            lifecycleOwner = this@SplashFragment
-            viewmodel = viewModel
+        ).also { bind ->
+            bind.lifecycleOwner = this@SplashFragment
+            bind.viewmodel = viewModel
+            binding = bind
         }.root
     }
 

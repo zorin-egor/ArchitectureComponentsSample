@@ -26,6 +26,7 @@
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 app:imageUrl="@{viewmodel.item.avatarUrl}"
+                app:transitionName="@{viewmodel.item.userId}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

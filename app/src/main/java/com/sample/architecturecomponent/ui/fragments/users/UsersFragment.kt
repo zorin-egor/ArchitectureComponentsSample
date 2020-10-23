@@ -3,13 +3,16 @@ package com.sample.architecturecomponent.ui.fragments.users
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.*
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +27,7 @@ import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.architecturecomponent.ui.fragments.base.Navigate
 import com.sample.qr.ui.views.toolbars.CollapseToolbarListener
-import kotlinx.android.synthetic.main.fragment_users.*
+import kotlinx.android.synthetic.main.fragment_details.view.*
 import javax.inject.Inject
 
 
@@ -64,8 +67,8 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
 
     private var binding by autoCleared<FragmentUsersBinding>()
     private var adapter by autoCleared<UsersAdapter>()
-    private var skeleton: RecyclerViewSkeletonScreen? = null
-
+    private var clickedView by autoCleared<View>()
+    private var skeleton by autoCleared<RecyclerViewSkeletonScreen>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DataBindingUtil.inflate<FragmentUsersBinding>(
@@ -74,10 +77,11 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
             container,
             false,
             bindingComponent
-        ).apply {
-            binding = this
-            lifecycleOwner = this@UsersFragment
-            viewmodel = viewModel
+        ).also { bind ->
+            bind.lifecycleOwner = this@UsersFragment
+            bind.viewmodel = viewModel
+            binding = bind
+            sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
         }.root
     }
 
@@ -87,27 +91,27 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
     }
 
     override fun onToolbarExpand() {
-        TransitionManager.beginDelayedTransition(collapsingToolbar)
-        collapsingToolbarText.visibility = View.INVISIBLE
+        TransitionManager.beginDelayedTransition(binding.collapsingToolbar)
+        binding.collapsingToolbarText.visibility = View.INVISIBLE
     }
 
     override fun onToolbarCollapse() {
-        TransitionManager.beginDelayedTransition(collapsingToolbar)
-        collapsingToolbarText.visibility = View.VISIBLE
+        TransitionManager.beginDelayedTransition(binding.collapsingToolbar)
+        binding.collapsingToolbarText.visibility = View.VISIBLE
     }
 
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
-        collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
-        recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
-        collapsingContentLayout.updatePadding(
+        binding.collapsingToolbar.updateMargins(top = insets.systemWindowInsetTop)
+        binding.recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
+        binding.collapsingContentLayout.updatePadding(
             top = (insets.systemWindowInsetTop * 1.5).toInt(),
             bottom = (insets.systemWindowInsetTop * 0.5).toInt()
         )
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        recyclerView.apply {
+        binding.recyclerView.apply {
             addOnScrollListener(OnEndScroll())
             layoutManager = LinearLayoutManager(context)
             adapter = UsersAdapter(
@@ -115,23 +119,31 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
                 bindingComponent
             ).apply {
                 this@UsersFragment.adapter = this
-                onClickListener = viewModel::userClick
                 onLongClickListener = viewModel::userLongClick
+                onClickListener = { index, item, view ->
+                    clickedView = view
+                    viewModel.userClick(index, item)
+                }
             }
         }
 
+        postponeEnterTransition()
+        binding.recyclerView.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+
         // Workaround bug back press
-        appBarLayout.apply {
+        binding.appBarLayout.apply {
             addOnOffsetChangedListener(collapseToolbarListener)
             viewTreeObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    collapseToolbarListener.onOffsetChanged(appBarLayout, appBarLayout.height)
+                    collapseToolbarListener.onOffsetChanged(binding.appBarLayout, binding.appBarLayout.height)
                 }
             })
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
 
@@ -142,16 +154,24 @@ class UsersFragment : BaseFragment(), CollapseToolbarListener.OnCollapseListener
         viewModel.navigate.observe(viewLifecycleOwner) {
             when (it) {
                 is Navigate.Screen<*> -> {
-                    navigation.navigate(UsersFragmentDirections.usersToDetailsScreen(it.arg as User))
+                    (it.arg as? User)?.also { user ->
+                        val extras = FragmentNavigatorExtras(
+                            clickedView.userImageView to user.userId.toString()
+                        )
+                        navigation.navigate(
+                            UsersFragmentDirections.usersToDetailsScreen(user),
+                            extras
+                        )
+                    }
                 }
             }
         }
 
         viewModel.isResult.observe(viewLifecycleOwner) {
             if (it) {
-                skeleton?.hide()
+                skeleton.hide()
             } else {
-                skeleton = Skeleton.bind(recyclerView)
+                skeleton = Skeleton.bind(binding.recyclerView)
                     .adapter(adapter)
                     .load(R.layout.item_list_user)
                     .show()

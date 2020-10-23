@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.R
@@ -25,7 +26,6 @@ import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.architecturecomponent.ui.fragments.base.Navigate
-import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.view_details_titles.view.*
 import javax.inject.Inject
 
@@ -56,10 +56,11 @@ class DetailsFragment : BaseFragment() {
             container,
             false,
             bindingComponent
-        ).apply {
-            binding = this
-            lifecycleOwner = this@DetailsFragment
-            viewmodel = viewModel
+        ).also { bind ->
+            bind.lifecycleOwner = this@DetailsFragment
+            bind.viewmodel = viewModel
+            binding = bind
+            sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
         }.root
     }
 
@@ -70,16 +71,16 @@ class DetailsFragment : BaseFragment() {
 
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
-        titlesScroll.updatePadding(bottom = insets.systemWindowInsetBottom)
-        backButton.updateMargins(top = insets.systemWindowInsetTop)
+        binding.titlesScroll.updatePadding(bottom = insets.systemWindowInsetBottom)
+        binding.backButton.updateMargins(top = insets.systemWindowInsetTop)
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
 
-        backButton.setOnClickListener {
+        binding.backButton.setOnClickListener {
             navigation.navigateUp()
         }
 
@@ -93,7 +94,7 @@ class DetailsFragment : BaseFragment() {
             addTitleView(it)
         }
         viewModel.clear.observe(viewLifecycleOwner) {
-            titlesLayout.removeAllViews()
+            binding.titlesLayout.removeAllViews()
         }
         viewModel.message.observe(viewLifecycleOwner) {
             when (it) {
@@ -117,8 +118,8 @@ class DetailsFragment : BaseFragment() {
             }
             view.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         }.also {
-            TransitionManager.beginDelayedTransition(titlesLayout)
-            titlesLayout.addView(it)
+            TransitionManager.beginDelayedTransition(binding.titlesLayout)
+            binding.titlesLayout.addView(it)
         }
     }
 
