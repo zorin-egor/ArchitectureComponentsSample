@@ -1,5 +1,6 @@
 package com.sample.architecturecomponent.binding.adapters
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -20,8 +21,7 @@ import com.bumptech.glide.request.target.Target
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
-import com.sample.architecturecomponent.model.User
-
+import com.sample.architecturecomponent.models.User
 
 class BindingAdapters(val fragment: Fragment) {
 
@@ -62,10 +62,11 @@ class BindingAdapters(val fragment: Fragment) {
         view.setOnLongClickListener(listener)
     }
 
+    @SuppressLint("SetTextI18n")
     @BindingAdapter(value = ["app:userTitle"])
     fun bindUserTitle(textView: TextView, item: User?) {
         textView.text = (item?.login ?: "-").plus( ": ").toSpanned(textView.context, R.color.colorPrimaryDark, Typeface.BOLD) +
-                (item?.userId?.toString() ?: "-").toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
+                item?.userId.toString().toSpanned(textView.context, R.color.colorPrimary, Typeface.ITALIC)
     }
 
 }

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="userItem"
-            type="com.sample.architecturecomponent.model.User" />
+            type="com.sample.architecturecomponent.models.User" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -29,7 +29,7 @@
                 android:layout_height="350dp"
                 android:scaleType="centerCrop"
                 app:imageUrl="@{userItem.avatarUrl}"
-                app:transitionName="@{userItem.userId}"
+                app:transitionName="@{String.valueOf(userItem.userId)}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

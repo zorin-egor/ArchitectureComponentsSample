@@ -19,4 +19,6 @@
     <dimen name="fonts_size_mini">12sp</dimen>
     <dimen name="fonts_size_micro">10sp</dimen>
 
+    <dimen name="progress_horizontal_height">2dp</dimen>
+
 </resources>

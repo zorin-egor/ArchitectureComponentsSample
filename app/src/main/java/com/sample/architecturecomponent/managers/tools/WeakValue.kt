@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 /*
 * https://habr.com/ru/post/325966/
 * */
-class WeakRef<T>(obj: T? = null): ReadWriteProperty<Any?, T?> {
+class WeakValue<T>(obj: T? = null): ReadWriteProperty<Any?, T?> {
 
     private var wref : WeakReference<T>?
 
@@ -24,4 +24,4 @@ class WeakRef<T>(obj: T? = null): ReadWriteProperty<Any?, T?> {
     }
 }
 
-fun <T> weak(obj: T? = null) = WeakRef(obj)
+fun <T> weak(obj: T? = null) = WeakValue(obj)

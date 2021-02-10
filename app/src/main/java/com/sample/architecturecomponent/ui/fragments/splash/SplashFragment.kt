@@ -1,24 +1,17 @@
 package com.sample.architecturecomponent.ui.fragments.splash
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.FragmentSplashBinding
-import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class SplashFragment : BaseFragment() {
-
-    companion object {
-        val TAG = SplashFragment::class.java.simpleName
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -27,20 +20,7 @@ class SplashFragment : BaseFragment() {
         viewModelFactory
     }
 
-    private var binding by autoCleared<FragmentSplashBinding>()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return DataBindingUtil.inflate<FragmentSplashBinding>(
-            inflater,
-            R.layout.fragment_splash,
-            container,
-            false
-        ).also { bind ->
-            bind.lifecycleOwner = this@SplashFragment
-            bind.viewmodel = viewModel
-            binding = bind
-        }.root
-    }
+    override val layoutId: Int = R.layout.fragment_splash
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +28,10 @@ class SplashFragment : BaseFragment() {
     }
 
     private fun init(savedInstanceState: Bundle?) {
+        applyBinding<FragmentSplashBinding> {
+            viewmodel = this@SplashFragment.viewModel
+        }
+
         viewModel.navigate.observe(viewLifecycleOwner) {
             navigation.navigate(SplashFragmentDirections.splashToMainScreen())
             requireActivity().finish()

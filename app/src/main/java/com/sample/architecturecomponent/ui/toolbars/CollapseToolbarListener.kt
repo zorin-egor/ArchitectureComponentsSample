@@ -1,10 +1,13 @@
-package com.sample.qr.ui.views.toolbars
+package com.sample.architecturecomponent.ui.toolbars
 
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.math.abs
 
-
-class CollapseToolbarListener(var onCollapseListener: OnCollapseListener) : AppBarLayout.OnOffsetChangedListener {
+class CollapseToolbarListener(
+    private var onCollapsed: (() -> Unit)? = null,
+    private var onExpanded: (() -> Unit)? = null,
+    private var onIdle: ((Int) -> Unit)? = null,
+) : AppBarLayout.OnOffsetChangedListener {
 
     enum class State {
         EXPANDED,
@@ -15,34 +18,24 @@ class CollapseToolbarListener(var onCollapseListener: OnCollapseListener) : AppB
     var state = State.IDLE
         private set
 
-    interface OnCollapseListener {
-        fun onToolbarExpand() {}
-        fun onToolbarChange(verticalOffset: Int) {}
-        fun onToolbarCollapse() {}
-    }
-
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-        onCollapseListener?.let {
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-                    if (state != State.COLLAPSED) {
-                        it.onToolbarCollapse()
-                        state = State.COLLAPSED
-                    }
+        when {
+            abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                if (state != State.COLLAPSED) {
+                    onCollapsed?.invoke()
+                    state = State.COLLAPSED
                 }
-
-                verticalOffset == 0 -> {
-                    if (state != State.EXPANDED) {
-                        it.onToolbarExpand()
-                        state = State.EXPANDED
-                    }
+            }
+            verticalOffset == 0 -> {
+                if (state != State.EXPANDED) {
+                    onExpanded?.invoke()
+                    state = State.EXPANDED
                 }
-
-                else -> {
-                    if (state != State.IDLE) {
-                        it.onToolbarChange(verticalOffset)
-                        state = State.IDLE
-                    }
+            }
+            else -> {
+                if (state != State.IDLE) {
+                    onIdle?.invoke(verticalOffset)
+                    state = State.IDLE
                 }
             }
         }

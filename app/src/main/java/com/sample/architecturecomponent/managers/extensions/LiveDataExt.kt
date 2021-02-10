@@ -1,4 +1,4 @@
-    package com.sample.architecturecomponent.managers.extensions
+package com.sample.architecturecomponent.managers.extensions
 
 import android.util.Log
 import androidx.annotation.MainThread
@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 /**
  * https://github.com/android/architecture-samples/blob/todo-mvvm-live-kotlin/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/Event.kt

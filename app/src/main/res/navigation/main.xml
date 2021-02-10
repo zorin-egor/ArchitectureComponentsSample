@@ -28,7 +28,7 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="userItem"
-            app:argType="com.sample.architecturecomponent.model.User"
+            app:argType="com.sample.architecturecomponent.models.User"
             />
         <action
             android:id="@+id/detailsToOpenUrlScreen"

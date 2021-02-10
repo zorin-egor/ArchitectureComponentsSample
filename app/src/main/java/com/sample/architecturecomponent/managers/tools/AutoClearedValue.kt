@@ -1,4 +1,3 @@
-
 package com.sample.architecturecomponent.managers.tools
 
 import androidx.fragment.app.Fragment
@@ -7,7 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.observe
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-
 
 class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Fragment, T> {
 

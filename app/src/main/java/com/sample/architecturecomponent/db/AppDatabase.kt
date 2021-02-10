@@ -2,9 +2,8 @@ package com.sample.architecturecomponent.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.sample.architecturecomponent.model.Details
-import com.sample.architecturecomponent.model.User
-
+import com.sample.architecturecomponent.models.Details
+import com.sample.architecturecomponent.models.User
 
 @Database(
     entities = [

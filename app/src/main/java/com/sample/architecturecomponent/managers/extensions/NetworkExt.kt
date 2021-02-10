@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 
-
 fun Context.isOnline(): Boolean {
     return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).let { manager ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -19,7 +18,7 @@ fun Context.isOnline(): Boolean {
             }
         } else {
             manager.activeNetworkInfo.let {
-                when (it.type) {
+                when (it?.type) {
                     ConnectivityManager.TYPE_WIFI -> true
                     ConnectivityManager.TYPE_MOBILE -> true
                     ConnectivityManager.TYPE_ETHERNET -> true

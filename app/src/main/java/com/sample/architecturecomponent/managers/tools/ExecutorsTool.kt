@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent
+package com.sample.architecturecomponent.managers.tools
 
 import android.os.Handler
 import android.os.Looper
@@ -9,9 +9,8 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
-open class AppExecutors(
+open class ExecutorsTool private constructor(
     private val diskIO: Executor,
     private val networkIO: Executor,
     private val mainThread: Executor
@@ -35,7 +34,6 @@ open class AppExecutors(
     fun mainThread(): Executor {
         return mainThread
     }
-
 
     private class MainThreadExecutor : Executor {
 

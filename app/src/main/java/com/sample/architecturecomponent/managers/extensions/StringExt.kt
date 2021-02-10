@@ -12,7 +12,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 
-
 fun String.toSpanned(context: Context, @ColorRes color: Int, style: Int = Typeface.NORMAL): Spanned {
     return toSpanned(ContextCompat.getColor(context, color), style)
 }

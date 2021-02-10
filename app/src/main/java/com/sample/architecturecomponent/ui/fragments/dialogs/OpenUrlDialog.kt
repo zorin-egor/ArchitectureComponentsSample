@@ -10,10 +10,6 @@ import com.sample.architecturecomponent.ui.fragments.base.BaseDialogFragment
 
 class OpenUrlDialog : BaseDialogFragment(), DialogInterface.OnClickListener {
 
-    companion object {
-        val TAG = OpenUrlDialog::class.java.simpleName
-    }
-
     private val url: String by lazy {
         OpenUrlDialogArgs.fromBundle(requireArguments()).url
     }

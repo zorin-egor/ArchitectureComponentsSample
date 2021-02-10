@@ -2,26 +2,57 @@ package com.sample.architecturecomponent.ui.fragments.base
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.activity.addCallback
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
-import com.sample.architecturecomponent.di.Injectable
+import com.sample.architecturecomponent.managers.tools.autoCleared
 
-
-abstract class BaseFragment : Fragment(), Injectable {
+abstract class BaseFragment : Fragment() {
 
     companion object {
-        val TAG = BaseFragment::class.java.simpleName
+        private val TAG = BaseFragment::class.java.simpleName
+        private const val UNDEFINED_VALUE = -1
     }
+
+    protected open val layoutId: Int = UNDEFINED_VALUE
+
+    protected open val dataBindingComponent: DataBindingComponent? = null
+
+    private var viewDataBinding by autoCleared<ViewDataBinding>()
 
     protected val navigation: NavController
         get() = findNavController()
 
-    protected var insets: WindowInsets? = null
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return if (layoutId != UNDEFINED_VALUE) {
+            DataBindingUtil.inflate<ViewDataBinding>(
+                    inflater,
+                    layoutId,
+                    container,
+                    false,
+                    dataBindingComponent
+            ).also { bind ->
+                bind.lifecycleOwner = this
+                viewDataBinding = bind
+            }.root
+        } else {
+            null
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected open fun <T : ViewDataBinding> applyBinding(binding: T.() -> Unit) {
+        (viewDataBinding as? T)?.apply(binding)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +88,5 @@ abstract class BaseFragment : Fragment(), Injectable {
 
     protected open fun onInsets(view: View, insets: WindowInsets) {
         Log.d(TAG, "onInsets($view, $insets)")
-        this@BaseFragment.insets = insets
     }
 }

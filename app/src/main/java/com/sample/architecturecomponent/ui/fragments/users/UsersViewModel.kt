@@ -3,139 +3,117 @@ package com.sample.architecturecomponent.ui.fragments.users
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Spanned
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.api.ApiDatabaseResponse
-import com.sample.architecturecomponent.api.ApiErrorResponse
-import com.sample.architecturecomponent.api.ApiSuccessResponse
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
-import com.sample.architecturecomponent.model.User
-import com.sample.architecturecomponent.repository.UsersRepository
+import com.sample.architecturecomponent.models.Data
+import com.sample.architecturecomponent.models.Error
+import com.sample.architecturecomponent.models.User
+import com.sample.architecturecomponent.repositories.users.UsersRepository
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
 import com.sample.architecturecomponent.ui.fragments.base.Message
-import com.sample.architecturecomponent.ui.fragments.base.Navigate
+import com.sample.architecturecomponent.ui.fragments.base.Screen
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@HiltViewModel
 class UsersViewModel @Inject constructor(
-    val context: Context,
-    val usersRepository: UsersRepository
+    private val context: Context,
+    private val usersRepository: UsersRepository
 ) : BaseViewModel(context) {
 
-    companion object {
-        val TAG = UsersViewModel::class.java.simpleName
-    }
+    private val _isProgress = SingleLiveEvent<Boolean>()
+    private val _isResult = SingleLiveEvent<Boolean>()
+    private val _isSwipe = MutableLiveData<Boolean>()
+    private val _results = MutableLiveData<List<User>>()
 
-    val isProgress = SingleLiveEvent<Boolean>()
-
-    val isResult = SingleLiveEvent<Boolean>()
-
-    val isSwipe = MutableLiveData<Boolean>()
-
-    val results = MutableLiveData<List<User>>()
+    val isProgress: LiveData<Boolean> = _isProgress
+    val isResult: LiveData<Boolean> = _isResult
+    val isSwipe: LiveData<Boolean> = _isSwipe
+    val results: LiveData<List<User>> = _results
 
     private var usersJob: Job? = null
+    private var nextJob: Job? = null
+    private var removeJob: Job? = null
+    private var addJob: Job? = null
 
     init {
-        refresh(false)
+        refresh(
+            isSwipeEnabled = false,
+            isForceUpdate = false
+        )
     }
 
-    fun refresh(isSwipeEnabled: Boolean = true) {
+    fun refresh(isSwipeEnabled: Boolean = true, isForceUpdate: Boolean = true) {
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
-            usersRepository.getUsers()
+            usersRepository.getUsers(isForceUpdate)
                 .onStart {
-                    isResult.value = false
-                    isSwipe.value = isSwipeEnabled
+                    if (_isResult.value == null) {
+                        _isResult.value = false
+                    }
+                    _isSwipe.value = isSwipeEnabled
                 }
                 .collect {
-                    isResult.value = true
-                    isSwipe.value = false
+                    _isSwipe.value = false
+                    _isProgress.value = false
+
+                    if (_isResult.value == false) {
+                        _isResult.value = true
+                    }
 
                     when (it) {
-                        is ApiSuccessResponse -> {
-                            results.value = it.value
-                        }
-                        is ApiDatabaseResponse -> {
-                            results.value = it.value
-                            message.value = Message.Text(context.getString(R.string.error_cache))
-                        }
-                        is ApiErrorResponse -> {
-                            message.value = Message.Text(
-                                it.error ?: context.getString(R.string.error_unknown)
-                            )
-                        }
+                        is Data -> _results.value = it.value
+                        is Error -> handleError(it.type)
                     }
                 }
         }
     }
 
     fun next() {
-        if (usersJob?.isActive == true) {
+        if (nextJob?.isActive == true) {
             return
         }
 
-        usersJob?.cancel()
-        usersJob = viewModelScope.launch {
-            usersRepository.getNextUsers()
-                .onStart {
-                    isProgress.value = true
+        nextJob?.cancel()
+        nextJob = viewModelScope.launch {
+            _isProgress.value = true
+            usersRepository.getNextUsers().let {
+                if (it is Error) {
+                    _isProgress.value = false
+                    handleError(it.type)
                 }
-                .collect {
-                    isProgress.value = false
-                    when (it) {
-                        is ApiSuccessResponse -> {
-                            results.value = it.value
-                        }
-                        is ApiDatabaseResponse -> {
-                            results.value = it.value
-                            message.value = Message.Text(context.getString(R.string.error_cache))
-                        }
-                        is ApiErrorResponse -> {
-                            message.value = Message.Text(
-                                it.error ?: context.getString(R.string.error_unknown)
-                            )
-                        }
-                    }
-                }
+                delay(1000)
+            }
         }
     }
 
     fun userClick(index: Int, user: User) {
-        navigate.value = Navigate.Screen(arg = user)
+        _navigate.value = Screen(arg = user)
     }
 
     fun userLongClick(index: Int, user: User): Boolean {
-        viewModelScope.launch {
+        removeJob = viewModelScope.launch {
             usersRepository.removeUser(user)
-                .collect {
-                    (it as? ApiSuccessResponse)?.also {
-                        results.value = it.value
-                    }
-                    message.value = Message.Action(user.toSpanned()) {
-                        addUser(index, user)
-                    }
-                }
+            _message.value = Message.Action(user.toSpanned()) {
+                addUser(user)
+            }
         }
-
         return true
     }
 
-    private fun addUser(index: Int, item: User) {
-        viewModelScope.launch {
-            usersRepository.addUser(index, item)
-                .collect {
-                    (it as? ApiSuccessResponse)?.also {
-                        results.value = it.value
-                    }
-                }
+    private fun addUser(item: User) {
+        addJob = viewModelScope.launch {
+            usersRepository.addUser(item)
         }
     }
 

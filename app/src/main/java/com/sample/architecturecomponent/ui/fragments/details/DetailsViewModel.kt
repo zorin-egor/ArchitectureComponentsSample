@@ -6,35 +6,27 @@ import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.view.View
 import android.webkit.URLUtil
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.annotations.Expose
-import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.api.ApiDatabaseResponse
-import com.sample.architecturecomponent.api.ApiErrorResponse
-import com.sample.architecturecomponent.api.ApiSuccessResponse
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
-import com.sample.architecturecomponent.model.Details
-import com.sample.architecturecomponent.model.User
-import com.sample.architecturecomponent.repository.DetailsRepository
+import com.sample.architecturecomponent.models.*
+import com.sample.architecturecomponent.repositories.details.DetailsRepository
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
-import com.sample.architecturecomponent.ui.fragments.base.Message
-import com.sample.architecturecomponent.ui.fragments.base.Navigate
+import com.sample.architecturecomponent.ui.fragments.base.Screen
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import java.lang.reflect.Field
 import javax.inject.Inject
 
-
+@HiltViewModel
 class DetailsViewModel @Inject constructor(
-    val context: Context,
-    val detailsRepository: DetailsRepository
+    context: Context,
+    private val detailsRepository: DetailsRepository
 ) : BaseViewModel(context) {
-
-    companion object {
-        val TAG = DetailsViewModel::class.java.simpleName
-    }
 
     var item: User? = null
         set(value) {
@@ -42,17 +34,19 @@ class DetailsViewModel @Inject constructor(
             value?.also(::getDetails)
         }
 
-    val titles = MutableLiveData<Pair<String, Spanned>>()
+    private val _titles = MutableLiveData<Pair<String, Spanned>>()
+    private val _isSwipe = MutableLiveData<Boolean>()
+    private val _clear = SingleLiveEvent<Void>()
 
-    val isSwipe = MutableLiveData<Boolean>()
-
-    val clear = SingleLiveEvent<Void>()
+    val titles: LiveData<Pair<String, Spanned>> = _titles
+    val isSwipe: LiveData<Boolean> = _isSwipe
+    val clear: LiveData<Void> = _clear
 
     private var detailsJob: Job? = null
     private var handleJob: Job? = null
 
     fun refresh() {
-        item = item
+        item?.let(::getDetails)
     }
 
     private fun getDetails(item: User) {
@@ -60,24 +54,14 @@ class DetailsViewModel @Inject constructor(
         detailsJob = viewModelScope.launch {
             detailsRepository.getDetails(item)
                 .onStart {
-                    isSwipe.value = true
+                    _isSwipe.value = true
                 }
                 .collect {
-                    isSwipe.value = false
+                    _isSwipe.value = false
                     when (it) {
-                        is ApiSuccessResponse -> {
-                            handleItem(item, it.value)
-                        }
-                        is ApiDatabaseResponse -> {
-                            message.value = Message.Text(context.getString(R.string.error_cache))
-                            handleItem(item, it.value)
-                        }
-                        is ApiErrorResponse -> {
-                            handleItem(User(0), Details(0))
-                            message.value = Message.Text(
-                                it.error ?: context.getString(R.string.error_unknown)
-                            )
-                        }
+                        is Data -> handleItem(item, it.value)
+                        is Empty -> handleItem(User(0), Details(0))
+                        is Error -> handleError(it.type)
                     }
                 }
         }
@@ -87,10 +71,10 @@ class DetailsViewModel @Inject constructor(
         handleJob?.cancel()
         handleJob = viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
-                clear.call()
+                _clear.call()
             }
             getClassFields(user, user.javaClass)
-            getClassFields(details, details.javaClass.superclass as Class<Details>)
+            getClassFields(details, details.javaClass.superclass as Class<*>)
             getClassFields(details, details.javaClass)
         }
     }
@@ -106,14 +90,14 @@ class DetailsViewModel @Inject constructor(
                     if (URLUtil.isNetworkUrl(value)) {
                         setSpan(object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                navigate.value = Navigate.Screen(arg = value)
+                                _navigate.value = Screen(arg = value)
                             }
                         }, 0, value.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
 
                 withContext(Dispatchers.Main) {
-                    titles.value = Pair(title, spanned)
+                    _titles.value = Pair(title, spanned)
                 }
 
                 delay(100)

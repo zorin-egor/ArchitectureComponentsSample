@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion SDK_MAX
@@ -49,6 +50,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$XAPPCOMPAT"
     implementation "androidx.core:core-ktx:$XCORE"
     implementation "androidx.constraintlayout:constraintlayout:$XCONSTRAINT"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$XSWIPE"
     implementation "androidx.fragment:fragment-ktx:$XFRAGMENT"
 
     implementation "androidx.navigation:navigation-fragment-ktx:$XNAVIGATION"
@@ -64,17 +66,18 @@ dependencies {
     implementation "androidx.room:room-ktx:$ROOM"
     kapt "androidx.room:room-compiler:$ROOM"
 
-    implementation "com.google.dagger:dagger:$DAGGER"
-    implementation "com.google.dagger:dagger-android:$DAGGER"
-    implementation "com.google.dagger:dagger-android-support:$DAGGER"
-    kapt "com.google.dagger:dagger-compiler:$DAGGER"
-    kapt "com.google.dagger:dagger-android-processor:$DAGGER"
+    implementation "com.google.dagger:hilt-android:$HILT"
+    kapt "com.google.dagger:hilt-android-compiler:$HILT"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$HILT_ANDROID"
+    kapt "androidx.hilt:hilt-compiler:$HILT_ANDROID"
 
     implementation "com.squareup.okhttp3:okhttp:$OKHTTP"
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT"
     implementation "com.squareup.retrofit2:converter-gson:$RETROFIT"
+    implementation "com.squareup.okhttp3:logging-interceptor:$OKHTTP_LOGGING"
 
     implementation "com.google.code.gson:gson:$GSON"
+    implementation "com.google.android.material:material:$MATERIAL"
 
     implementation "com.github.bumptech.glide:glide:$GLIDE"
 

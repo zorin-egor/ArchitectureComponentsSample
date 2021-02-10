@@ -8,10 +8,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
-import com.sample.architecturecomponent.di.Injectable
 
-
-abstract class BaseDialogFragment : DialogFragment(), Injectable {
+abstract class BaseDialogFragment : DialogFragment() {
 
     companion object {
         val TAG = BaseDialogFragment::class.java.simpleName

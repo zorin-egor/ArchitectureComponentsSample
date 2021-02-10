@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.model
+package com.sample.architecturecomponent.models
 
 import android.os.Parcelable
 import androidx.room.*
@@ -6,7 +6,6 @@ import androidx.room.ForeignKey.CASCADE
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-
 
 @Parcelize
 @Entity(
@@ -28,72 +27,63 @@ import kotlinx.android.parcel.Parcelize
 class Details(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Long
+    val id: Long,
 
-) : Parcelable, Comparable<Details> {
+    @ColumnInfo(name = "update_time")
+    var updateTime: Long = 0,
 
     @Expose
     @SerializedName("id")
     @ColumnInfo(name = "user_id")
-    var userId: String? = null
+    var userId: Long = -1,
 
     @Expose
-    var name: String? = null
+    var name: String? = null,
 
     @Expose
-    var company: String? = null
+    var company: String? = null,
 
     @Expose
-    var blog: String? = null
+    var blog: String? = null,
 
     @Expose
-    var location: String? = null
+    var location: String? = null,
 
     @Expose
-    var email: String? = null
+    var email: String? = null,
 
     @Expose
-    var bio: String? = null
+    var bio: String? = null,
 
     @Expose
     @SerializedName("public_repos")
     @ColumnInfo(name = "public_repos")
-    var publicRepos: String? = null
+    var publicRepos: String? = null,
 
     @Expose
     @SerializedName("public_gists")
     @ColumnInfo(name = "public_gists")
-    var publicGists: String? = null
+    var publicGists: String? = null,
 
     @Expose
-    var followers: String? = null
+    var followers: String? = null,
 
     @Expose
-    var following: String? = null
+    var following: String? = null,
 
     @Expose
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     var createdAt: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        return other is Details &&
-            userId == other.userId &&
-            name == other.name &&
-            company == other.company &&
-            blog == other.blog &&
-            location == other.location &&
-            email == other.email &&
-            bio == other.bio &&
-            publicRepos == other.publicRepos &&
-            publicGists == other.publicGists &&
-            followers == other.followers &&
-            following == other.following &&
-            createdAt == other.createdAt
+) : Parcelable {
+
+    companion object {
+        const val UPDATE_TIME = 60 * 1000
     }
 
-    override fun compareTo(other: Details): Int {
-        return compareValues(id, other.id)
-    }
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    val isUpdateTime: Boolean = System.currentTimeMillis() - updateTime > UPDATE_TIME
 
 }
