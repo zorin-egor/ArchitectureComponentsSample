@@ -12,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 abstract class BaseDialogFragment : DialogFragment() {
 
     companion object {
-        val TAG = BaseDialogFragment::class.java.simpleName
+        private val TAG = BaseDialogFragment::class.java.simpleName
     }
 
-    protected val navigation: NavController
+    protected val navigate: NavController
         get() = findNavController()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,13 +26,13 @@ abstract class BaseDialogFragment : DialogFragment() {
     private fun init(savedInstanceState: Bundle?) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (onBackPressed()) {
-                if (!navigation.navigateUp()) {
+                if (!navigate.navigateUp()) {
                     requireActivity().finish()
                 }
             }
         }
 
-        navigation.addOnDestinationChangedListener { controller, destination, arguments ->
+        navigate.addOnDestinationChangedListener { controller, destination, arguments ->
             onDestinationChange(destination)
         }
     }

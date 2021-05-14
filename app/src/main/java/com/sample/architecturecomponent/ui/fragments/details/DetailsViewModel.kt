@@ -8,6 +8,7 @@ import android.view.View
 import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.gson.annotations.Expose
 import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     context: Context,
-    private val detailsRepository: DetailsRepository
+    private val detailsRepository: DetailsRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel(context) {
 
     var item: User? = null
@@ -61,7 +63,10 @@ class DetailsViewModel @Inject constructor(
                     when (it) {
                         is Data -> handleItem(item, it.value)
                         is Empty -> handleItem(User(0), Details(0))
-                        is Error -> handleError(it.type)
+                        is Error -> {
+                            handleItem(User(0), Details(0))
+                            handleError(it.type)
+                        }
                     }
                 }
         }

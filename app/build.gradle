@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'dagger.hilt.android.plugin'
 
@@ -31,7 +31,11 @@ android {
     }
 
     dataBinding {
-        enabled = true
+        enabled true
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     kotlinOptions {
@@ -48,18 +52,14 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$KOTLIN_COROUTINES"
 
     implementation "androidx.appcompat:appcompat:$XAPPCOMPAT"
-    implementation "androidx.core:core-ktx:$XCORE"
     implementation "androidx.constraintlayout:constraintlayout:$XCONSTRAINT"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$XSWIPE"
-    implementation "androidx.fragment:fragment-ktx:$XFRAGMENT"
 
     implementation "androidx.navigation:navigation-fragment-ktx:$XNAVIGATION"
-    implementation "androidx.navigation:navigation-ui-ktx:$XNAVIGATION"
 
     implementation "androidx.lifecycle:lifecycle-runtime:$XLIFECYCLE"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$XLIFECYCLE"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$XLIFECYCLE"
-    implementation "androidx.lifecycle:lifecycle-extensions:$XLIFECYCLE"
     implementation "androidx.lifecycle:lifecycle-common-java8:$XLIFECYCLE"
 
     implementation "androidx.room:room-runtime:$ROOM"
@@ -68,8 +68,6 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:$HILT"
     kapt "com.google.dagger:hilt-android-compiler:$HILT"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$HILT_ANDROID"
-    kapt "androidx.hilt:hilt-compiler:$HILT_ANDROID"
 
     implementation "com.squareup.okhttp3:okhttp:$OKHTTP"
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT"

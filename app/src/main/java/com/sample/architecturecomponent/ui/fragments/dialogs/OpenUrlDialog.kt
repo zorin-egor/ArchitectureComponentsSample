@@ -25,7 +25,7 @@ class OpenUrlDialog : BaseDialogFragment(), DialogInterface.OnClickListener {
 
     override fun onClick(dialog: DialogInterface?, which: Int) {
         when (which) {
-            Dialog.BUTTON_NEGATIVE -> navigation.navigateUp()
+            Dialog.BUTTON_NEGATIVE -> navigate.navigateUp()
             Dialog.BUTTON_POSITIVE -> requireContext().showBrowser(url)
         }
     }

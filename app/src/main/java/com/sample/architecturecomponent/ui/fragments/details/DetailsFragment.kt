@@ -10,10 +10,10 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.WindowInsets
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
@@ -26,23 +26,15 @@ import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import com.sample.architecturecomponent.ui.fragments.base.Message
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_details.*
-import kotlinx.android.synthetic.main.view_details_titles.view.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsFragment : BaseFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private val bindingComponent: DataBindingComponent by lazy {
         BindingComponent(this)
     }
 
-    private val viewModel: DetailsViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: DetailsViewModel by viewModels()
 
     override val layoutId: Int = R.layout.fragment_details
 
@@ -55,34 +47,34 @@ class DetailsFragment : BaseFragment() {
 
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
-        titlesScroll.updatePadding(bottom = insets.getBottom())
-        backButton.updateMargins(top = insets.getTop())
+        viewBind.titlesScroll.updatePadding(bottom = insets.getBottom())
+        viewBind.backButton.updateMargins(top = insets.getTop())
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        applyBinding<FragmentDetailsBinding> { viewmodel = this@DetailsFragment.viewModel }
+        viewBind.viewmodel = this@DetailsFragment.viewModel
 
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
 
-        swipeRefreshLayout.setOnRefreshListener {
+        viewBind.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
 
-        backButton.setOnClickListener {
-            navigation.navigateUp()
+        viewBind.backButton.setOnClickListener {
+            navigator.navigateUp()
         }
 
         viewModel.item = DetailsFragmentArgs.fromBundle(requireArguments()).userItem
         viewModel.navigate.observe(viewLifecycleOwner) {
             if (it.arg is String) {
-                navigation.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(it.arg))
+                navigator.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(it.arg))
             }
         }
         viewModel.titles.observe(viewLifecycleOwner) {
             addTitleView(it)
         }
         viewModel.clear.observe(viewLifecycleOwner) {
-            titlesLayout.removeAllViews()
+            viewBind.titlesLayout.removeAllViews()
         }
         viewModel.message.observe(viewLifecycleOwner) {
             when (it) {
@@ -100,15 +92,15 @@ class DetailsFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun addTitleView(pair: Pair<String, Spanned>) {
         LayoutInflater.from(requireContext()).inflate(R.layout.view_details_titles, null).also { view ->
-            view.detailsNameTitle.text = "${pair.first}: "
-            view.detailsValueTitle.also { value ->
+            view.findViewById<TextView>(R.id.detailsNameTitle).text = "${pair.first}: "
+            view.findViewById<TextView>(R.id.detailsValueTitle).also { value ->
                 value.text = pair.second
                 value.movementMethod = LinkMovementMethod.getInstance()
             }
             view.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         }.also {
-            TransitionManager.beginDelayedTransition(titlesLayout)
-            titlesLayout.addView(it)
+            TransitionManager.beginDelayedTransition(viewBind.titlesLayout)
+            viewBind.titlesLayout.addView(it)
         }
     }
 

@@ -3,12 +3,12 @@ package com.sample.architecturecomponent.ui.fragments.users
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.*
+import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingComponent
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
@@ -27,15 +27,10 @@ import com.sample.architecturecomponent.models.User
 import com.sample.architecturecomponent.ui.fragments.base.*
 import com.sample.architecturecomponent.ui.toolbars.CollapseToolbarListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_details.view.*
-import kotlinx.android.synthetic.main.fragment_users.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UsersFragment : BaseFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+class UsersFragment : BaseFragment<FragmentUsersBinding>() {
 
     @Inject
     lateinit var executors: ExecutorsTool
@@ -44,21 +39,19 @@ class UsersFragment : BaseFragment() {
         BindingComponent(this)
     }
 
-    private val viewModel: UsersViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: UsersViewModel by viewModels()
 
     private val collapseToolbarListener: CollapseToolbarListener by lazy {
         CollapseToolbarListener(
             onCollapsed = {
-                TransitionManager.beginDelayedTransition(collapsingToolbar)
-                collapsingToolbarText.isVisible = true
-                collapsingImage.isVisible = false
+                TransitionManager.beginDelayedTransition(viewBind.collapsingToolbar)
+                viewBind.collapsingToolbarText.isVisible = true
+                viewBind.collapsingImage.isVisible = false
             },
             onExpanded = {
-                TransitionManager.beginDelayedTransition(collapsingToolbar)
-                collapsingToolbarText.isVisible = false
-                collapsingImage.isVisible = true
+                TransitionManager.beginDelayedTransition(viewBind.collapsingToolbar)
+                viewBind.collapsingToolbarText.isVisible = false
+                viewBind.collapsingImage.isVisible = true
             }
         )
     }
@@ -85,19 +78,21 @@ class UsersFragment : BaseFragment() {
 
     override fun onInsets(view: View, insets: WindowInsets) {
         super.onInsets(view, insets)
-        progressBar.updateMargins(bottom = insets.getBottom())
-        collapsingToolbar.updateMargins(top = insets.getTop())
-        recyclerView.updatePadding(bottom = insets.getBottom())
-        collapsingContentLayout.updatePadding(
+        viewBind.progressBar.updateMargins(bottom = insets.getBottom())
+        viewBind.collapsingToolbar.updateMargins(top = insets.getTop())
+        viewBind.recyclerView.updatePadding(bottom = insets.getBottom())
+        viewBind.collapsingContentLayout.updatePadding(
             top = (insets.getTop() * 1.5).toInt(),
             bottom = (insets.getBottom() * 0.5).toInt()
         )
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        applyBinding<FragmentUsersBinding> { viewmodel = this@UsersFragment.viewModel }
         sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
-        recyclerView.apply {
+
+
+        viewBind.viewmodel = this@UsersFragment.viewModel
+        viewBind.recyclerView.apply {
             addOnScrollListener(object : BaseEndListener() {
                 override fun onListEnd() {
                     viewModel.next()
@@ -115,18 +110,19 @@ class UsersFragment : BaseFragment() {
                     viewModel.userClick(index, item)
                 }
             }
+
+            postponeEnterTransition()
+
+            doOnPreDraw {
+                startPostponedEnterTransition()
+            }
         }
 
-        postponeEnterTransition()
-        recyclerView.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+        viewBind.appBarLayout.addOnOffsetChangedListener(collapseToolbarListener)
+        viewBind.collapsingToolbarText.isVisible = isToolbarTextVisible
+        viewBind.collapsingImage.isVisible = !isToolbarTextVisible
 
-        appBarLayout.addOnOffsetChangedListener(collapseToolbarListener)
-        collapsingToolbarText.isVisible = isToolbarTextVisible
-        collapsingImage.isVisible = !isToolbarTextVisible
-
-        swipeRefreshLayout.setOnRefreshListener {
+        viewBind.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
 
@@ -137,9 +133,9 @@ class UsersFragment : BaseFragment() {
         viewModel.navigate.observe(viewLifecycleOwner) {
             if (it.arg is User) {
                 val extras = FragmentNavigatorExtras(
-                    clickedView.userImageView to it.arg.userId.toString()
+                    clickedView.findViewById<ImageView>(R.id.userImageView) to it.arg.userId.toString()
                 )
-                navigation.navigate(
+                navigator.navigate(
                     UsersFragmentDirections.usersToDetailsScreen(it.arg),
                     extras
                 )
@@ -150,7 +146,7 @@ class UsersFragment : BaseFragment() {
             if (it) {
                 skeleton.hide()
             } else {
-                skeleton = Skeleton.bind(recyclerView)
+                skeleton = Skeleton.bind(viewBind.recyclerView)
                     .adapter(adapter)
                     .load(R.layout.item_list_user)
                     .show()

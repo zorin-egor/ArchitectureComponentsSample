@@ -88,10 +88,10 @@ class UsersRepositoryImpl(
     }
 
     private suspend fun getUsersClear(): Container<List<User>> {
-        sinceUserId = Api.DEFAULT_SINCE_ID
         return getUsers(sinceUserId).also {
             if (it is Data) {
                 usersDao.clearInsert(it.value)
+                sinceUserId = Api.DEFAULT_SINCE_ID
             }
         }
     }

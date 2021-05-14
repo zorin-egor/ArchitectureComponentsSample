@@ -5,7 +5,8 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(
@@ -83,6 +84,7 @@ class Details(
     }
 
     @Ignore
+    @IgnoredOnParcel
     @Expose(serialize = false, deserialize = false)
     val isUpdateTime: Boolean = System.currentTimeMillis() - updateTime > UPDATE_TIME
 

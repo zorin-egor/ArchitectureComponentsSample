@@ -89,7 +89,6 @@ class UsersViewModel @Inject constructor(
             _isProgress.value = true
             usersRepository.getNextUsers().let {
                 if (it is Error) {
-                    _isProgress.value = false
                     handleError(it.type)
                 }
                 delay(1000)
@@ -103,9 +102,12 @@ class UsersViewModel @Inject constructor(
 
     fun userLongClick(index: Int, user: User): Boolean {
         removeJob = viewModelScope.launch {
-            usersRepository.removeUser(user)
-            _message.value = Message.Action(user.toSpanned()) {
-                addUser(user)
+            usersRepository.removeUser(user).let {
+                if (it !is Error) {
+                    _message.value = Message.Action(user.toSpanned()) {
+                        addUser(user)
+                    }
+                }
             }
         }
         return true

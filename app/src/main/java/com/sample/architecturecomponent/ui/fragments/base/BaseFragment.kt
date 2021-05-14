@@ -16,7 +16,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import com.sample.architecturecomponent.managers.tools.autoCleared
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
 
     companion object {
         private val TAG = BaseFragment::class.java.simpleName
@@ -27,14 +27,14 @@ abstract class BaseFragment : Fragment() {
 
     protected open val dataBindingComponent: DataBindingComponent? = null
 
-    private var viewDataBinding by autoCleared<ViewDataBinding>()
+    protected var viewBind by autoCleared<T>()
 
-    protected val navigation: NavController
+    protected val navigator: NavController
         get() = findNavController()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (layoutId != UNDEFINED_VALUE) {
-            DataBindingUtil.inflate<ViewDataBinding>(
+            DataBindingUtil.inflate<T>(
                     inflater,
                     layoutId,
                     container,
@@ -42,16 +42,11 @@ abstract class BaseFragment : Fragment() {
                     dataBindingComponent
             ).also { bind ->
                 bind.lifecycleOwner = this
-                viewDataBinding = bind
+                viewBind = bind
             }.root
         } else {
             null
         }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    protected open fun <T : ViewDataBinding> applyBinding(binding: T.() -> Unit) {
-        (viewDataBinding as? T)?.apply(binding)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,13 +62,13 @@ abstract class BaseFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (onBackPressed()) {
-                if (!navigation.navigateUp()) {
+                if (!navigator.navigateUp()) {
                     requireActivity().finish()
                 }
             }
         }
 
-        navigation.addOnDestinationChangedListener { controller, destination, arguments ->
+        navigator.addOnDestinationChangedListener { controller, destination, arguments ->
             onDestinationChange(destination)
         }
     }

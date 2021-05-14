@@ -12,7 +12,7 @@ class WeakValue<T>(obj: T? = null): ReadWriteProperty<Any?, T?> {
     private var wref : WeakReference<T>?
 
     init {
-        this.wref = obj?.let { WeakReference(it) }
+        wref = obj?.let { WeakReference(it) }
     }
 
     override fun getValue(thisRef:Any? , property: KProperty<*>): T? {
