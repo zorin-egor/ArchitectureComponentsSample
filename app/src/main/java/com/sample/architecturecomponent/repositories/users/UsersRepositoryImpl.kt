@@ -17,7 +17,7 @@ class UsersRepositoryImpl(
     @Volatile
     private var sinceUserId: Long = Api.DEFAULT_SINCE_ID
 
-    override fun getUsers(): Flow<Container<List<User>>> {
+    override fun getData(): Flow<Container<List<User>>> {
         return flow<Container<List<User>>> {
             usersDao.getUsers()
                 .catch {
@@ -31,7 +31,7 @@ class UsersRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun resetUsers(): Container<List<User>> {
+    override suspend fun reset(): Container<List<User>> {
         return getUsers(Api.DEFAULT_SINCE_ID).also {
             if (it is Data) {
                 usersDao.clearInsert(it.value)
@@ -40,7 +40,7 @@ class UsersRepositoryImpl(
         }
     }
 
-    override suspend fun getNextUsers(): Container<List<User>> {
+    override suspend fun next(): Container<List<User>> {
         return getUsers(sinceUserId).also {
             if (it is Data) {
                 usersDao.insertAll(it.value)
@@ -48,7 +48,7 @@ class UsersRepositoryImpl(
         }
     }
 
-    override suspend fun addUser(item: User): Container<Unit> {
+    override suspend fun add(item: User): Container<Unit> {
         return withContext(Dispatchers.IO) {
             action {
                 usersDao.insert(item)
@@ -56,7 +56,7 @@ class UsersRepositoryImpl(
         }
     }
 
-    override suspend fun removeUser(item: User): Container<Unit> {
+    override suspend fun remove(item: User): Container<Unit> {
         return withContext(Dispatchers.IO) {
             action {
                 usersDao.delete(item)

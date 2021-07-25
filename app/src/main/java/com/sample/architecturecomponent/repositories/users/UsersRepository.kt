@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsersRepository {
 
-    fun getUsers(): Flow<Container<List<User>>>
+    fun getData(): Flow<Container<List<User>>>
 
-    suspend fun resetUsers(): Container<List<User>>
+    suspend fun reset(): Container<List<User>>
 
-    suspend fun getNextUsers(): Container<List<User>>
+    suspend fun next(): Container<List<User>>
 
-    suspend fun addUser(item: User): Container<Unit>
+    suspend fun add(item: User): Container<Unit>
 
-    suspend fun removeUser(item: User): Container<Unit>
+    suspend fun remove(item: User): Container<Unit>
 
 }

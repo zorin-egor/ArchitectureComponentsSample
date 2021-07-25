@@ -35,9 +35,9 @@ class UsersViewModel @Inject constructor(
     private val _results = MutableStateFlow<List<User>>(emptyList())
 
     val isProgress: LiveData<Boolean> = _isProgress.asLiveData()
-    val isResult: StateFlow<Boolean> = _isResult.asStateFlow()
+    val isResult: Flow<Boolean> = _isResult.asStateFlow()
     val isSwipe: LiveData<Boolean> = _isSwipe.asLiveData()
-    val results: StateFlow<List<User>> = _results.asStateFlow()
+    val results: Flow<List<User>> = _results.asStateFlow()
 
     private var usersJob: Job? = null
     private var nextJob: Job? = null
@@ -52,7 +52,7 @@ class UsersViewModel @Inject constructor(
     private fun getUsers() {
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
-            usersRepository.getUsers()
+            usersRepository.getData()
                 .onStart {
                     _isResult.tryEmit(true)
                     _isSwipe.tryEmit(false)
@@ -79,7 +79,7 @@ class UsersViewModel @Inject constructor(
         nextJob?.cancel()
         nextJob = viewModelScope.launch {
             _isProgress.tryEmit(true)
-            usersRepository.getNextUsers().let {
+            usersRepository.next().let {
                 if (it is Error) {
                     handleError(it.type)
                     _isProgress.tryEmit(false)
@@ -98,7 +98,7 @@ class UsersViewModel @Inject constructor(
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
             _isSwipe.tryEmit(true)
-            usersRepository.resetUsers().let {
+            usersRepository.reset().let {
                 if (it is Error) {
                     handleError(it.type)
                     _isSwipe.tryEmit(false)
@@ -113,7 +113,7 @@ class UsersViewModel @Inject constructor(
 
     fun userLongClick(index: Int, user: User): Boolean {
         removeJob = viewModelScope.launch {
-            usersRepository.removeUser(user).let {
+            usersRepository.remove(user).let {
                 if (it !is Error) {
                     showMessage(Message.Action(user.toSpanned()) {
                         addUser(user)
@@ -126,7 +126,7 @@ class UsersViewModel @Inject constructor(
 
     private fun addUser(item: User) {
         addJob = viewModelScope.launch {
-            usersRepository.addUser(item)
+            usersRepository.add(item)
         }
     }
 
