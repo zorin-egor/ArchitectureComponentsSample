@@ -17,43 +17,27 @@ class UsersRepositoryImpl(
     @Volatile
     private var sinceUserId: Long = Api.DEFAULT_SINCE_ID
 
-    @Volatile
-    private var isForceUserUpdate: Boolean = false
-
-    override fun getUsers(isForceUpdate: Boolean): Flow<Container<List<User>>> {
+    override fun getUsers(): Flow<Container<List<User>>> {
         return flow<Container<List<User>>> {
-
-            isForceUserUpdate = isForceUpdate
-
             usersDao.getUsers()
                 .catch {
                     emit(Error(ErrorType.Unhandled(it)))
                 }.collect { users ->
-                    when {
-                        users.isEmpty() -> {
-                            getUsersClear().let {
-                                if (it is Error) {
-                                    emit(it)
-                                }
-                            }
-                        }
-                        isForceUserUpdate -> {
-                            isForceUserUpdate = false
-                            getUsersClear().let {
-                                if (it is Error) {
-                                    emit(it)
-                                }
-                            }
-                        }
-                        else -> {
-                            emit(Data(users))
-                            sinceUserId = users.lastOrNull()?.userId ?: Api.DEFAULT_SINCE_ID
-                        }
-                    }
+                    emit(Data(users))
+                    sinceUserId = users.lastOrNull()?.userId ?: Api.DEFAULT_SINCE_ID
                 }
         }.catch {
             emit(Error(ErrorType.Unknown))
         }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun resetUsers(): Container<List<User>> {
+        return getUsers(Api.DEFAULT_SINCE_ID).also {
+            if (it is Data) {
+                usersDao.clearInsert(it.value)
+                sinceUserId = Api.DEFAULT_SINCE_ID
+            }
+        }
     }
 
     override suspend fun getNextUsers(): Container<List<User>> {
@@ -84,15 +68,6 @@ class UsersRepositoryImpl(
         return withContext(Dispatchers.IO) {
             action { retrofitTool.getApi().getUsers(sinceId) }
                 .let(::mapTo)
-        }
-    }
-
-    private suspend fun getUsersClear(): Container<List<User>> {
-        return getUsers(sinceUserId).also {
-            if (it is Data) {
-                usersDao.clearInsert(it.value)
-                sinceUserId = Api.DEFAULT_SINCE_ID
-            }
         }
     }
 

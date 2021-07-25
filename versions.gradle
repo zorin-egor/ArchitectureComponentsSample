@@ -1,19 +1,22 @@
 ext {
-    GRADLE = '4.1.2'
-    KOTLIN = '1.4.32'
+    GRADLE = '4.2.1'
+    KOTLIN = '1.5.20'
 }
 
 ext {
     SDK_MIN = 21
     SDK_MAX = 30
-    BUILD_TOOL = '29.0.3'
-    KOTLIN_COROUTINES = '1.3.9'
+    BUILD_TOOL = '30.0.3'
+    KOTLIN_COROUTINES = '1.5.0'
 }
 
 ext {
-    XAPPCOMPAT = '1.2.0'
+    XAPPCOMPAT = '1.3.0'
     XCONSTRAINT = '2.0.4'
-    XLIFECYCLE = '2.3.1'
+    XRUNTIME = '2.4.0-alpha02'
+    XVIEWMODEL = '2.3.1'
+    XLIVEDATA = '2.3.1'
+    XCOMMON = '2.3.1'
     XNAVIGATION = '2.3.5'
     XCORE = '1.3.2'
     XFRAGMENT = '1.3.3'
@@ -21,18 +24,18 @@ ext {
 }
 
 ext {
-    MATERIAL = '1.3.0'
-    HILT = '2.35'
-    HILT_ANDROID = '1.0.0-alpha03'
+    MATERIAL = '1.4.0'
+    HILT = '2.38'
+    HILT_ANDROID = '1.0.0'
     ROOM = '2.3.0'
     GLIDE = '4.12.0'
     OKHTTP = '5.0.0-alpha.2'
     OKHTTP_LOGGING = '5.0.0-alpha.2'
     RETROFIT = '2.9.0'
-    GSON = '2.8.6'
+    GSON = '2.8.7'
     SKELETON = '1.1.2'
     SHIMMER = '2.1.0'
     JUNIT = '4.13.2'
-    JUNIT_EXT = '1.1.2'
-    ESPRESSO = '3.3.0'
+    JUNIT_EXT = '1.1.3'
+    ESPRESSO = '3.4.0'
 }

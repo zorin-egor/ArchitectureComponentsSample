@@ -10,6 +10,13 @@ import android.view.*
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.core.view.updateMarginsRelative
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 fun Activity.setStatusBarColor(color: Int) {
     window.statusBarColor = color
@@ -85,7 +92,7 @@ fun Context.showBrowser(url: String, title: String? = null) {
     }, title))
 }
 
-internal fun WindowInsets.getBottom(): Int {
+fun WindowInsets.getBottom(): Int {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         getInsets(WindowInsets.Type.navigationBars()).bottom
     } else {
@@ -93,10 +100,16 @@ internal fun WindowInsets.getBottom(): Int {
     }
 }
 
-internal fun WindowInsets.getTop(): Int {
+fun WindowInsets.getTop(): Int {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         getInsets(WindowInsets.Type.statusBars()).top
     } else {
         systemWindowInsetTop
     }
+}
+
+inline fun <T> Flow<T>.flowLifecycle(lifecycle: LifecycleOwner, crossinline onEach: (T) -> Unit) {
+    flowWithLifecycle(lifecycle.lifecycle, Lifecycle.State.STARTED)
+        .onEach { onEach(it) }
+        .launchIn(lifecycle.lifecycleScope)
 }

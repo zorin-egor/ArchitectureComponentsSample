@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentDetailsBinding
+import com.sample.architecturecomponent.managers.extensions.flowLifecycle
 import com.sample.architecturecomponent.managers.extensions.getBottom
 import com.sample.architecturecomponent.managers.extensions.getTop
 import com.sample.architecturecomponent.managers.extensions.updateMargins
@@ -52,8 +53,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        viewBind.viewmodel = this@DetailsFragment.viewModel
+        initViews()
+        initObservers()
+    }
 
+    private fun initViews() {
+        viewBind.viewmodel = this@DetailsFragment.viewModel
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
 
         viewBind.swipeRefreshLayout.setOnRefreshListener {
@@ -63,29 +68,32 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         viewBind.backButton.setOnClickListener {
             navigator.navigateUp()
         }
+    }
 
+    private fun initObservers() {
         viewModel.item = DetailsFragmentArgs.fromBundle(requireArguments()).userItem
-        viewModel.navigate.observe(viewLifecycleOwner) {
+        viewModel.navigate.flowLifecycle(viewLifecycleOwner) {
             if (it.arg is String) {
                 navigator.navigate(DetailsFragmentDirections.detailsToOpenUrlScreen(it.arg))
             }
         }
-        viewModel.titles.observe(viewLifecycleOwner) {
-            addTitleView(it)
-        }
-        viewModel.clear.observe(viewLifecycleOwner) {
+
+        viewModel.titles.flowLifecycle(viewLifecycleOwner, ::addTitleView)
+        viewModel.clear.flowLifecycle(viewLifecycleOwner) {
             viewBind.titlesLayout.removeAllViews()
         }
-        viewModel.message.observe(viewLifecycleOwner) {
+        viewModel.message.flowLifecycle(viewLifecycleOwner) {
             when (it) {
                 is Message.Text -> {
                     Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                        .show()
                 }
                 is Message.Action -> {
                     Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.snackbar_action_title, it.action)
+                        .show()
                 }
-            }.show()
+            }
         }
     }
 

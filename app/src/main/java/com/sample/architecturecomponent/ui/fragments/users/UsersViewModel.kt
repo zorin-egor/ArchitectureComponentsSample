@@ -4,10 +4,9 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Spanned
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.managers.extensions.plus
 import com.sample.architecturecomponent.managers.extensions.toSpanned
 import com.sample.architecturecomponent.models.Data
@@ -20,8 +19,7 @@ import com.sample.architecturecomponent.ui.fragments.base.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,48 +29,42 @@ class UsersViewModel @Inject constructor(
     private val usersRepository: UsersRepository
 ) : BaseViewModel(context) {
 
-    private val _isProgress = SingleLiveEvent<Boolean>()
-    private val _isResult = SingleLiveEvent<Boolean>()
-    private val _isSwipe = MutableLiveData<Boolean>()
-    private val _results = MutableLiveData<List<User>>()
+    private val _isProgress = MutableStateFlow(false)
+    private val _isResult = MutableStateFlow<Boolean>(false)
+    private val _isSwipe = MutableStateFlow<Boolean>(false)
+    private val _results = MutableStateFlow<List<User>>(emptyList())
 
-    val isProgress: LiveData<Boolean> = _isProgress
-    val isResult: LiveData<Boolean> = _isResult
-    val isSwipe: LiveData<Boolean> = _isSwipe
-    val results: LiveData<List<User>> = _results
+    val isProgress: LiveData<Boolean> = _isProgress.asLiveData()
+    val isResult: StateFlow<Boolean> = _isResult.asStateFlow()
+    val isSwipe: LiveData<Boolean> = _isSwipe.asLiveData()
+    val results: StateFlow<List<User>> = _results.asStateFlow()
 
     private var usersJob: Job? = null
     private var nextJob: Job? = null
+    private var refreshJob: Job? = null
     private var removeJob: Job? = null
     private var addJob: Job? = null
 
     init {
-        refresh(
-            isSwipeEnabled = false,
-            isForceUpdate = false
-        )
+        getUsers()
     }
 
-    fun refresh(isSwipeEnabled: Boolean = true, isForceUpdate: Boolean = true) {
+    private fun getUsers() {
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
-            usersRepository.getUsers(isForceUpdate)
+            usersRepository.getUsers()
                 .onStart {
-                    if (_isResult.value == null) {
-                        _isResult.value = false
-                    }
-                    _isSwipe.value = isSwipeEnabled
+                    _isResult.tryEmit(true)
+                    _isSwipe.tryEmit(false)
+                    _isProgress.tryEmit(false)
                 }
                 .collect {
-                    _isSwipe.value = false
-                    _isProgress.value = false
-
-                    if (_isResult.value == false) {
-                        _isResult.value = true
-                    }
+                    _isResult.tryEmit(true)
+                    _isSwipe.tryEmit(false)
+                    _isProgress.tryEmit(false)
 
                     when (it) {
-                        is Data -> _results.value = it.value
+                        is Data -> _results.tryEmit(it.value)
                         is Error -> handleError(it.type)
                     }
                 }
@@ -86,27 +78,46 @@ class UsersViewModel @Inject constructor(
 
         nextJob?.cancel()
         nextJob = viewModelScope.launch {
-            _isProgress.value = true
+            _isProgress.tryEmit(true)
             usersRepository.getNextUsers().let {
                 if (it is Error) {
                     handleError(it.type)
+                    _isProgress.tryEmit(false)
                 }
+                // Like a debounce
                 delay(1000)
             }
         }
     }
 
+    fun refresh() {
+        if (refreshJob?.isActive == true) {
+            return
+        }
+
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            _isSwipe.tryEmit(true)
+            usersRepository.resetUsers().let {
+                if (it is Error) {
+                    handleError(it.type)
+                    _isSwipe.tryEmit(false)
+                }
+            }
+        }
+    }
+
     fun userClick(index: Int, user: User) {
-        _navigate.value = Screen(arg = user)
+        showScreen(Screen(arg = user))
     }
 
     fun userLongClick(index: Int, user: User): Boolean {
         removeJob = viewModelScope.launch {
             usersRepository.removeUser(user).let {
                 if (it !is Error) {
-                    _message.value = Message.Action(user.toSpanned()) {
+                    showMessage(Message.Action(user.toSpanned()) {
                         addUser(user)
-                    }
+                    })
                 }
             }
         }

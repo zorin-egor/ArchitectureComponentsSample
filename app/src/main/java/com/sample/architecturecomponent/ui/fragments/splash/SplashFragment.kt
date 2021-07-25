@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.databinding.FragmentSplashBinding
+import com.sample.architecturecomponent.managers.extensions.flowLifecycle
 import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,8 +23,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     private fun init(savedInstanceState: Bundle?) {
         viewBind.viewmodel = this@SplashFragment.viewModel
-
-        viewModel.navigate.observe(viewLifecycleOwner) {
+        viewModel.navigate.flowLifecycle(viewLifecycleOwner) {
             navigator.navigate(SplashFragmentDirections.splashToMainScreen())
             requireActivity().finish()
         }

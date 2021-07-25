@@ -7,19 +7,17 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.annotations.Expose
-import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.models.*
 import com.sample.architecturecomponent.repositories.details.DetailsRepository
 import com.sample.architecturecomponent.ui.fragments.base.BaseViewModel
 import com.sample.architecturecomponent.ui.fragments.base.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import java.lang.reflect.Field
 import javax.inject.Inject
 
@@ -36,13 +34,13 @@ class DetailsViewModel @Inject constructor(
             value?.also(::getDetails)
         }
 
-    private val _titles = MutableLiveData<Pair<String, Spanned>>()
-    private val _isSwipe = MutableLiveData<Boolean>()
-    private val _clear = SingleLiveEvent<Void>()
+    private val _titles = MutableSharedFlow<Pair<String, Spanned>>(replay = 1)
+    private val _clear = MutableStateFlow<Boolean>(true)
+    private val _isSwipe = MutableStateFlow<Boolean>(true)
 
-    val titles: LiveData<Pair<String, Spanned>> = _titles
-    val isSwipe: LiveData<Boolean> = _isSwipe
-    val clear: LiveData<Void> = _clear
+    val titles: Flow<Pair<String, Spanned>> = _titles.asSharedFlow()
+    val clear: Flow<Boolean> = _clear.asSharedFlow()
+    val isSwipe: LiveData<Boolean> = _isSwipe.asLiveData()
 
     private var detailsJob: Job? = null
     private var handleJob: Job? = null
@@ -56,10 +54,10 @@ class DetailsViewModel @Inject constructor(
         detailsJob = viewModelScope.launch {
             detailsRepository.getDetails(item)
                 .onStart {
-                    _isSwipe.value = true
+                    _isSwipe.tryEmit(true)
                 }
                 .collect {
-                    _isSwipe.value = false
+                    _isSwipe.tryEmit(false)
                     when (it) {
                         is Data -> handleItem(item, it.value)
                         is Empty -> handleItem(User(0), Details(0))
@@ -76,7 +74,7 @@ class DetailsViewModel @Inject constructor(
         handleJob?.cancel()
         handleJob = viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
-                _clear.call()
+                _clear.tryEmit(true)
             }
             getClassFields(user, user.javaClass)
             getClassFields(details, details.javaClass.superclass as Class<*>)
@@ -95,14 +93,14 @@ class DetailsViewModel @Inject constructor(
                     if (URLUtil.isNetworkUrl(value)) {
                         setSpan(object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                _navigate.value = Screen(arg = value)
+                                showScreen(Screen(arg = value))
                             }
                         }, 0, value.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
 
                 withContext(Dispatchers.Main) {
-                    _titles.value = Pair(title, spanned)
+                    _titles.tryEmit(Pair(title, spanned))
                 }
 
                 delay(100)

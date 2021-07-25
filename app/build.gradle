@@ -41,7 +41,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
@@ -57,10 +56,10 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment-ktx:$XNAVIGATION"
 
-    implementation "androidx.lifecycle:lifecycle-runtime:$XLIFECYCLE"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$XLIFECYCLE"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$XLIFECYCLE"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$XLIFECYCLE"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$XRUNTIME"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$XVIEWMODEL"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$XLIVEDATA"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$XCOMMON"
 
     implementation "androidx.room:room-runtime:$ROOM"
     implementation "androidx.room:room-ktx:$ROOM"

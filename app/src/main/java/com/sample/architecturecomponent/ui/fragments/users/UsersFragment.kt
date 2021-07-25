@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sample.architecturecomponent.R
 import com.sample.architecturecomponent.binding.adapters.BindingComponent
 import com.sample.architecturecomponent.databinding.FragmentUsersBinding
+import com.sample.architecturecomponent.managers.extensions.flowLifecycle
 import com.sample.architecturecomponent.managers.extensions.getBottom
 import com.sample.architecturecomponent.managers.extensions.getTop
 import com.sample.architecturecomponent.managers.extensions.updateMargins
@@ -65,7 +66,7 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
 
     private var adapter by autoCleared<UsersAdapter>()
     private var clickedView by autoCleared<View>()
-    private var skeleton by autoCleared<RecyclerViewSkeletonScreen>()
+    private var skeleton: RecyclerViewSkeletonScreen? = null
 
     override val layoutId: Int = R.layout.fragment_users
 
@@ -74,6 +75,11 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(savedInstanceState)
+    }
+
+    override fun onDestroyView() {
+        skeleton = null
+        super.onDestroyView()
     }
 
     override fun onInsets(view: View, insets: WindowInsets) {
@@ -88,8 +94,12 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+        initViews()
+        initObservers()
+    }
 
+    private fun initViews() {
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
 
         viewBind.viewmodel = this@UsersFragment.viewModel
         viewBind.recyclerView.apply {
@@ -121,16 +131,13 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
         viewBind.appBarLayout.addOnOffsetChangedListener(collapseToolbarListener)
         viewBind.collapsingToolbarText.isVisible = isToolbarTextVisible
         viewBind.collapsingImage.isVisible = !isToolbarTextVisible
-
         viewBind.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
-
-        initLiveData()
     }
 
-    private fun initLiveData() {
-        viewModel.navigate.observe(viewLifecycleOwner) {
+    private fun initObservers() {
+        viewModel.navigate.flowLifecycle(viewLifecycleOwner) {
             if (it.arg is User) {
                 val extras = FragmentNavigatorExtras(
                     clickedView.findViewById<ImageView>(R.id.userImageView) to it.arg.userId.toString()
@@ -142,29 +149,33 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
             }
         }
 
-        viewModel.isResult.observe(viewLifecycleOwner) {
+        viewModel.isResult.flowLifecycle(viewLifecycleOwner) {
             if (it) {
-                skeleton.hide()
+                skeleton?.hide()
             } else {
-                skeleton = Skeleton.bind(viewBind.recyclerView)
-                    .adapter(adapter)
-                    .load(R.layout.item_list_user)
-                    .show()
+                skeleton?.show()
+                    ?: Skeleton.bind(viewBind.recyclerView)
+                        .adapter(adapter)
+                        .load(R.layout.item_list_user)
+                        .show()
+                        .also { skeleton = it }
             }
         }
 
-        viewModel.results.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.results.flowLifecycle(viewLifecycleOwner, adapter::submitList)
 
-        viewModel.message.observe(viewLifecycleOwner) {
+        viewModel.message.flowLifecycle(viewLifecycleOwner) {
             when (it) {
                 is Message.Text -> {
                     Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
+                        .show()
                 }
                 is Message.Action -> {
                     Snackbar.make(requireView(), it.text, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.snackbar_action_title, it.action)
+                        .show()
                 }
-            }.show()
+            }
         }
     }
 

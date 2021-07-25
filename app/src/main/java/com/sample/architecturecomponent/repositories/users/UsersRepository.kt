@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsersRepository {
 
-    fun getUsers(isForceUpdate: Boolean = false): Flow<Container<List<User>>>
+    fun getUsers(): Flow<Container<List<User>>>
+
+    suspend fun resetUsers(): Container<List<User>>
 
     suspend fun getNextUsers(): Container<List<User>>
 

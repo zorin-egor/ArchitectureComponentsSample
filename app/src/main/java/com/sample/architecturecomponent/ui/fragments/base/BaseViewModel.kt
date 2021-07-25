@@ -3,11 +3,12 @@ package com.sample.architecturecomponent.ui.fragments.base
 import android.content.Context
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.sample.architecturecomponent.R
-import com.sample.architecturecomponent.managers.extensions.SingleLiveEvent
 import com.sample.architecturecomponent.models.ErrorType
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 data class Screen(val id: Int? = null, val arg: Any? = null)
 
@@ -18,11 +19,11 @@ sealed class Message {
 
 abstract class BaseViewModel(private val context: Context) : ViewModel() {
 
-    protected val _navigate = SingleLiveEvent<Screen>()
-    protected val _message = SingleLiveEvent<Message>()
+    private val _navigate = Channel<Screen>(Channel.CONFLATED)
+    private val _message = Channel<Message>(Channel.CONFLATED)
 
-    val navigate: LiveData<Screen> = _navigate
-    val message: LiveData<Message> = _message
+    val navigate: Flow<Screen> = _navigate.receiveAsFlow()
+    val message: Flow<Message> = _message.receiveAsFlow()
 
     protected fun handleError(value: ErrorType) {
         when (value) {
@@ -37,11 +38,19 @@ abstract class BaseViewModel(private val context: Context) : ViewModel() {
     }
 
     protected fun showMessage(message: String) {
-        _message.value = Message.Text(message)
+        _message.trySend(Message.Text(message))
     }
 
     protected fun showMessage(@StringRes id: Int, vararg args: String) {
         showMessage(context.getString(id, *args))
+    }
+
+    protected fun showMessage(item: Message) {
+        _message.trySend(item)
+    }
+
+    protected fun showScreen(item: Screen) {
+        _navigate.trySend(item)
     }
 
 }

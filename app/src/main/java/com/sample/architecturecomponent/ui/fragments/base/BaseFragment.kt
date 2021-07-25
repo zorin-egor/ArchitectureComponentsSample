@@ -1,5 +1,6 @@
 package com.sample.architecturecomponent.ui.fragments.base
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,7 +33,28 @@ abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
     protected val navigator: NavController
         get() = findNavController()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "$this-onAttach()")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "$this-onCreate($savedInstanceState)")
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "$this-onViewStateRestored($savedInstanceState)")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "$this-onStart()")
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d(TAG, "$this-onCreateView($savedInstanceState)")
         return if (layoutId != UNDEFINED_VALUE) {
             DataBindingUtil.inflate<T>(
                     inflater,
@@ -51,7 +73,43 @@ abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "$this-onViewCreated($savedInstanceState)")
         init(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "$this-onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "$this-onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "$this-onStop()")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d(TAG, "$this-onSaveInstanceState($outState)")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "$this-onDestroyView()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "$this-onDestroy()")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "$this-onDetach()")
     }
 
     private fun init(savedInstanceState: Bundle?) {

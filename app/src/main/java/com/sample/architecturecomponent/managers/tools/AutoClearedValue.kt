@@ -13,6 +13,9 @@ class AutoClearedValue<T : Any>(
 
     private var value: T? = null
 
+    val isInit: Boolean
+        get() = value != null
+
     private val viewLifecycleOwnerLiveDataObserver = Observer<LifecycleOwner?> {
         it?.lifecycle?.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
