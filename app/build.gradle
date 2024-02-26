@@ -6,12 +6,14 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion SDK_MAX
-    buildToolsVersion BUILD_TOOL
+    namespace = "com.sample.architecturecomponent"
 
     defaultConfig {
         applicationId "com.sample.architecturecomponent"
         minSdkVersion SDK_MIN
+        targetSdkVersion SDK_MAX
+        compileSdk SDK_MAX
+        buildToolsVersion = BUILD_TOOL
         versionCode 1
         versionName "1.0"
 
@@ -26,20 +28,17 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    dataBinding {
-        enabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildFeatures {
-        viewBinding true
+        dataBinding = true
+        buildConfig = true
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
@@ -53,13 +52,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$XAPPCOMPAT"
     implementation "androidx.constraintlayout:constraintlayout:$XCONSTRAINT"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$XSWIPE"
-
     implementation "androidx.navigation:navigation-fragment-ktx:$XNAVIGATION"
-
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$XRUNTIME"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$XVIEWMODEL"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$XLIVEDATA"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$XCOMMON"
 
     implementation "androidx.room:room-runtime:$ROOM"
     implementation "androidx.room:room-ktx:$ROOM"

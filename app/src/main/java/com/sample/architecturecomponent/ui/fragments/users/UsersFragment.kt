@@ -2,7 +2,9 @@ package com.sample.architecturecomponent.ui.fragments.users
 
 import android.os.Bundle
 import android.transition.TransitionManager
-import android.view.*
+import android.util.Log
+import android.view.View
+import android.view.WindowInsets
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
@@ -25,13 +27,19 @@ import com.sample.architecturecomponent.managers.extensions.updateMargins
 import com.sample.architecturecomponent.managers.tools.ExecutorsTool
 import com.sample.architecturecomponent.managers.tools.autoCleared
 import com.sample.architecturecomponent.models.User
-import com.sample.architecturecomponent.ui.fragments.base.*
+import com.sample.architecturecomponent.ui.fragments.base.BaseEndListener
+import com.sample.architecturecomponent.ui.fragments.base.BaseFragment
+import com.sample.architecturecomponent.ui.fragments.base.Message
 import com.sample.architecturecomponent.ui.toolbars.CollapseToolbarListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class UsersFragment : BaseFragment<FragmentUsersBinding>() {
+
+    companion object {
+        private val TAG = UsersFragment::class.java.simpleName
+    }
 
     @Inject
     lateinit var executors: ExecutorsTool
@@ -99,12 +107,13 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
     }
 
     private fun initViews() {
-        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+        sharedElementReturnTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.move)
 
         viewBind.viewmodel = this@UsersFragment.viewModel
         viewBind.recyclerView.apply {
             addOnScrollListener(object : BaseEndListener() {
                 override fun onListEnd() {
+                    Log.d(TAG, "addOnScrollListener() - list end")
                     viewModel.next()
                 }
             })

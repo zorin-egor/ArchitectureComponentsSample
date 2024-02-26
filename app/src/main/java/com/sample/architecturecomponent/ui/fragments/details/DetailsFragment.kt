@@ -59,7 +59,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
         viewBind.viewmodel = this@DetailsFragment.viewModel
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+        sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.move)
 
         viewBind.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()

@@ -2,7 +2,7 @@ package com.sample.architecturecomponent.models
 
 import android.os.Parcelable
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.Companion.CASCADE
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.IgnoredOnParcel

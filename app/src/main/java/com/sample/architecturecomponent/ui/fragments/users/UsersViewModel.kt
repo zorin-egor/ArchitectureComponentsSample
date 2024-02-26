@@ -19,7 +19,10 @@ import com.sample.architecturecomponent.ui.fragments.base.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,9 +50,11 @@ class UsersViewModel @Inject constructor(
 
     init {
         getUsers()
+        next()
     }
 
     private fun getUsers() {
+        nextJob?.cancel()
         usersJob?.cancel()
         usersJob = viewModelScope.launch {
             usersRepository.getData()
@@ -64,8 +69,9 @@ class UsersViewModel @Inject constructor(
                     _isProgress.tryEmit(false)
 
                     when (it) {
-                        is Data -> _results.tryEmit(it.value)
+                        is Data -> _results.emit(it.value)
                         is Error -> handleError(it.type)
+                        else -> {}
                     }
                 }
         }
@@ -76,7 +82,6 @@ class UsersViewModel @Inject constructor(
             return
         }
 
-        nextJob?.cancel()
         nextJob = viewModelScope.launch {
             _isProgress.tryEmit(true)
             usersRepository.next().let {
