@@ -1,17 +1,4 @@
 <resources>
-
     <string name="app_name">Architecture Components Sample</string>
-    <string name="splash_title">Splash progress...</string>
-    <string name="snackbar_action_title">Undo</string>
-
-    <string name="text_open">Open</string>
-    <string name="text_cancel">Cancel</string>
-    <string name="text_open_url">Open url</string>
-
-    <string name="error_unknown">Unknown error</string>
-    <string name="error_host">Unknown host</string>
-    <string name="error_network_connection">No network connection</string>
-    <string name="error_message">Error: %1$s</string>
-    <string name="error_io">IO error</string>
-
+    <string name="not_connected">No internet connection</string>
 </resources>

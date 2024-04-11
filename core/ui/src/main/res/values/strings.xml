@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_with_code">Error with code: %s</string>
+    <string name="error_with_description">Error with description: %s</string>
+</resources>
