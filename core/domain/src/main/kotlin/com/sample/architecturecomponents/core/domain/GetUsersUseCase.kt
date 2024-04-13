@@ -31,7 +31,7 @@ class GetUsersUseCase @Inject constructor(
                 if (sinceId == 0L) {
                     usersList.clear()
                 }
-                sinceLastId = it.last().id
+                sinceLastId = it.lastOrNull()?.id ?: SINCE_ID
                 usersList.addAll(it)
                 usersList.toList()
             }

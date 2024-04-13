@@ -9,9 +9,10 @@ import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.take
 import timber.log.Timber
 import java.util.UUID
@@ -30,11 +31,14 @@ internal class UsersRepositoryImpl @Inject constructor(
             // For test
             settingsPreference.saveAuthToken(UUID.randomUUID().toString())
 
+            Timber.d("getUsers() - db")
             usersDao.getUsersSinceId(sinceId = sinceId)
                 .take(1)
-                .map { it.asExternalModel() }
+                .catch { Timber.e(it) }
+                .mapNotNull { it?.asExternalModel() }
                 .collect(::emit)
 
+            Timber.d("getUsers() - network request")
             val response = runCatching { networkDatasource.getUsers(sinceId) }.getOrNull()
             val result = response?.body()
 

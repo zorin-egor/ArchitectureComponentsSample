@@ -29,6 +29,7 @@ internal class DetailsRepositoryImpl @Inject constructor(
         return flow<Details> {
             Timber.d("getDetails($userId, $url)")
 
+            Timber.d("getDetails() - db")
             detailsDao.getDetailsById(userId)
                 .zip(usersDao.getUserById(userId)) { details, users ->
                     Timber.d("getDetails() - db collect: $details, $userId")
@@ -39,7 +40,7 @@ internal class DetailsRepositoryImpl @Inject constructor(
                 .filterNotNull()
                 .collect(::emit)
 
-            Timber.d("getDetails() - network await")
+            Timber.d("getDetails() - network request")
             val response = runCatching { networkDatasource.getDetails(url) }.getOrNull()
             val result = response?.body()
             if (response?.isSuccessful == false || result == null) {
