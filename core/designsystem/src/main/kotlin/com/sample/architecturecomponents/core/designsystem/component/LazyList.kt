@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.core.ui.widgets
+package com.sample.architecturecomponents.core.designsystem.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.lazy.LazyListState

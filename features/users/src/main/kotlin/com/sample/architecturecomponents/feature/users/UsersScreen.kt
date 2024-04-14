@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sample.architecturecomponents.core.ui.widgets.CircularContent
+import com.sample.architecturecomponents.core.designsystem.component.CircularContent
 import com.sample.architecturecomponents.feature.users.widgets.ItemsUsersContent
 import timber.log.Timber
 

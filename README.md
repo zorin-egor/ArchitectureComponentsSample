@@ -1,29 +1,31 @@
 # Architecture components sample
 
-<b>ArchitectureComponentsSample</b> - sample app developed with android architecture components.
+<b>ArchitectureComponentsSample</b> - sample multi modals app developed with android architecture components, conventions plugins.
 
 ``` text
-├── app.............. Точка входа в мобильное приложение
-│   ├── MainWindow.... Координирует всю навигацию в приложении
-│   └── MainNavBar......... Нижнее навигационное меню
-├── core......... Независимая логика проекта/компонентов
-│   ├── datastore.......... Логика для сохранения мелких локальных файлов
-│   ├── nav....... Логика для навигации
-│   ├── data....... Бизнес логика
-│   ├── domain....... Прослойка между UI и бизнес логикой для упрощения взаимодействия
-│   ├── ui
-│   │   ├── components.. Базовые компоненты для всего UI
-│   │   ├── ui.. Логика взаимодействия с состояниями, абстракция для MVI
-├── features....... Все экраны разбиты на модуль-фичи
-│   ├── users.......... Фича список пользователей
-│   ├── details.......... Фича подробно о пользователе
-│   ├── settings.......... Фича настойка темы
-└──gradle-plugins.......... Convention gradle плагин для проброса зависимостей между модулями
+├── app.............. Entry point to the mobile application
+│   └── NavHost.... App navigation coordination
+├── core......... Independent project/component logic
+│   ├── common.......... Utilities, extension functions, helpers
+│   ├── network.......... Interaction with the network
+│   ├── datastore.......... Logic for saving primitive data and objectsв
+│   ├── datastore-proto.......... Description of interaction models
+│   ├── database....... Database
+│   ├── data....... Repositories
+│   ├── domain....... Business logic
+│   ├── model....... Business logic models
+│   ├── designsystem....... Basic UI components, themes, color schemes
+│   ├── ui....... Comprehensive UI components for a specific presentation
+├── features....... All screens are divided into module-features
+│   ├── users.......... Feature list of users
+│   ├── details.......... Feature details about the user
+│   ├── settings.......... Feature customization of the application theme
+└──gradle-plugins.......... Convention gradle plugin for forwarding dependencies between modules
 ```
 
 ## Screenshots
 <p align="center">
   <a>
-    //<img alt="ArchitectureComponentsSample" src="https://user-images.githubusercontent.com/13707343/95138829-d91b2380-0773-11eb-951d-cbe263b97a9e.gif" />
+    //<img alt="ArchitectureComponentsSample" src="https://github.com/zorin-egor/ArchitectureComponentsSample/assets/13707343/24a332fc-380c-4965-8261-0a741e19d239" />
   </a>
 </p>

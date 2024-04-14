@@ -13,8 +13,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.sample.architecturecomponents.core.designsystem.component.setEdgeEvents
 import com.sample.architecturecomponents.core.model.User
-import com.sample.architecturecomponents.core.ui.widgets.setEdgeEvents
 import com.sample.architecturecomponents.feature.users.UsersUiState
 
 @Composable
