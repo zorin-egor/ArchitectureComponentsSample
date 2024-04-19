@@ -19,7 +19,7 @@
 ├── features....... All screens are divided into module-features
 │   ├── users.......... Feature list of users
 │   ├── details.......... Feature details about the user
-│   ├── settings.......... Feature customization of the application theme
+│   └── settings.......... Feature customization of the application theme
 └──gradle-plugins.......... Convention gradle plugin for forwarding dependencies between modules
 ```
 

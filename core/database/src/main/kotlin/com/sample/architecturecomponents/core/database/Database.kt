@@ -17,10 +17,6 @@ import com.sample.architecturecomponents.core.database.model.UserEntity
 )
 internal abstract class Database : RoomDatabase() {
 
-    companion object {
-        val DATA_BASE_NAME = "${Database::class.java.simpleName}.db"
-    }
-
     abstract fun detailsDao(): DetailsDao
 
     abstract fun usersDao(): UsersDao
