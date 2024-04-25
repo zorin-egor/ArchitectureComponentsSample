@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.domain.GetUsersUseCase
 import com.sample.architecturecomponents.core.model.User
+import com.sample.architecturecomponents.core.network.exceptions.EmptyException
+import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -23,7 +25,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
-import com.sample.architecturecomponents.core.ui.R as CoreUiR
 
 @HiltViewModel
 class UsersViewModel @Inject constructor(
@@ -42,18 +43,29 @@ class UsersViewModel @Inject constructor(
     private var usersJob: Job? = null
 
     init {
-        usersJob = getSearchContentsUseCase()
+        usersJob = getSearchContentsUseCase(id = GetUsersUseCase.SINCE_ID)
             .getUsers()
     }
 
     private fun Flow<List<User>>.getUsers(): Job =
         catch {
-            val error = it.message ?: context.getString(CoreUiR.string.error_unknown)
-            Timber.e(error)
-            _action.emit(UsersActions.ShowError(error))
-            _state.value.setBottomProgress(false)
+            Timber.e(it)
+            val error = context.getErrorMessage(it)
+
+            when(it) {
+               EmptyException -> _state.emit(UsersUiState.Empty)
+               else -> _action.emit(UsersActions.ShowError(error))
+            }
+
+            setBottomProgress(false)
         }
-        .map { UsersUiState.Success(users = it, isBottomProgress = false) }
+        .map {
+            if (it.isNotEmpty()) {
+                UsersUiState.Success(users = it, isBottomProgress = false)
+            } else {
+                UsersUiState.Loading
+            }
+        }
         .onEach {
             _state.emit(it)
             delay(1000)
@@ -65,12 +77,12 @@ class UsersViewModel @Inject constructor(
         usersJob = getSearchContentsUseCase()
             .onStart {
                 Timber.d("nextUsers() - onStart")
-                _state.value.setBottomProgress(true)
+                setBottomProgress(true)
             }
             .getUsers()
     }
 
-    private suspend fun UsersUiState.setBottomProgress(isBottomProgress: Boolean) {
+    private suspend fun setBottomProgress(isBottomProgress: Boolean) {
         val prevState = _state.value
         if (prevState is UsersUiState.Success) {
             _state.emit(prevState.copy(isBottomProgress = isBottomProgress))

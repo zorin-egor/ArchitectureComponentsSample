@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_user_details_title">Details</string>
+    <string name="feature_user_details_user_url">Profile url</string>
+    <string name="feature_user_details_user_id">Id</string>
+    <string name="feature_user_details_user_name">Name</string>
+    <string name="feature_user_details_user_company">Company</string>
+    <string name="feature_user_details_user_blog">Blog</string>
+    <string name="feature_user_details_user_location">Location</string>
+    <string name="feature_user_details_user_email">E-mail</string>
+    <string name="feature_user_details_user_bio">Bio</string>
+    <string name="feature_user_details_user_public_repos">Public repos</string>
+    <string name="feature_user_details_user_followers">Followers</string>
+    <string name="feature_user_details_user_created">Created</string>
+    <string name="feature_user_details_user_repos">Repos url</string>
+</resources>

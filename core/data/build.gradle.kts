@@ -12,9 +12,5 @@ dependencies {
     api(projects.core.database)
     api(projects.core.datastore)
     api(projects.core.network)
-
     implementation(projects.core.model)
-    implementation(projects.core.database)
-    implementation(projects.core.datastore)
-    implementation(projects.core.network)
 }

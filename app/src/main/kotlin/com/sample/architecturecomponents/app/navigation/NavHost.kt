@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.sample.architecturecomponents.app.ui.AppState
-import com.sample.architecturecomponents.feature.details.navigation.detailsScreen
-import com.sample.architecturecomponents.feature.details.navigation.navigateToDetails
+import com.sample.architecturecomponents.feature.repositories.navigation.repositoriesScreen
+import com.sample.architecturecomponents.feature.settings.navigation.settingsScreen
+import com.sample.architecturecomponents.feature.user_details.navigation.navigateToUserDetails
+import com.sample.architecturecomponents.feature.user_details.navigation.userDetailsScreen
 import com.sample.architecturecomponents.feature.users.navigation.USERS_ROUTE
 import com.sample.architecturecomponents.feature.users.navigation.usersScreen
 import timber.log.Timber
@@ -27,15 +29,26 @@ fun NavHost(
         modifier = modifier,
     ) {
         usersScreen(
-            showBackButton = true,
-            onBackClick = navController::popBackStack,
-            onUserClick = { id, url -> navController.navigateToDetails(userId = id, userUrl = url) },
+            onUserClick = { id, url ->
+                navController.navigateToUserDetails(userId = id, userUrl = url)
+            },
             onShowSnackbar = onShowSnackbar
         )
-        detailsScreen(
+        userDetailsScreen(
             showBackButton = true,
-            onBackClick = navController::popBackStack,
-            onUrlClick = {},
+            onBackClick = navController::navigateUp,
+            onUrlClick = {
+                Timber.d("detailsScreen($it)")
+            },
+            onShowSnackbar = onShowSnackbar
+        )
+        settingsScreen(
+            onShowSnackbar = onShowSnackbar
+        )
+        repositoriesScreen(
+            onRepositoryClick = {
+                Timber.d("repositoriesScreen($it)")
+            },
             onShowSnackbar = onShowSnackbar
         )
     }

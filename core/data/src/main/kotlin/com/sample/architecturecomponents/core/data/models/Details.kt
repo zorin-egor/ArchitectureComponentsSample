@@ -19,6 +19,8 @@ internal fun Details.toDetailsEntity() = DetailsEntity(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    reposUrl = reposUrl,
+    url = url
 )
 
 internal fun NetworkDetails.toDetailsEntity() = DetailsEntity(
@@ -35,10 +37,13 @@ internal fun NetworkDetails.toDetailsEntity() = DetailsEntity(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    reposUrl = reposUrl,
+    url = htmlUrl
 )
 
-internal fun NetworkDetails.asExternalModel() = Details(
+internal fun NetworkDetails.toExternalModel() = Details(
     id = id,
+    url = htmlUrl,
     avatarUrl = avatarUrl,
     name = name,
     company = company,
@@ -51,4 +56,7 @@ internal fun NetworkDetails.asExternalModel() = Details(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    reposUrl = reposUrl
 )
+
+val Details.repositoriesUrl: String get() = "$url?tab=repositories"

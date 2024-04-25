@@ -2,6 +2,7 @@ package com.sample.architecturecomponents.core.model
 
 data class Details(
     val id: Long,
+    val url: String,
     val avatarUrl: String?,
     val name: String?,
     val company: String?,
@@ -13,5 +14,6 @@ data class Details(
     val publicGists: Long?,
     val followers: Long?,
     val following: Long?,
-    val createdAt: String?
+    val createdAt: String?,
+    val reposUrl: String?
 )

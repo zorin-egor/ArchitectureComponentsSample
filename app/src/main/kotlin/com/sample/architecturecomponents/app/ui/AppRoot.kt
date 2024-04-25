@@ -7,39 +7,47 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import com.sample.architecturecomponents.app.navigation.NavHost
+import com.sample.architecturecomponents.app.navigation.TopLevelDestination
 import com.sample.architecturecomponents.core.designsystem.component.AppBackground
+import com.sample.architecturecomponents.core.designsystem.component.AppNavigationBar
+import com.sample.architecturecomponents.core.designsystem.component.AppNavigationBarItem
 import com.sample.architecturecomponents.core.designsystem.component.AppTopBar
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
-import com.sample.architecturecomponents.feature.details.navigation.DETAILS_ROUTE
-import com.sample.architecturecomponents.feature.settings.SettingsDialog
-import com.sample.architecturecomponents.feature.users.navigation.USERS_ROUTE
+import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
+import com.sample.architecturecomponents.feature.themes.ThemesDialog
+import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
 import timber.log.Timber
 import com.sample.architecturecomponents.app.R as AppR
-import com.sample.architecturecomponents.feature.details.R as DetailsR
-import com.sample.architecturecomponents.feature.users.R as UsersR
+import com.sample.architecturecomponents.feature.settings.R as SettingsR
+import com.sample.architecturecomponents.feature.user_details.R as DetailsR
 
 @OptIn(ExperimentalComposeUiApi::class,)
 @Composable
@@ -47,7 +55,6 @@ fun AppRoot(appState: AppState) {
     AppBackground {
         Timber.d("AppRoot($appState)")
 
-        val showSettingsDialog = rememberSaveable { mutableStateOf(false) }
         val snackbarHostState = remember { SnackbarHostState() }
         val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
@@ -61,18 +68,20 @@ fun AppRoot(appState: AppState) {
             }
         }
 
-        if (showSettingsDialog.value) {
-            SettingsDialog(
-                onDismiss = { showSettingsDialog.value = false },
-            )
-        }
-
         Scaffold(
             modifier = Modifier.semantics { testTagsAsResourceId = true },
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
             contentWindowInsets = WindowInsets.safeDrawing,
             snackbarHost = { SnackbarHost(snackbarHostState) },
+            bottomBar = {
+                AppBottomBar(
+                    destinations = appState.topLevelDestinations,
+                    onNavigateToDestination = appState::navigateToTopLevelDestination,
+                    currentDestination = appState.currentDestination,
+                    modifier = Modifier.testTag("NiaBottomBar"),
+                )
+            }
         ) { padding ->
             Column(
                 Modifier
@@ -81,7 +90,7 @@ fun AppRoot(appState: AppState) {
                     .consumeWindowInsets(padding),
             ) {
 
-                NavAppTopBar(state = appState, settingsState = showSettingsDialog)
+                NavAppTopBar(state = appState)
 
                 NavHost(
                    appState = appState,
@@ -100,7 +109,10 @@ fun AppRoot(appState: AppState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NavAppTopBar(state: AppState, settingsState: MutableState<Boolean>) {
+private fun NavAppTopBar(state: AppState) {
+    var showThemesDialog by rememberSaveable { mutableStateOf(false) }
+
+    var isTopBarVisible = false
     var toolbarTitle: Int? = null
     var navigationIcon: ImageVector? = null
     var navigationDesc: String? = null
@@ -110,19 +122,33 @@ private fun NavAppTopBar(state: AppState, settingsState: MutableState<Boolean>) 
     var navigationClick: () -> Unit = {}
 
     when(val route = state.currentDestination?.route) {
-        USERS_ROUTE -> {
-            toolbarTitle = UsersR.string.users_title
-            actionIcon = Icons.Settings
-            actionDesc = stringResource(DetailsR.string.details_title)
-            actionClick = { settingsState.value = true }
-        }
-        DETAILS_ROUTE -> {
-            toolbarTitle = DetailsR.string.details_title
+        USER_DETAILS_ROUTE -> {
+            toolbarTitle = DetailsR.string.feature_user_details_title
             navigationIcon = Icons.ArrowBack
-            navigationDesc = stringResource(DetailsR.string.details_title)
-            actionDesc = stringResource(DetailsR.string.details_title)
-            navigationClick = { state.navController.popBackStack() }
+            navigationDesc = stringResource(DetailsR.string.feature_user_details_title)
+            navigationClick = { state.navController.navigateUp() }
+            isTopBarVisible = true
         }
+        SETTINGS_ROUTE -> {
+            toolbarTitle = SettingsR.string.feature_settings_title
+            actionIcon = Icons.Themes
+            actionDesc = stringResource(SettingsR.string.feature_settings_title)
+            actionClick = { showThemesDialog = true }
+            isTopBarVisible = true
+        }
+        else -> {
+            isTopBarVisible = false
+        }
+    }
+
+    if (!isTopBarVisible) {
+        return
+    }
+
+    if (showThemesDialog) {
+        ThemesDialog(
+            onDismiss = { showThemesDialog = false },
+        )
     }
 
     AppTopBar(
@@ -138,3 +164,42 @@ private fun NavAppTopBar(state: AppState, settingsState: MutableState<Boolean>) 
         onNavigationClick = navigationClick,
     )
 }
+
+@Composable
+private fun AppBottomBar(
+    destinations: List<TopLevelDestination>,
+    onNavigateToDestination: (TopLevelDestination) -> Unit,
+    currentDestination: NavDestination?,
+    modifier: Modifier = Modifier,
+) {
+    AppNavigationBar(
+        modifier = modifier,
+    ) {
+        destinations.forEach { destination ->
+            val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
+            AppNavigationBarItem(
+                selected = selected,
+                onClick = { onNavigateToDestination(destination) },
+                icon = {
+                    Icon(
+                        imageVector = destination.unselectedIcon,
+                        contentDescription = null,
+                    )
+                },
+                selectedIcon = {
+                    Icon(
+                        imageVector = destination.selectedIcon,
+                        contentDescription = null,
+                    )
+                },
+                label = { Text(stringResource(destination.iconTextId)) },
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
+    this?.hierarchy
+        ?.any { destination.route.equals(other = it.route, ignoreCase = true) }
+        ?: false

@@ -3,8 +3,6 @@ package com.sample.architecturecomponents.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
-import com.sample.architecturecomponents.core.model.DarkThemeConfig
-import com.sample.architecturecomponents.core.model.ThemeBrand
 import com.sample.architecturecomponents.feature.settings.SettingsUiState.Loading
 import com.sample.architecturecomponents.feature.settings.SettingsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,14 +18,13 @@ import kotlin.time.Duration.Companion.seconds
 class SettingsViewModel @Inject constructor(
     private val userDataRepository: SettingsDataRepository,
 ) : ViewModel() {
+
     val settingsUiState: StateFlow<SettingsUiState> =
         userDataRepository.settingsData
             .map { userData ->
                 Success(
                     settings = UserEditableSettings(
-                        brand = userData.themeBrand,
-                        useDynamicColor = userData.useDynamicColor,
-                        darkThemeConfig = userData.darkThemeConfig,
+                        brand = ""
                     ),
                 )
             }
@@ -37,18 +34,6 @@ class SettingsViewModel @Inject constructor(
                 initialValue = Loading,
             )
 
-    fun updateThemeBrand(themeBrand: ThemeBrand) {
-        viewModelScope.launch {
-            userDataRepository.setThemeBrand(themeBrand)
-        }
-    }
-
-    fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
-        viewModelScope.launch {
-            userDataRepository.setDarkThemeConfig(darkThemeConfig)
-        }
-    }
-
     fun updateDynamicColorPreference(useDynamicColor: Boolean) {
         viewModelScope.launch {
             userDataRepository.setDynamicColorPreference(useDynamicColor)
@@ -57,9 +42,7 @@ class SettingsViewModel @Inject constructor(
 }
 
 data class UserEditableSettings(
-    val brand: ThemeBrand,
-    val useDynamicColor: Boolean,
-    val darkThemeConfig: DarkThemeConfig,
+    val brand: String
 )
 
 sealed interface SettingsUiState {

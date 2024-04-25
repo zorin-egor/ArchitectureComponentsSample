@@ -2,6 +2,8 @@ package com.sample.architecturecomponents.core.data.di
 
 import com.sample.architecturecomponents.core.data.repositories.details.DetailsRepository
 import com.sample.architecturecomponents.core.data.repositories.details.DetailsRepositoryImpl
+import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepository
+import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
@@ -29,5 +31,10 @@ internal abstract class DataModule {
     internal abstract fun bindsSettingsDataRepository(
         settingsDataRepository: SettingsDataRepositoryImpl,
     ): SettingsDataRepository
+
+    @Binds
+    internal abstract fun bindsReposRepository(
+        repository: RepositoriesRepositoryImpl,
+    ): RepositoriesRepository
 
 }

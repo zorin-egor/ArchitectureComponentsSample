@@ -10,5 +10,5 @@ android {
 
 dependencies {
     api(projects.core.model)
-    implementation(projects.core.model)
+    implementation(libs.square.retrofit2.gson.converter)
 }

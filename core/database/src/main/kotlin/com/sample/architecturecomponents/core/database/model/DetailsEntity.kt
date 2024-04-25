@@ -29,6 +29,7 @@ import com.sample.architecturecomponents.core.model.Details
 data class DetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "user_id") val userId: Long,
+    @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "avatar_url") val avatarUrl: String?,
     @ColumnInfo(name = "name") val name: String?,
     @ColumnInfo(name = "company") val company: String?,
@@ -40,7 +41,8 @@ data class DetailsEntity(
     @ColumnInfo(name = "public_gists") val publicGists: Long?,
     @ColumnInfo(name = "followers") val followers: Long?,
     @ColumnInfo(name = "following") val following: Long?,
-    @ColumnInfo(name = "created_at") val createdAt: String?
+    @ColumnInfo(name = "created_at") val createdAt: String?,
+    @ColumnInfo(name = "repos_url") val reposUrl: String?
 )
 
 data class UserAndDetails(
@@ -66,6 +68,8 @@ fun DetailsEntity.asExternalModel() = Details(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    reposUrl = reposUrl,
+    url = url
 )
 
 fun UserEntity.toDetailsEntity() = DetailsEntity(
@@ -83,4 +87,6 @@ fun UserEntity.toDetailsEntity() = DetailsEntity(
     followers = null,
     following = null,
     createdAt = null,
+    reposUrl = null,
+    url = url
 )

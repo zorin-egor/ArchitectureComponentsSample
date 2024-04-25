@@ -1,12 +1,13 @@
 package com.sample.architecturecomponents.feature.users.widgets
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
@@ -20,10 +21,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.sample.architecturecomponents.core.designsystem.icon.Icons
 import com.sample.architecturecomponents.core.model.User
+import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
 
 @Composable
 fun UsersItemContent(
@@ -35,7 +42,7 @@ fun UsersItemContent(
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
     val imageLoader = rememberAsyncImagePainter(
-        model = user.avatarUrl,
+        model = user.avatarUrl + "jbljblk",
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -49,22 +56,38 @@ fun UsersItemContent(
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
                     onClick = { onUserClick(user) },
                 )
         ) {
-            Image(
+
+            ImageLoadingWidget(
+                isError = isError,
+                isLoading = isLoading,
                 painter = imageLoader,
-                contentDescription = null,
+                placeHolder = Icons.UserBorder,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).weight(weight = 1.0f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .weight(weight = 1.0f)
             )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
             Text(
                 text = user.login,
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(all = 8.dp)
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                letterSpacing = TextUnit(2.0f, TextUnitType.Sp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
             )
         }
     }

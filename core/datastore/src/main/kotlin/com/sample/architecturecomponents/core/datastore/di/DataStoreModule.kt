@@ -12,7 +12,7 @@ import com.sample.architecturecomponents.core.datastore.SettingsDataStoreProto
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.network.Dispatcher
 import com.sample.architecturecomponents.core.network.Dispatchers
-import com.sample.architecturecomponents.core.network.di.ApplicationScope
+import com.sample.architecturecomponents.core.network.di.DefaultScope
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +31,7 @@ object DataStoreModule {
     internal fun providesUserPreferencesDataStore(
         @ApplicationContext context: Context,
         @Dispatcher(Dispatchers.IO) ioDispatcher: CoroutineDispatcher,
-        @ApplicationScope scope: CoroutineScope,
+        @DefaultScope scope: CoroutineScope,
         userPreferencesSerializer: DataStoreProtoSerializer,
     ): DataStore<SettingsDataStore> =
         DataStoreFactory.create(

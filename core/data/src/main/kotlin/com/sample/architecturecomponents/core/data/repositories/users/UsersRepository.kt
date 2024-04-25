@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsersRepository {
 
-    fun getUsers(sinceId: Long): Flow<List<User>>
+    fun getUsers(sinceId: Long, limit: Int = 30): Flow<List<User>>
 
-    suspend fun add(item: User): Unit
+    suspend fun add(item: User)
 
-    suspend fun remove(item: User): Unit
+    suspend fun remove(item: User)
 
 }

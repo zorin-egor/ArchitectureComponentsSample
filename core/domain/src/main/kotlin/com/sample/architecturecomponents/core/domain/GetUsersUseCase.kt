@@ -5,35 +5,63 @@ import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.Dispatcher
 import com.sample.architecturecomponents.core.network.Dispatchers
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import java.util.TreeSet
+import timber.log.Timber
 import javax.inject.Inject
 
 
-@OptIn(FlowPreview::class)
 class GetUsersUseCase @Inject constructor(
     private val usersRepository: UsersRepository,
     @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
 ) {
     companion object {
-        private const val SINCE_ID = 0L
+        const val SINCE_ID = 0L
+        private const val LIMIT = 30
     }
 
-    private var sinceLastId: Long = SINCE_ID
-    private val usersList = TreeSet<User> { o1, o2 -> o1.id.compareTo(o2.id) }
+    private val usersSet = LinkedHashSet<User>()
+    private val mutex = Any()
+    private var lastId = SINCE_ID
+    private var hasNext = true
 
-    operator fun invoke(sinceId: Long? = sinceLastId): Flow<List<User>> =
-        usersRepository.getUsers(sinceId ?: SINCE_ID)
+    operator fun invoke(id: Long): Flow<List<User>> {
+        Timber.d("invoke($hasNext, $id) - new")
+
+        return usersRepository.getUsers(sinceId = id, limit = LIMIT)
             .map {
-                if (sinceId == 0L) {
-                    usersList.clear()
+                synchronized(mutex) {
+                    hasNext = it.size >= LIMIT
+                    lastId = it.lastOrNull()?.id ?: lastId
+                    usersSet.clear()
+                    usersSet.addAll(it)
+                    usersSet.toList()
                 }
-                sinceLastId = it.lastOrNull()?.id ?: SINCE_ID
-                usersList.addAll(it)
-                usersList.toList()
             }
             .flowOn(dispatcher)
+    }
+
+    operator fun invoke(): Flow<List<User>> {
+        Timber.d("invoke($hasNext, $lastId) - next")
+
+        synchronized(mutex) {
+            if (!hasNext) {
+                return flowOf(usersSet.toList())
+            }
+        }
+
+        return usersRepository.getUsers(sinceId = lastId, limit = LIMIT)
+            .map {
+                synchronized(mutex) {
+                    hasNext = it.size >= LIMIT
+                    lastId = it.lastOrNull()?.id ?: lastId
+                    usersSet.addAll(it)
+                    usersSet.toList()
+                }
+            }
+            .flowOn(dispatcher)
+    }
+
 }

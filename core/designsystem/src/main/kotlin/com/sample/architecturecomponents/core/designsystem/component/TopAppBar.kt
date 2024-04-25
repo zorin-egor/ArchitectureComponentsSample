@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
     actionIcon: ImageVector? = null,

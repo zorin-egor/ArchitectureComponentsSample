@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_repositories_title">Repositories</string>
+    <string name="feature_repositories_by_name_search_title">Input repository name</string>
+</resources>
+

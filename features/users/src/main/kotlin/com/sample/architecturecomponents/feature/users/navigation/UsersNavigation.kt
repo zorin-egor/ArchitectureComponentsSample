@@ -3,7 +3,7 @@ package com.sample.architecturecomponents.feature.users.navigation
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sample.architecturecomponents.feature.users.UsersScreen
 import org.jetbrains.annotations.VisibleForTesting
@@ -17,16 +17,12 @@ internal class UsersArgs(val sinceId: Long? = null) {
     constructor(savedStateHandle: SavedStateHandle) : this(savedStateHandle[SINCE_ID_ARG])
 }
 
-fun NavController.navigateToUsers(sinceId: Long? = null, navOptions: NavOptionsBuilder.() -> Unit = {}) {
+fun NavController.navigateToUsers(sinceId: Long? = null, navOptions: NavOptions) {
     val newRoute = USERS_ROUTE
-    navigate(newRoute) {
-        navOptions()
-    }
+    navigate(newRoute, navOptions)
 }
 
 fun NavGraphBuilder.usersScreen(
-    showBackButton: Boolean,
-    onBackClick: () -> Unit,
     onUserClick: (Long, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {

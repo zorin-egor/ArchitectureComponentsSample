@@ -21,8 +21,8 @@ interface UsersDao {
     @Query("SELECT * FROM Users ORDER BY user_id LIMIT :count OFFSET :from")
     fun getUsersCount(from: Long, count: Long = 30): Flow<List<UserEntity>>
 
-    @Query("SELECT * FROM Users WHERE user_id > :sinceId ORDER BY user_id LIMIT :count")
-    fun getUsersSinceId(sinceId: Long, count: Long = 30): Flow<List<UserEntity>?>
+    @Query("SELECT * FROM Users WHERE user_id > :sinceId ORDER BY user_id LIMIT :limit")
+    fun getUsersSinceId(sinceId: Long, limit: Int = 30): Flow<List<UserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserEntity)

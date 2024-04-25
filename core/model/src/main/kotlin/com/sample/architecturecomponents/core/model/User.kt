@@ -1,6 +1,5 @@
 package com.sample.architecturecomponents.core.model
 
-
 data class User(
     val id: Long,
     val nodeId: String,

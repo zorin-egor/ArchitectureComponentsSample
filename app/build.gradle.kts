@@ -41,8 +41,10 @@ android {
 
 dependencies {
     implementation(projects.features.users)
-    implementation(projects.features.details)
+    implementation(projects.features.userDetails)
+    implementation(projects.features.themes)
     implementation(projects.features.settings)
+    implementation(projects.features.repositories)
 
     implementation(projects.core.common)
     implementation(projects.core.ui)
@@ -50,6 +52,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
 
+    implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.core.ktx)
