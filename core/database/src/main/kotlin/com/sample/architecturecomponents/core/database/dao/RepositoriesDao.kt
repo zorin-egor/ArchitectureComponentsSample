@@ -18,7 +18,10 @@ interface RepositoriesDao {
     @Query("SELECT * FROM Repositories WHERE repo_id = :id")
     fun getRepoById(id: Long): Flow<RepositoryEntity?>
 
-    @Query("SELECT * FROM Repositories WHERE name LIKE '%' || :name || '%' ORDER BY name LIMIT :limit OFFSET :offset")
+    @Query(
+        "SELECT * FROM Repositories WHERE name LIKE '%' || :name || '%' OR " +
+        "description LIKE '%' || :name || '%' ORDER BY updated_at ASC LIMIT :limit OFFSET :offset"
+    )
     fun getRepoByName(name: String, offset: Long, limit: Long = 30): Flow<List<RepositoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

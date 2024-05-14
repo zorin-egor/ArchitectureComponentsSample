@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.core.domain
+package com.sample.architecturecomponents.core.domain.usecases
 
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepository
 import com.sample.architecturecomponents.core.model.Repository

@@ -4,6 +4,7 @@ import com.sample.architecturecomponents.core.model.Repository
 
 internal data class RepositoriesByNameUiState(
     val query: String,
+    val recentSearch: List<Pair<String, String>>,
     val state: RepositoriesByNameUiStates
 )
 

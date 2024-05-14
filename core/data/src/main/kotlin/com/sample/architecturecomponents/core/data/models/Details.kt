@@ -2,6 +2,7 @@ package com.sample.architecturecomponents.core.data.models
 
 import com.sample.architecturecomponents.core.database.model.DetailsEntity
 import com.sample.architecturecomponents.core.model.Details
+import com.sample.architecturecomponents.core.network.converters.dateTimeConverter
 import com.sample.architecturecomponents.core.network.models.NetworkDetails
 
 internal fun Details.toDetailsEntity() = DetailsEntity(
@@ -36,7 +37,7 @@ internal fun NetworkDetails.toDetailsEntity() = DetailsEntity(
     publicGists = publicGists,
     followers = followers,
     following = following,
-    createdAt = createdAt,
+    createdAt = dateTimeConverter(createdAt),
     reposUrl = reposUrl,
     url = htmlUrl
 )
@@ -55,7 +56,7 @@ internal fun NetworkDetails.toExternalModel() = Details(
     publicGists = publicGists,
     followers = followers,
     following = following,
-    createdAt = createdAt,
+    createdAt = dateTimeConverter(createdAt),
     reposUrl = reposUrl
 )
 

@@ -2,6 +2,7 @@ package com.sample.architecturecomponents.core.database.di
 
 import com.sample.architecturecomponents.core.database.Database
 import com.sample.architecturecomponents.core.database.dao.DetailsDao
+import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import dagger.Module
@@ -26,4 +27,9 @@ internal object DaosModule {
     fun providesReposDao(
         database: Database,
     ): RepositoriesDao = database.repositoriesDao()
+
+    @Provides
+    fun providesRecentSearchDao(
+        database: Database,
+    ): RecentSearchDao = database.recentSearchDao()
 }

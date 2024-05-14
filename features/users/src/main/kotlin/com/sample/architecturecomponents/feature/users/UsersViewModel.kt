@@ -3,7 +3,7 @@ package com.sample.architecturecomponents.feature.users
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.domain.GetUsersUseCase
+import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.exceptions.EmptyException
 import com.sample.architecturecomponents.core.ui.ext.getErrorMessage

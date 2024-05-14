@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.core.domain
+package com.sample.architecturecomponents.core.domain.usecases
 
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
 import com.sample.architecturecomponents.core.model.User
@@ -19,7 +19,7 @@ class GetUsersUseCase @Inject constructor(
 ) {
     companion object {
         const val SINCE_ID = 0L
-        private const val LIMIT = 30
+        private const val LIMIT = 30L
     }
 
     private val usersSet = LinkedHashSet<User>()

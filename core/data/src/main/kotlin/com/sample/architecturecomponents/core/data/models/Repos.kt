@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.core.data.models
 import com.sample.architecturecomponents.core.database.model.RepositoryEntity
 import com.sample.architecturecomponents.core.model.License
 import com.sample.architecturecomponents.core.model.Repository
+import com.sample.architecturecomponents.core.network.converters.dateTimeConverter
 import com.sample.architecturecomponents.core.network.models.common.NetworkItem
 import com.sample.architecturecomponents.core.network.models.common.NetworkLicense
 
@@ -35,9 +36,9 @@ internal fun NetworkItem.toRepositoryEntity() = RepositoryEntity(
     nodeId = nodeId,
     forks = forks,
     watchersCount = watchersCount,
-    createdAt = createdAt,
-    updatedAt = updatedAt,
-    pushedAt = pushedAt,
+    createdAt = dateTimeConverter(createdAt),
+    updatedAt = dateTimeConverter(updatedAt),
+    pushedAt = dateTimeConverter(pushedAt),
     defaultBranch = defaultBranch,
     stargazersCount = stargazersCount,
     description = description,
@@ -61,9 +62,9 @@ internal fun NetworkItem.toExternalModel() = Repository(
     nodeId = nodeId,
     forks = forks,
     watchersCount = watchersCount,
-    createdAt = createdAt,
-    updatedAt = updatedAt,
-    pushedAt = pushedAt,
+    createdAt = dateTimeConverter(createdAt),
+    updatedAt = dateTimeConverter(updatedAt),
+    pushedAt = dateTimeConverter(pushedAt),
     defaultBranch = defaultBranch,
     stargazersCount = stargazersCount,
     description = description,

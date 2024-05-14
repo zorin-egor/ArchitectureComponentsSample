@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.domain.GetDetailsUseCase
+import com.sample.architecturecomponents.core.domain.usecases.GetDetailsUseCase
 import com.sample.architecturecomponents.feature.user_details.navigation.UserDetailsArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

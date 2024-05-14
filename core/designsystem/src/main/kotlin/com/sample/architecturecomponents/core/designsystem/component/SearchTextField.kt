@@ -24,33 +24,78 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import timber.log.Timber
 
 @Composable
 fun SearchTextField(
     searchQuery: String,
-    contentDescriptionSearch: String?,
-    contentDescriptionClose: String?,
     onSearchQueryChanged: (String) -> Unit,
-    onSearchTriggered: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    onSearchTriggered: ((String) -> Unit)? = null,
+    contentDescriptionSearch: String? = null,
+    contentDescriptionClose: String? = null,
     inputFilter: (String) -> Boolean = { "\n" !in it },
     isFocusRequest: Boolean = true,
     placeholder: Int? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     imeAction: ImeAction = ImeAction.Search,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    padding: Dp = 8.dp
 ) {
+    SearchTextField(
+        searchQuery = TextFieldValue(
+            text = searchQuery,
+            selection = TextRange(searchQuery.length)
+        ),
+        onSearchQueryChanged = onSearchQueryChanged,
+        modifier = modifier,
+        onSearchTriggered = onSearchTriggered,
+        contentDescriptionSearch = contentDescriptionSearch,
+        contentDescriptionClose = contentDescriptionClose,
+        inputFilter = inputFilter,
+        isFocusRequest = isFocusRequest,
+        placeholder = placeholder,
+        visualTransformation = visualTransformation,
+        imeAction = imeAction,
+        keyboardType = keyboardType,
+        padding = padding,
+    )
+}
+
+@Composable
+fun SearchTextField(
+    searchQuery: TextFieldValue,
+    onSearchQueryChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    onSearchTriggered: ((String) -> Unit)? = null,
+    contentDescriptionSearch: String? = null,
+    contentDescriptionClose: String? = null,
+    inputFilter: (String) -> Boolean = { "\n" !in it },
+    isFocusRequest: Boolean = true,
+    placeholder: Int? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    imeAction: ImeAction = ImeAction.Search,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    padding: Dp = 8.dp
+) {
+    Timber.d("SearchTextField($searchQuery)")
+
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val onSearchExplicitlyTriggered = {
+        Timber.d("SearchTextField() - onSearchExplicitlyTriggered()")
         keyboardController?.hide()
-        onSearchTriggered(searchQuery)
+        onSearchTriggered?.invoke(searchQuery.text)
     }
 
     TextField(
@@ -67,9 +112,10 @@ fun SearchTextField(
             )
         },
         trailingIcon = {
-            if (searchQuery.isNotEmpty()) {
+            if (searchQuery.text.isNotEmpty()) {
                 IconButton(
                     onClick = {
+                        Timber.d("SearchTextField() - IconButton() - onClick")
                         onSearchQueryChanged("")
                     },
                 ) {
@@ -82,13 +128,18 @@ fun SearchTextField(
             }
         },
         onValueChange = {
-            if (inputFilter(it)) onSearchQueryChanged(it)
+            Timber.d("SearchTextField() - onValueChange($it)")
+            if (inputFilter(it.text) && it.text != searchQuery.text) {
+                Timber.d("SearchTextField() - onValueChange() - changed")
+                onSearchQueryChanged(it.text)
+            }
         },
         placeholder = { if (placeholder != null) Text(text = stringResource(id = placeholder)) },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(padding)
             .onKeyEvent {
+                Timber.d("SearchTextField() - onKeyEvent($it)")
                 if (it.key == Key.Enter) {
                     onSearchExplicitlyTriggered()
                     true
@@ -97,11 +148,7 @@ fun SearchTextField(
                 }
             }
             .testTag("searchTextField")
-            .apply {
-               if (isFocusRequest) {
-                   focusRequester(focusRequester)
-               }
-            },
+            .focusRequester(focusRequester),
         shape = RoundedCornerShape(16.dp),
         value = searchQuery,
         keyboardOptions = KeyboardOptions(
@@ -110,15 +157,17 @@ fun SearchTextField(
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
+                Timber.d("SearchTextField() - onSearch($this)")
                 onSearchExplicitlyTriggered()
             },
         ),
-        maxLines = 1,
         singleLine = true,
         visualTransformation = visualTransformation
     )
+
     if (isFocusRequest) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(focusRequester) {
+            Timber.d("SearchTextField() - LaunchedEffect($this)")
             focusRequester.requestFocus()
         }
     }
@@ -127,8 +176,12 @@ fun SearchTextField(
 @Preview("Search text field")
 @Composable
 fun SearchTextFieldPreview() {
+    val someText = "Some text"
     SearchTextField(
-        searchQuery = "query",
+        searchQuery = TextFieldValue(
+            text = someText,
+            selection = TextRange(someText.length)
+        ),
         contentDescriptionSearch = "contentDescriptionSearch",
         contentDescriptionClose = "contentDescriptionClose",
         onSearchQueryChanged = {},

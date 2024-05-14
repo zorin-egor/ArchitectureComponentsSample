@@ -2,6 +2,8 @@ package com.sample.architecturecomponents.core.data.di
 
 import com.sample.architecturecomponents.core.data.repositories.details.DetailsRepository
 import com.sample.architecturecomponents.core.data.repositories.details.DetailsRepositoryImpl
+import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepository
+import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepository
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
@@ -36,5 +38,10 @@ internal abstract class DataModule {
     internal abstract fun bindsReposRepository(
         repository: RepositoriesRepositoryImpl,
     ): RepositoriesRepository
+
+    @Binds
+    internal abstract fun bindsRecentSearchRepository(
+        repository: RecentSearchRepositoryImpl,
+    ): RecentSearchRepository
 
 }

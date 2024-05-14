@@ -7,10 +7,11 @@ import retrofit2.Response
 
 interface NetworkDataSource {
 
-    suspend fun getUsers(since: Long, perPage: Int): Response<List<NetworkUser>>
+    suspend fun getUsers(since: Long, perPage: Long): Response<List<NetworkUser>>
 
     suspend fun getDetails(url: String): Response<NetworkDetails>
 
-    suspend fun getRepositories(name: String, page: Int, perPage: Int): Response<NetworkRepositories>
+    suspend fun getRepositories(name: String, page: Int, perPage: Int, sort: String?,
+        isDescOrder: Boolean = true): Response<NetworkRepositories>
 
 }

@@ -9,6 +9,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.sample.architecturecomponents.core.model.Details
+import kotlinx.datetime.Instant
 
 @Entity(
     tableName = "Details",
@@ -41,7 +42,7 @@ data class DetailsEntity(
     @ColumnInfo(name = "public_gists") val publicGists: Long?,
     @ColumnInfo(name = "followers") val followers: Long?,
     @ColumnInfo(name = "following") val following: Long?,
-    @ColumnInfo(name = "created_at") val createdAt: String?,
+    @ColumnInfo(name = "created_at") val createdAt: Instant?,
     @ColumnInfo(name = "repos_url") val reposUrl: String?
 )
 

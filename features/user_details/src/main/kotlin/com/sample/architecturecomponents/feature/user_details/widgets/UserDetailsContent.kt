@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.data.models.repositoriesUrl
+import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.Details
 import com.sample.architecturecomponents.core.ui.ext.getHyperLink
 import com.sample.architecturecomponents.core.ui.ext.openBrowser
@@ -314,7 +315,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.createdAt ?: "-",
+                    text = details.createdAt?.toFormatterDateTime ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

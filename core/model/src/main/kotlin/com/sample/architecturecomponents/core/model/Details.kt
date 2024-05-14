@@ -1,5 +1,7 @@
 package com.sample.architecturecomponents.core.model
 
+import kotlinx.datetime.Instant
+
 data class Details(
     val id: Long,
     val url: String,
@@ -14,6 +16,6 @@ data class Details(
     val publicGists: Long?,
     val followers: Long?,
     val following: Long?,
-    val createdAt: String?,
+    val createdAt: Instant?,
     val reposUrl: String?
 )

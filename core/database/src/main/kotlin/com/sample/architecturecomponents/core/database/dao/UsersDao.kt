@@ -22,7 +22,7 @@ interface UsersDao {
     fun getUsersCount(from: Long, count: Long = 30): Flow<List<UserEntity>>
 
     @Query("SELECT * FROM Users WHERE user_id > :sinceId ORDER BY user_id LIMIT :limit")
-    fun getUsersSinceId(sinceId: Long, limit: Int = 30): Flow<List<UserEntity>>
+    fun getUsersSinceId(sinceId: Long, limit: Long = 30): Flow<List<UserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserEntity)

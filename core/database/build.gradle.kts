@@ -10,5 +10,6 @@ android {
 
 dependencies {
     api(projects.core.model)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.square.retrofit2.gson.converter)
 }

@@ -8,8 +8,10 @@ import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.di.IoScope
+import com.sample.architecturecomponents.core.network.ext.REPOSITORY_SORT_BY_UPDATE_DATE
 import com.sample.architecturecomponents.core.network.ext.getResultOrThrow
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -39,9 +41,12 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                 .onEach(dbItems::addAll)
                 .collect(::emit)
 
+            delay(1000)
+
             Timber.d("getRepos() - network request")
-            val response = networkDatasource.getRepositories(name = name, page = page.toInt(), perPage = limit.toInt())
-                .getResultOrThrow()
+            val response = networkDatasource.getRepositories(name = name, page = page.toInt(),
+                perPage = limit.toInt(), sort = REPOSITORY_SORT_BY_UPDATE_DATE, isDescOrder = false)
+                    .getResultOrThrow()
 
             val result = response.networkItems.toExternalModel()
 
@@ -61,8 +66,8 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(item: Repository) = repositoriesDao.insert(item.toRepoEntity())
+    override suspend fun insert(item: Repository) = repositoriesDao.insert(item.toRepoEntity())
 
-    override suspend fun remove(item: Repository) = repositoriesDao.delete(item.toRepoEntity())
+    override suspend fun delete(item: Repository) = repositoriesDao.delete(item.toRepoEntity())
 
 }

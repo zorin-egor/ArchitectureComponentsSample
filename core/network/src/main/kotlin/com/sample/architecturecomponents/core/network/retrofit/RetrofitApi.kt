@@ -13,7 +13,7 @@ interface RetrofitApi {
     @GET("users")
     suspend fun getUsers(
         @Query("since") since: Long,
-        @Query("per_page") perPage: Int = 30
+        @Query("per_page") perPage: Long = 30
     ): Response<List<NetworkUser>>
 
     @GET
@@ -23,7 +23,9 @@ interface RetrofitApi {
     suspend fun getRepositories(
         @Query("q") query: String,
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int = 30
+        @Query("per_page") perPage: Int = 30,
+        @Query("sort") sort: String? = null,
+        @Query("order") order: String? = null,
     ): Response<NetworkRepositories>
 
 }

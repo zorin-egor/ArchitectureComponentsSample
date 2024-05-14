@@ -7,8 +7,8 @@ interface RepositoriesRepository {
 
     fun getRepositoriesByName(name: String, page: Long, limit: Long = 30): Flow<List<Repository>>
 
-    suspend fun add(item: Repository)
+    suspend fun insert(item: Repository)
 
-    suspend fun remove(item: Repository)
+    suspend fun delete(item: Repository)
 
 }

@@ -4,6 +4,8 @@ package com.sample.architecturecomponents.core.network.retrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sample.architecturecomponents.core.network.BuildConfig
 import com.sample.architecturecomponents.core.network.NetworkDataSource
+import com.sample.architecturecomponents.core.network.ext.SORT_ASC
+import com.sample.architecturecomponents.core.network.ext.SORT_DESC
 import com.sample.architecturecomponents.core.network.models.NetworkDetails
 import com.sample.architecturecomponents.core.network.models.NetworkRepositories
 import com.sample.architecturecomponents.core.network.models.NetworkUser
@@ -30,13 +32,15 @@ internal class RetrofitNetwork @Inject constructor(
         .build()
         .create(RetrofitApi::class.java)
 
-    override suspend fun getUsers(since: Long, perPage: Int): Response<List<NetworkUser>> =
+    override suspend fun getUsers(since: Long, perPage: Long): Response<List<NetworkUser>> =
         api.getUsers(since = since, perPage = perPage)
 
     override suspend fun getDetails(url: String): Response<NetworkDetails> =
         api.getDetails(url)
 
-    override suspend fun getRepositories(name: String, page: Int, perPage: Int): Response<NetworkRepositories> =
-        api.getRepositories(query = name, page = page, perPage = perPage)
+    override suspend fun getRepositories(name: String, page: Int, perPage: Int, sort: String?,
+                                         isDescOrder: Boolean): Response<NetworkRepositories> =
+        api.getRepositories(query = name, page = page, perPage = perPage, sort = sort,
+            order = if (isDescOrder) SORT_DESC else SORT_ASC)
 }
 

@@ -6,6 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.sample.architecturecomponents.core.model.License
 import com.sample.architecturecomponents.core.model.Repository
+import kotlinx.datetime.Instant
 
 @Entity(
     tableName = "Repositories",
@@ -24,9 +25,9 @@ data class RepositoryEntity(
     @ColumnInfo(name = "node_id") val nodeId: String,
     @ColumnInfo(name = "forks") val forks: Int,
     @ColumnInfo(name = "watchers_count") val watchersCount: Int,
-    @ColumnInfo(name = "created_at") val createdAt: String,
-    @ColumnInfo(name = "updated_at") val updatedAt: String,
-    @ColumnInfo(name = "pushed_at") val pushedAt: String,
+    @ColumnInfo(name = "created_at") val createdAt: Instant,
+    @ColumnInfo(name = "updated_at") val updatedAt: Instant,
+    @ColumnInfo(name = "pushed_at") val pushedAt: Instant,
     @ColumnInfo(name = "default_branch") val defaultBranch: String,
     @ColumnInfo(name = "stargazers_count") val stargazersCount: Int,
     @ColumnInfo(name = "description") val description: String?,
