@@ -22,7 +22,7 @@ class GetUsersUseCase @Inject constructor(
         private const val LIMIT = 30L
     }
 
-    private val usersSet = LinkedHashSet<User>()
+    private val users = ArrayList<User>()
     private val mutex = Any()
     private var lastId = SINCE_ID
     private var hasNext = true
@@ -31,13 +31,13 @@ class GetUsersUseCase @Inject constructor(
         Timber.d("invoke($hasNext, $id) - new")
 
         return usersRepository.getUsers(sinceId = id, limit = LIMIT)
-            .map {
+            .map { new ->
                 synchronized(mutex) {
-                    hasNext = it.size >= LIMIT
-                    lastId = it.lastOrNull()?.id ?: lastId
-                    usersSet.clear()
-                    usersSet.addAll(it)
-                    usersSet.toList()
+                    hasNext = new.size >= LIMIT
+                    lastId = new.lastOrNull()?.id ?: lastId
+                    users.clear()
+                    users.addAll(new)
+                    users.toList()
                 }
             }
             .flowOn(dispatcher)
@@ -48,17 +48,21 @@ class GetUsersUseCase @Inject constructor(
 
         synchronized(mutex) {
             if (!hasNext) {
-                return flowOf(usersSet.toList())
+                return flowOf(users.toList())
             }
         }
 
         return usersRepository.getUsers(sinceId = lastId, limit = LIMIT)
-            .map {
+            .map { new ->
                 synchronized(mutex) {
-                    hasNext = it.size >= LIMIT
-                    lastId = it.lastOrNull()?.id ?: lastId
-                    usersSet.addAll(it)
-                    usersSet.toList()
+                    hasNext = new.size >= LIMIT
+                    lastId = new.lastOrNull()?.id ?: lastId
+                    new.forEach { item ->
+                        if (users.find { it.id == item.id } == null) {
+                            users.add(item)
+                        }
+                    }
+                    users.toList()
                 }
             }
             .flowOn(dispatcher)

@@ -20,9 +20,9 @@ interface RepositoriesDao {
 
     @Query(
         "SELECT * FROM Repositories WHERE name LIKE '%' || :name || '%' OR " +
-        "description LIKE '%' || :name || '%' ORDER BY updated_at ASC LIMIT :limit OFFSET :offset"
+        "description LIKE '%' || :name || '%' ORDER BY name ASC LIMIT :limit OFFSET :offset"
     )
-    fun getRepoByName(name: String, offset: Long, limit: Long = 30): Flow<List<RepositoryEntity>>
+    fun getRepositoriesByName(name: String, offset: Long, limit: Long = 30): Flow<List<RepositoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: RepositoryEntity)

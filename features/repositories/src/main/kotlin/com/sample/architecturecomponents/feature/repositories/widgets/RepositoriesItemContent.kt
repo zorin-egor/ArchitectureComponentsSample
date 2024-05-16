@@ -29,6 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.ui.ext.BorderCircleImageRequest
 import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
@@ -65,8 +66,8 @@ fun RepositoriesItemContent(
                     onClick = { onRepositoryClick(repository) },
                 )
         ) {
-            val (image, name, desc, starsIcon, forksIcon, startTitle, forksTitle) = createRefs()
-            val verticalChainText = createVerticalChain(name, desc, chainStyle = ChainStyle.Packed(0.5f))
+            val (image, name, desc, starsIcon, forksIcon, startTitle, forksTitle, dateTime) = createRefs()
+            val verticalChainText = createVerticalChain(name, desc, dateTime, chainStyle = ChainStyle.Packed(0.5f))
             val verticalChainIcons = createVerticalChain(starsIcon, startTitle, forksIcon, forksTitle, chainStyle = ChainStyle.Packed(0.5f))
 
             constrain(verticalChainText) {}
@@ -138,6 +139,31 @@ fun RepositoriesItemContent(
 
                         linkTo(
                             top = name.bottom,
+                            bottom = dateTime.top,
+                            start = name.start,
+                            end = starsIcon.start,
+                            endMargin = 16.dp,
+                            topMargin = 4.dp,
+                            bottomMargin = 16.dp,
+                            horizontalBias = 0.0f
+                        )
+                    }.padding(top = 4.dp),
+            )
+
+            Text(
+                text = repository.updatedAt.toFormatterDateTime,
+                fontSize = 10.sp,
+                lineHeight = 10.sp,
+                maxLines = 3,
+                fontWeight = FontWeight.Light,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .constrainAs(dateTime) {
+                        height = Dimension.wrapContent
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = desc.bottom,
                             bottom = parent.bottom,
                             start = name.start,
                             end = starsIcon.start,

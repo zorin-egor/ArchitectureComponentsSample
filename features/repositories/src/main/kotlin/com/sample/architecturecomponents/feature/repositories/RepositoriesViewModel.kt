@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.domain.usecases.GetRecentSearchUseCase
-import com.sample.architecturecomponents.core.domain.usecases.GetReposByNameUseCase
+import com.sample.architecturecomponents.core.domain.usecases.GetRepositoriesByNameUseCase
 import com.sample.architecturecomponents.core.domain.usecases.SetRecentSearchUseCase
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class RepositoriesViewModel @Inject constructor(
-    private val getReposByNameUseCase: GetReposByNameUseCase,
+    private val getReposByNameUseCase: GetRepositoriesByNameUseCase,
     private val getRecentSearchUseCase: GetRecentSearchUseCase,
     private val setRecentSearchUseCase: SetRecentSearchUseCase,
     @ApplicationContext private val context: Context,

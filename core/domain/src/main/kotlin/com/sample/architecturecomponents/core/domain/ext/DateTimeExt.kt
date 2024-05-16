@@ -6,5 +6,5 @@ import kotlinx.datetime.toLocalDateTime
 
 val Instant.toFormatterDateTime: String
     get() = toLocalDateTime(TimeZone.UTC).let {
-        "${it.date.year}/${it.date.month}/${it.date.dayOfMonth} ${it.time.hour}:${it.time.minute}:${it.time.second}"
+        "${it.date.year}/${it.date.monthNumber}/${it.date.dayOfMonth} ${it.time.hour}:${it.time.minute}:${it.time.second}"
     }

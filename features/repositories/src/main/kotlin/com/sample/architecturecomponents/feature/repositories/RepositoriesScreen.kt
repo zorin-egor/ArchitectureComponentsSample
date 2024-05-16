@@ -90,7 +90,7 @@ internal fun RepositoriesScreen(
                         repository = repository,
                         onRepositoryClick = onClick,
                         modifier = Modifier.fillMaxWidth()
-                            .height(100.dp)
+                            .height(110.dp)
                     )
                 }
             }

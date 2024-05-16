@@ -24,6 +24,7 @@ fun <Item> ListContentWidget(
     onBottomEvent: () -> Unit,
     isBottomProgress: Boolean,
     modifier: Modifier = Modifier,
+    prefetch: Int = 3,
     content: @Composable (Item, (Item) -> Unit) -> Unit
 ) {
     println("ItemsOrganizationsContent()")
@@ -32,7 +33,7 @@ fun <Item> ListContentWidget(
 
     listState.setEdgeEvents(
         debounce = 1000,
-        prefetch = 3,
+        prefetch = prefetch,
         onTopList = { index ->
             println("ItemsOrganizationsContent() - onTopList: $index")
         },

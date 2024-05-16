@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 
-class GetReposByNameUseCase @Inject constructor(
+class GetRepositoriesByNameUseCase @Inject constructor(
     private val repositoriesRepository: RepositoriesRepository,
     @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
 ) {
@@ -26,7 +26,7 @@ class GetReposByNameUseCase @Inject constructor(
         private const val START_PAGE = 1L
     }
 
-    private val reposSet = LinkedHashSet<Repository>()
+    private val repositories = ArrayList<Repository>()
     private val mutex = Any()
     private var previousName = ""
     private var hasNext = true
@@ -37,17 +37,21 @@ class GetReposByNameUseCase @Inject constructor(
 
         synchronized(mutex) {
             if (!hasNext || previousName.isEmpty()) {
-                return flowOf(reposSet.toList())
+                return flowOf(repositories.toList())
             }
         }
 
         return repositoriesRepository.getRepositoriesByName(name = previousName, page = page.get() + 1, limit = LIMIT)
-            .map {
+            .map { new ->
                 synchronized(mutex) {
                     page.incrementAndGet()
-                    hasNext = it.size >= LIMIT
-                    reposSet.addAll(it)
-                    reposSet.toList()
+                    hasNext = new.size >= LIMIT
+                    new.forEach { item ->
+                        if (repositories.find { it.id == item.id } == null) {
+                            repositories.add(item)
+                        }
+                    }
+                    repositories.toList()
                 }
             }
             .onCompletion {
@@ -61,8 +65,8 @@ class GetReposByNameUseCase @Inject constructor(
         Timber.d("invoke($name, $previousName) - new")
 
         synchronized(mutex) {
-            if (name == previousName && reposSet.isNotEmpty()) {
-                return flowOf(reposSet.toList())
+            if (name == previousName && repositories.isNotEmpty()) {
+                return flowOf(repositories.toList())
             }
         }
 
@@ -76,9 +80,9 @@ class GetReposByNameUseCase @Inject constructor(
                     previousName = name
                     page.getAndSet(START_PAGE)
                     hasNext = it.size >= LIMIT
-                    reposSet.clear()
-                    reposSet.addAll(it)
-                    reposSet.toList()
+                    repositories.clear()
+                    repositories.addAll(it)
+                    repositories.toList()
                 }
             }
             .flowOn(dispatcher)

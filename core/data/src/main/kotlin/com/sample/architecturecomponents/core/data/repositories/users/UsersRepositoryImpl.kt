@@ -40,7 +40,10 @@ internal class UsersRepositoryImpl @Inject constructor(
             usersDao.getUsersSinceId(sinceId = sinceId, limit = limit)
                 .take(1)
                 .catch { Timber.e(it) }
-                .mapNotNull { it.asExternalModel() }
+                .mapNotNull {
+                    it.takeIf { it.isNotEmpty() }
+                        ?.asExternalModel()
+                }
                 .onEach(dbItems::addAll)
                 .collect(::emit)
 
