@@ -38,11 +38,10 @@ fun UsersItemContent(
     onUserClick: (User) -> Unit,
     modifier: Modifier
 ) {
-
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
     val imageLoader = rememberAsyncImagePainter(
-        model = user.avatarUrl + "jbljblk",
+        model = user.avatarUrl,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -50,7 +49,7 @@ fun UsersItemContent(
     )
 
     Card(
-        modifier = modifier,
+        modifier = modifier.then(Modifier.height(100.dp)),
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(

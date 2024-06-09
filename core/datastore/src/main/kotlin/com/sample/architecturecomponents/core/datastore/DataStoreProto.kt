@@ -2,8 +2,8 @@ package com.sample.architecturecomponents.core.datastore
 
 import androidx.datastore.core.DataStore
 import com.sample.architecturecomponents.core.model.DarkThemeConfig
-import com.sample.architecturecomponents.core.model.SettingsData
 import com.sample.architecturecomponents.core.model.ThemeBrand
+import com.sample.architecturecomponents.core.model.ThemeData
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,9 +13,9 @@ internal class DataStoreProto @Inject constructor(
     private val userPreferences: DataStore<SettingsDataStore>,
 ): SettingsDataStoreProto {
 
-    override val settingsData = userPreferences.data
+    override val themeData = userPreferences.data
         .map {
-            SettingsData(
+            ThemeData(
                 themeBrand = when (it.themeBrand) {
                     null,
                     ThemeBrandProto.THEME_BRAND_UNSPECIFIED,

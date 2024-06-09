@@ -2,8 +2,8 @@ package com.sample.architecturecomponents.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
-import com.sample.architecturecomponents.core.model.SettingsData
+import com.sample.architecturecomponents.core.data.repositories.theme.ThemeRepository
+import com.sample.architecturecomponents.core.model.ThemeData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,10 +13,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    settingsDataRepository: SettingsDataRepository
+    settingsDataRepository: ThemeRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<MainActivityUiState> = settingsDataRepository.settingsData.map {
+    val uiState: StateFlow<MainActivityUiState> = settingsDataRepository.themeData.map {
         MainActivityUiState.Success(it)
     }.stateIn(
         scope = viewModelScope,
@@ -27,5 +27,5 @@ class MainActivityViewModel @Inject constructor(
 
 sealed interface MainActivityUiState {
     data object Loading : MainActivityUiState
-    data class Success(val settingsData: SettingsData) : MainActivityUiState
+    data class Success(val themeData: ThemeData) : MainActivityUiState
 }

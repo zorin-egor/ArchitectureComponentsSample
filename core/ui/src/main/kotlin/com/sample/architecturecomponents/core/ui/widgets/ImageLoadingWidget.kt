@@ -20,8 +20,8 @@ fun ImageLoadingWidget(
     isError: Boolean,
     placeHolder: ImageVector,
     contentScale: ContentScale,
+    modifier: Modifier = Modifier,
     placeholderColorFilter: ColorFilter? = null,
-    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         when {

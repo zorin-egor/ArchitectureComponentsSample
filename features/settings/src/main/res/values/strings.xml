@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_settings_title">Settings</string>
+    <string name="feature_settings_ui">Ui</string>
+    <string name="feature_settings_theme_header">Theme</string>
+    <string name="feature_settings_theme_action">Change theme</string>
+    <string name="feature_settings_storage">Storage</string>
+    <string name="feature_settings_storage_capacity">Capacity</string>
+    <string name="feature_settings_storage_clear">Clear storage</string>
 </resources>

@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.feature.themes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
+import com.sample.architecturecomponents.core.data.repositories.theme.ThemeRepository
 import com.sample.architecturecomponents.core.model.DarkThemeConfig
 import com.sample.architecturecomponents.core.model.ThemeBrand
 import com.sample.architecturecomponents.feature.themes.ThemesUiState.Loading
@@ -18,11 +18,11 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ThemesViewModel @Inject constructor(
-    private val userDataRepository: SettingsDataRepository,
+    private val userDataRepository: ThemeRepository,
 ) : ViewModel() {
 
     val themesUiState: StateFlow<ThemesUiState> =
-        userDataRepository.settingsData
+        userDataRepository.themeData
             .map { userData ->
                 Success(
                     settings = UserEditableThemes(

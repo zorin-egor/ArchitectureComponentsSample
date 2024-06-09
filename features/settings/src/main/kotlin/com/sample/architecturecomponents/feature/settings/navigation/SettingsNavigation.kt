@@ -14,11 +14,14 @@ fun NavController.navigateToSettings(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.settingsScreen(
+    showThemeDialog: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable(
         route = SETTINGS_ROUTE,
     ) {
-        SettingsScreen()
+        SettingsScreen(
+            showThemeDialog = showThemeDialog
+        )
     }
 }

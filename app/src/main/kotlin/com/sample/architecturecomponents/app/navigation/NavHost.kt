@@ -16,6 +16,7 @@ import timber.log.Timber
 fun NavHost(
     appState: AppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
+    showThemeDialog: () -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = USERS_ROUTE,
 ) {
@@ -43,6 +44,7 @@ fun NavHost(
             onShowSnackbar = onShowSnackbar
         )
         settingsScreen(
+            showThemeDialog = showThemeDialog,
             onShowSnackbar = onShowSnackbar
         )
         repositoriesScreen(

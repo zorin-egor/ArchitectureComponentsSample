@@ -56,6 +56,7 @@ fun AppRoot(appState: AppState) {
         Timber.d("AppRoot($appState)")
 
         val snackbarHostState = remember { SnackbarHostState() }
+        var showThemesDialog by rememberSaveable { mutableStateOf(false) }
         val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
         val notConnectedMessage = stringResource(AppR.string.not_connected)
@@ -66,6 +67,12 @@ fun AppRoot(appState: AppState) {
                     duration = SnackbarDuration.Long,
                 )
             }
+        }
+
+        if (showThemesDialog) {
+            ThemesDialog(
+                onDismiss = { showThemesDialog = false },
+            )
         }
 
         Scaffold(
@@ -93,8 +100,9 @@ fun AppRoot(appState: AppState) {
                 NavAppTopBar(state = appState)
 
                 NavHost(
-                   appState = appState,
-                   onShowSnackbar = { message, action ->
+                    appState = appState,
+                    showThemeDialog = { showThemesDialog = true },
+                    onShowSnackbar = { message, action ->
                        snackbarHostState.showSnackbar(
                            message = message,
                            actionLabel = action,
@@ -110,7 +118,6 @@ fun AppRoot(appState: AppState) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NavAppTopBar(state: AppState) {
-    var showThemesDialog by rememberSaveable { mutableStateOf(false) }
 
     var isTopBarVisible = false
     var toolbarTitle: Int? = null
@@ -131,9 +138,6 @@ private fun NavAppTopBar(state: AppState) {
         }
         SETTINGS_ROUTE -> {
             toolbarTitle = SettingsR.string.feature_settings_title
-            actionIcon = Icons.Themes
-            actionDesc = stringResource(SettingsR.string.feature_settings_title)
-            actionClick = { showThemesDialog = true }
             isTopBarVisible = true
         }
         else -> {
@@ -143,12 +147,6 @@ private fun NavAppTopBar(state: AppState) {
 
     if (!isTopBarVisible) {
         return
-    }
-
-    if (showThemesDialog) {
-        ThemesDialog(
-            onDismiss = { showThemesDialog = false },
-        )
     }
 
     AppTopBar(

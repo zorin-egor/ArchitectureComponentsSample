@@ -111,7 +111,7 @@ private fun shouldUseAndroidTheme(
     uiState: MainActivityUiState,
 ): Boolean = when (uiState) {
     MainActivityUiState.Loading -> false
-    is MainActivityUiState.Success -> when (uiState.settingsData.themeBrand) {
+    is MainActivityUiState.Success -> when (uiState.themeData.themeBrand) {
         ThemeBrand.DEFAULT -> false
         ThemeBrand.ANDROID -> true
     }
@@ -121,14 +121,14 @@ private fun shouldDisableDynamicTheming(
     uiState: MainActivityUiState,
 ): Boolean = when (uiState) {
     MainActivityUiState.Loading -> false
-    is MainActivityUiState.Success -> !uiState.settingsData.useDynamicColor
+    is MainActivityUiState.Success -> !uiState.themeData.useDynamicColor
 }
 @Composable
 private fun shouldUseDarkTheme(
     uiState: MainActivityUiState,
 ): Boolean = when (uiState) {
     MainActivityUiState.Loading -> isSystemInDarkTheme()
-    is MainActivityUiState.Success -> when (uiState.settingsData.darkThemeConfig) {
+    is MainActivityUiState.Success -> when (uiState.themeData.darkThemeConfig) {
         DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
         DarkThemeConfig.LIGHT -> false
         DarkThemeConfig.DARK -> true

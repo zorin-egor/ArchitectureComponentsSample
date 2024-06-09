@@ -1,13 +1,13 @@
-package com.sample.architecturecomponents.core.data.repositories.settings
+package com.sample.architecturecomponents.core.data.repositories.theme
 
 import com.sample.architecturecomponents.core.model.DarkThemeConfig
-import com.sample.architecturecomponents.core.model.SettingsData
 import com.sample.architecturecomponents.core.model.ThemeBrand
+import com.sample.architecturecomponents.core.model.ThemeData
 import kotlinx.coroutines.flow.Flow
 
-interface SettingsDataRepository {
+interface ThemeRepository {
 
-    val settingsData: Flow<SettingsData>
+    val themeData: Flow<ThemeData>
 
     suspend fun setThemeBrand(themeBrand: ThemeBrand)
 

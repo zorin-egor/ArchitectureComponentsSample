@@ -6,8 +6,10 @@ import com.sample.architecturecomponents.core.data.repositories.recent_search.Re
 import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepository
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepositoryImpl
-import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepository
-import com.sample.architecturecomponents.core.data.repositories.settings.SettingsDataRepositoryImpl
+import com.sample.architecturecomponents.core.data.repositories.settings.SettingsRepository
+import com.sample.architecturecomponents.core.data.repositories.settings.SettingsRepositoryImpl
+import com.sample.architecturecomponents.core.data.repositories.theme.ThemeRepository
+import com.sample.architecturecomponents.core.data.repositories.theme.ThemeRepositoryImpl
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepositoryImpl
 import dagger.Binds
@@ -30,9 +32,14 @@ internal abstract class DataModule {
     ): DetailsRepository
 
     @Binds
+    internal abstract fun bindsThemeDataRepository(
+        themeDataRepository: ThemeRepositoryImpl,
+    ): ThemeRepository
+
+    @Binds
     internal abstract fun bindsSettingsDataRepository(
-        settingsDataRepository: SettingsDataRepositoryImpl,
-    ): SettingsDataRepository
+        settingsDataRepository: SettingsRepositoryImpl,
+    ): SettingsRepository
 
     @Binds
     internal abstract fun bindsReposRepository(
