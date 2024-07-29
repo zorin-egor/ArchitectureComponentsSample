@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
@@ -35,6 +36,23 @@ fun TwoLinesButtonWidget(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
 ) {
+    TwoLinesButtonWidget(
+        header = stringResource(id = headerRes),
+        title = stringResource(id = titleRes),
+        onClick = onClick,
+        modifier = modifier,
+        icon = icon
+    )
+}
+
+@Composable
+fun TwoLinesButtonWidget(
+    header: String,
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    @DrawableRes icon: Int? = null,
+) {
     val modifierDefault = Modifier
         .clip(RectangleShape)
         .clickable(
@@ -56,11 +74,13 @@ fun TwoLinesButtonWidget(
                 contentDescription = null,
                 modifier = Modifier.align(alignment = Alignment.CenterVertically)
             )
+
+            Spacer(modifier = Modifier.width(8.dp))
         }
 
         Column {
             Text(
-                text = stringResource(id = headerRes),
+                text = header,
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
                 fontWeight = FontWeight.Medium,
@@ -70,7 +90,7 @@ fun TwoLinesButtonWidget(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = stringResource(id = titleRes),
+                text = title,
                 fontSize = 14.sp,
                 lineHeight = 14.sp,
                 fontWeight = FontWeight.Normal,

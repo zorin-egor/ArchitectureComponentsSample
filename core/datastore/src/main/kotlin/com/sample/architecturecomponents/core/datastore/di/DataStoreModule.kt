@@ -10,6 +10,7 @@ import com.sample.architecturecomponents.core.datastore.DataStoreProtoSerializer
 import com.sample.architecturecomponents.core.datastore.SettingsDataStore
 import com.sample.architecturecomponents.core.datastore.SettingsDataStoreProto
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
+import com.sample.architecturecomponents.core.model.AppConfig
 import com.sample.architecturecomponents.core.network.Dispatcher
 import com.sample.architecturecomponents.core.network.Dispatchers
 import com.sample.architecturecomponents.core.network.di.DefaultScope
@@ -45,8 +46,9 @@ object DataStoreModule {
     @Provides
     @Singleton
     fun providesSettingsPreference(
-        @ApplicationContext context: Context
-    ): SettingsPreference = DataStorePreference(context)
+        @ApplicationContext context: Context,
+        appConfig: AppConfig
+    ): SettingsPreference = DataStorePreference(context, appConfig)
 
     @Provides
     @Singleton

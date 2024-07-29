@@ -1,9 +1,9 @@
 package com.sample.architecturecomponents.core.data.repositories.users
 
-import com.sample.architecturecomponents.core.data.models.toExternalModel
+import com.sample.architecturecomponents.core.data.models.toRepositoryModel
 import com.sample.architecturecomponents.core.data.models.toUserEntity
 import com.sample.architecturecomponents.core.database.dao.UsersDao
-import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.NetworkDataSource
@@ -25,7 +25,7 @@ internal class UsersRepositoryImpl @Inject constructor(
     private val networkDatasource: NetworkDataSource,
     private val usersDao: UsersDao,
     private val settingsPreference: SettingsPreference,
-    @IoScope private val ioScope: CoroutineScope
+    @IoScope private val ioScope: CoroutineScope,
 ) : UsersRepository {
 
     override fun getUsers(sinceId: Long, limit: Long): Flow<List<User>> {
@@ -42,14 +42,14 @@ internal class UsersRepositoryImpl @Inject constructor(
                 .catch { Timber.e(it) }
                 .mapNotNull {
                     it.takeIf { it.isNotEmpty() }
-                        ?.asExternalModel()
+                        ?.asExternalModels()
                 }
                 .onEach(dbItems::addAll)
                 .collect(::emit)
 
             Timber.d("getUsers() - network request")
             val response = networkDatasource.getUsers(since = sinceId, perPage = limit).getResultOrThrow()
-            val result = response.toExternalModel()
+            val result = response.toRepositoryModel()
 
             if (dbItems.isNotEmpty() && dbItems == result) {
                 Timber.d("getUsers() - db == network")

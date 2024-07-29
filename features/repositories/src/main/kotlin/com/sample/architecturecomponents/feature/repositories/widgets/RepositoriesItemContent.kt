@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.feature.repositories.widgets
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
@@ -33,6 +35,7 @@ import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.ui.ext.BorderCircleImageRequest
 import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
+import kotlinx.datetime.Clock
 
 @Composable
 fun RepositoriesItemContent(
@@ -147,7 +150,8 @@ fun RepositoriesItemContent(
                             bottomMargin = 16.dp,
                             horizontalBias = 0.0f
                         )
-                    }.padding(top = 4.dp),
+                    }
+                    .padding(top = 4.dp),
             )
 
             Text(
@@ -172,7 +176,8 @@ fun RepositoriesItemContent(
                             bottomMargin = 16.dp,
                             horizontalBias = 0.0f
                         )
-                    }.padding(top = 4.dp),
+                    }
+                    .padding(top = 4.dp),
             )
 
             Icon(
@@ -185,7 +190,8 @@ fun RepositoriesItemContent(
                         top.linkTo(anchor = parent.top, margin = 16.dp)
                         end.linkTo(anchor = parent.end, margin = 16.dp)
                         bottom.linkTo(anchor = startTitle.top)
-                    }.alpha(0.8f),
+                    }
+                    .alpha(0.8f),
             )
 
             Text(
@@ -241,4 +247,26 @@ fun RepositoriesItemContent(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun RepositoriesItemContentPreview() {
+    RepositoriesItemContent(
+        repository = Repository(
+            id = 0,
+            userId = 0,
+            owner = "owner",
+            avatarUrl = "",
+            name = "name",
+            forks = 0,
+            watchersCount = 0,
+            createdAt = Clock.System.now(),
+            updatedAt = Clock.System.now(),
+            stargazersCount = 0,
+            description = "description",
+        ),
+        onRepositoryClick = {},
+        modifier = Modifier.height(200.dp)
+    )
 }

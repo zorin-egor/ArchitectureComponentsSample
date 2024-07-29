@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_repository_details_title">Details</string>
+    <string name="feature_repository_details_repository_name">Repository name</string>
+    <string name="feature_repository_details_forks">Forks</string>
+    <string name="feature_repository_details_watchers">Watchers count</string>
+    <string name="feature_repository_details_created_at">Created at</string>
+    <string name="feature_repository_details_updated_at">Updated at</string>
+    <string name="feature_repository_details_pushed_at">Pushed at</string>
+    <string name="feature_repository_details_default_branch">Default branch</string>
+    <string name="feature_repository_details_stargazers_count">Stargazers count</string>
+    <string name="feature_repository_details_description">Description</string>
+    <string name="feature_repository_details_topics">Topics</string>
+    <string name="feature_repository_details_license">License</string>
+</resources>

@@ -22,4 +22,9 @@
 
     <string name="empty_placeholder_header">Empty</string>
     <string name="empty_placeholder_title">No data to display.\nTry change query or refresh.</string>
+
+    <string name="repo">Repo</string>
+    <string name="version">Version: %s</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

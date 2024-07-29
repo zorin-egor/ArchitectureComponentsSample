@@ -23,7 +23,7 @@ import com.sample.architecturecomponents.core.ui.R as CoreUiR
 
 @Composable
 internal fun RepositoriesScreen(
-    onRepositoryClick: (Long) -> Unit,
+    onRepositoryClick: (String, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     viewModel: RepositoriesViewModel = hiltViewModel(),
@@ -82,7 +82,7 @@ internal fun RepositoriesScreen(
                 ListContentWidget(
                     items = state.repositories,
                     onKey = { it.id.toString() },
-                    onItemClick = { onRepositoryClick(it.id) },
+                    onItemClick = { onRepositoryClick(it.owner, it.name) },
                     onBottomEvent = viewModel::nextRepositories,
                     isBottomProgress = state.isBottomProgress
                 ) { repository, onClick ->

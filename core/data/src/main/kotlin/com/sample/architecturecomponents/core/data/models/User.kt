@@ -22,7 +22,7 @@ internal fun NetworkUser.toUserEntity() = UserEntity(
 
 internal fun List<NetworkUser>.toUserEntity() = map { it.toUserEntity() }
 
-internal fun NetworkUser.toExternalModel() = User(
+internal fun NetworkUser.toRepositoryModel() = User(
     id = id,
     nodeId = nodeId,
     login = login,
@@ -30,4 +30,4 @@ internal fun NetworkUser.toExternalModel() = User(
     avatarUrl = avatarUrl,
 )
 
-internal fun List<NetworkUser>.toExternalModel() = map { it.toExternalModel() }
+internal fun List<NetworkUser>.toRepositoryModel() = map { it.toRepositoryModel() }

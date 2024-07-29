@@ -7,4 +7,7 @@
     <string name="feature_settings_storage">Storage</string>
     <string name="feature_settings_storage_capacity">Capacity</string>
     <string name="feature_settings_storage_clear">Clear storage</string>
+    <string name="feature_settings_storage_clear_question"><![CDATA[Do you want to free up <b>%s</b> by clearing cache?]]></string>
+    <string name="feature_settings_notification">Notifications</string>
+    <string name="feature_settings_notification_switch_on_off">On\\off notifications receive</string>
 </resources>

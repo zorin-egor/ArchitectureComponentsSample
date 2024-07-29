@@ -18,7 +18,7 @@ private val URL_CHARACTER_ENCODING = Charsets.UTF_8.name()
 @VisibleForTesting
 internal const val USER_ID_ARG = "userId"
 internal const val USER_URL_ARG = "userUrl"
-internal const val USER_DETAILS_ROUTE_ = "details_route"
+internal const val USER_DETAILS_ROUTE_ = "user_details_route"
 const val USER_DETAILS_ROUTE = "$USER_DETAILS_ROUTE_?$USER_ID_ARG={$USER_ID_ARG}&$USER_URL_ARG={$USER_URL_ARG}"
 
 internal class UserDetailsArgs(val userUrl: String, val userId: Long) {
@@ -51,7 +51,7 @@ fun NavGraphBuilder.userDetailsScreen(
             navArgument(USER_URL_ARG) { type = NavType.StringType },
         ),
     ) {
-        Timber.d("DetailsScreen() - detailsScreen")
+        Timber.d("UserDetailsScreen() - detailsScreen")
         UserDetailsScreen(
             onUrlClick = onUrlClick,
             onShowSnackbar = onShowSnackbar

@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.core.data.repositories.recent_search
 
 import com.sample.architecturecomponents.core.data.models.toRecentSearchEntity
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
-import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import com.sample.architecturecomponents.core.network.di.IoScope
@@ -27,7 +27,7 @@ internal class RecentSearchRepositoryImpl @Inject constructor(
             recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
                 .take(1)
                 .catch { Timber.e(it) }
-                .map { it.asExternalModel() }
+                .map { it.asExternalModels() }
                 .collect(::emit)
         }
     }

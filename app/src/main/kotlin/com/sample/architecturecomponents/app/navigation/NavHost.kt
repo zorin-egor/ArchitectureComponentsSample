@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.feature.repositories.navigation.repositoriesScreen
+import com.sample.architecturecomponents.feature.repository_details.navigation.navigateToRepositoryDetails
+import com.sample.architecturecomponents.feature.repository_details.navigation.repositoryDetailsScreen
 import com.sample.architecturecomponents.feature.settings.navigation.settingsScreen
 import com.sample.architecturecomponents.feature.user_details.navigation.navigateToUserDetails
 import com.sample.architecturecomponents.feature.user_details.navigation.userDetailsScreen
@@ -39,7 +41,7 @@ fun NavHost(
             showBackButton = true,
             onBackClick = navController::navigateUp,
             onUrlClick = {
-                Timber.d("detailsScreen($it)")
+                Timber.d("userDetailsScreen($it)")
             },
             onShowSnackbar = onShowSnackbar
         )
@@ -48,8 +50,17 @@ fun NavHost(
             onShowSnackbar = onShowSnackbar
         )
         repositoriesScreen(
-            onRepositoryClick = {
-                Timber.d("repositoriesScreen($it)")
+            onRepositoryClick = { owner, repo ->
+                Timber.d("repositoriesScreen($owner, $repo)")
+                navController.navigateToRepositoryDetails(owner, repo)
+            },
+            onShowSnackbar = onShowSnackbar
+        )
+        repositoryDetailsScreen(
+            showBackButton = true,
+            onBackClick = navController::navigateUp,
+            onUrlClick = {
+                Timber.d("repositoryDetailsScreen($it)")
             },
             onShowSnackbar = onShowSnackbar
         )

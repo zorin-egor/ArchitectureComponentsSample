@@ -27,4 +27,4 @@ fun RecentSearchEntity.asExternalModel() = RecentSearch(
     tag = tag,
 )
 
-fun List<RecentSearchEntity>.asExternalModel() = map { it.asExternalModel() }
+fun List<RecentSearchEntity>.asExternalModels(): List<RecentSearch> = map { it.asExternalModel() }

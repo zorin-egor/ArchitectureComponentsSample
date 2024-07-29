@@ -4,6 +4,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsPreference {
 
+    suspend fun saveBaseUrl(value: String)
+
+    suspend fun getBaseUrl(): String
+
     suspend fun saveAuthToken(value: String)
 
     suspend fun getAuthToken(): String?

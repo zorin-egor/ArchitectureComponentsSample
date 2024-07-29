@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NetworkItem(
+data class NetworkRepository(
     @SerialName("allow_forking") val allowForking: Boolean,
     @SerialName("archive_url") val archiveUrl: String,
     @SerialName("archived") val archived: Boolean,
@@ -68,7 +68,6 @@ data class NetworkItem(
     @SerialName("pulls_url") val pullsUrl: String,
     @SerialName("pushed_at") val pushedAt: String,
     @SerialName("releases_url") val releasesUrl: String,
-    @SerialName("score") val score: Double,
     @SerialName("size") val size: Long,
     @SerialName("ssh_url") val sshUrl: String,
     @SerialName("stargazers_count") val stargazersCount: Int,
@@ -86,5 +85,6 @@ data class NetworkItem(
     @SerialName("visibility") val visibility: String,
     @SerialName("watchers") val watchers: Int,
     @SerialName("watchers_count") val watchersCount: Int,
-    @SerialName("web_commit_signoff_required") val webCommitSignoffRequired: Boolean
+    @SerialName("web_commit_signoff_required") val webCommitSignoffRequired: Boolean,
+    @SerialName("score") val score: Double?,
 )

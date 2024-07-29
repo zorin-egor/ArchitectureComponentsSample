@@ -7,20 +7,23 @@ import com.sample.architecturecomponents.core.database.converters.InstantConvert
 import com.sample.architecturecomponents.core.database.converters.LicenseConverter
 import com.sample.architecturecomponents.core.database.converters.ListStringConverter
 import com.sample.architecturecomponents.core.database.converters.RecentSearchTagsConverter
-import com.sample.architecturecomponents.core.database.dao.DetailsDao
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
+import com.sample.architecturecomponents.core.database.dao.RepositoryDetailsDao
+import com.sample.architecturecomponents.core.database.dao.UserDetailsDao
 import com.sample.architecturecomponents.core.database.dao.UsersDao
-import com.sample.architecturecomponents.core.database.model.DetailsEntity
 import com.sample.architecturecomponents.core.database.model.RecentSearchEntity
+import com.sample.architecturecomponents.core.database.model.RepositoryDetailsEntity
 import com.sample.architecturecomponents.core.database.model.RepositoryEntity
+import com.sample.architecturecomponents.core.database.model.UserDetailsEntity
 import com.sample.architecturecomponents.core.database.model.UserEntity
 
 @Database(
     entities = [
         UserEntity::class,
-        DetailsEntity::class,
+        UserDetailsEntity::class,
         RepositoryEntity::class,
+        RepositoryDetailsEntity::class,
         RecentSearchEntity::class,
     ],
     version = 1,
@@ -34,11 +37,13 @@ import com.sample.architecturecomponents.core.database.model.UserEntity
 )
 internal abstract class Database : RoomDatabase() {
 
-    abstract fun detailsDao(): DetailsDao
+    abstract fun detailsDao(): UserDetailsDao
 
     abstract fun usersDao(): UsersDao
 
     abstract fun repositoriesDao(): RepositoriesDao
+
+    abstract fun repositoryDetailsDao(): RepositoryDetailsDao
 
     abstract fun recentSearchDao(): RecentSearchDao
 

@@ -11,4 +11,5 @@ message SettingsDataStore {
     ThemeBrandProto theme_brand = 1;
     DarkThemeConfigProto dark_theme_config = 3;
     bool use_dynamic_color = 4;
+    bool notification_enabled = 5;
 }

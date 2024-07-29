@@ -63,7 +63,7 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesNetworkDataSource(json: Json, okHttpClient: OkHttpClient): NetworkDataSource =
-        RetrofitNetwork(okHttpClient = okHttpClient, json = json)
+    fun providesNetworkDataSource(json: Json, okHttpClient: OkHttpClient, preference: SettingsPreference): NetworkDataSource =
+        RetrofitNetwork(okHttpClient = okHttpClient, json = json, settingsPreference = preference)
 
 }

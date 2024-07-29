@@ -12,6 +12,7 @@
 
     <style name="Theme.App.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_github_logo</item>
+        <item name="splashScreenIconSize">800dp</item>
         <item name="postSplashScreenTheme">@style/Theme.App</item>
     </style>
 

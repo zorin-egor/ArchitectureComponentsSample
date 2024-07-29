@@ -20,7 +20,7 @@ internal fun UserDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
-    Timber.d("DetailsScreen()")
+    Timber.d("UserDetailsScreen()")
 
     val detailsState: UserDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
     val detailsAction: UserDetailsActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
@@ -39,7 +39,7 @@ internal fun UserDetailsScreen(
     when (val state = detailsState) {
         UserDetailsUiState.Loading -> CircularContent()
         is UserDetailsUiState.Success -> UserDetailsContent(
-            details = state.details,
+            userDetails = state.userDetails,
             onUrlClick = onUrlClick,
             modifier = Modifier.fillMaxSize().padding(8.dp)
         )

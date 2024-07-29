@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.core.model
 
 import kotlinx.datetime.Instant
 
-data class Details(
+data class UserDetails(
     val id: Long,
     val url: String,
     val avatarUrl: String?,

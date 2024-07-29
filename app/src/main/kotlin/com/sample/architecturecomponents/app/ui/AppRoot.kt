@@ -41,13 +41,15 @@ import com.sample.architecturecomponents.core.designsystem.component.AppNavigati
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationBarItem
 import com.sample.architecturecomponents.core.designsystem.component.AppTopBar
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE
 import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.themes.ThemesDialog
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
 import timber.log.Timber
 import com.sample.architecturecomponents.app.R as AppR
+import com.sample.architecturecomponents.feature.repository_details.R as RepoDetailsR
 import com.sample.architecturecomponents.feature.settings.R as SettingsR
-import com.sample.architecturecomponents.feature.user_details.R as DetailsR
+import com.sample.architecturecomponents.feature.user_details.R as UserDetailsR
 
 @OptIn(ExperimentalComposeUiApi::class,)
 @Composable
@@ -130,9 +132,16 @@ private fun NavAppTopBar(state: AppState) {
 
     when(val route = state.currentDestination?.route) {
         USER_DETAILS_ROUTE -> {
-            toolbarTitle = DetailsR.string.feature_user_details_title
+            toolbarTitle = UserDetailsR.string.feature_user_details_title
             navigationIcon = Icons.ArrowBack
-            navigationDesc = stringResource(DetailsR.string.feature_user_details_title)
+            navigationDesc = stringResource(UserDetailsR.string.feature_user_details_title)
+            navigationClick = { state.navController.navigateUp() }
+            isTopBarVisible = true
+        }
+        REPOSITORY_DETAILS_ROUTE -> {
+            toolbarTitle = RepoDetailsR.string.feature_repository_details_title
+            navigationIcon = Icons.ArrowBack
+            navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)
             navigationClick = { state.navController.navigateUp() }
             isTopBarVisible = true
         }

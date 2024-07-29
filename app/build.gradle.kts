@@ -3,18 +3,27 @@ plugins {
     alias(libs.plugins.sample.android.application.compose)
     alias(libs.plugins.sample.android.application.flavors)
     alias(libs.plugins.sample.hilt)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+
+val appCode = 1
+val appVersion = "0.0.1"
 
 android {
     namespace = "com.sample.architecturecomponents.app"
 
     defaultConfig {
         applicationId = "com.sample.architecturecomponents"
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = appCode
+        versionName = appVersion
+
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "APP_NAME", "\"ArchitectureComponents\"")
+        buildConfigField("String", "VERSION_NAME", "\"$appVersion\"")
+        buildConfigField("Integer", "VERSION_CODE", "$appCode")
     }
 
     buildTypes {
@@ -37,6 +46,14 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
+    buildFeatures{
+        buildConfig = true
+    }
+}
+
+secrets {
+    defaultPropertiesFileName = "secrets.defaults.properties"
 }
 
 dependencies {
@@ -45,6 +62,7 @@ dependencies {
     implementation(projects.features.themes)
     implementation(projects.features.settings)
     implementation(projects.features.repositories)
+    implementation(projects.features.repositoryDetails)
 
     implementation(projects.core.common)
     implementation(projects.core.ui)

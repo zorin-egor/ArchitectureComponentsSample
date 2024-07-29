@@ -14,7 +14,7 @@ fun NavController.navigateToRepositories(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.repositoriesScreen(
-    onRepositoryClick: (Long) -> Unit,
+    onRepositoryClick: (String, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable(

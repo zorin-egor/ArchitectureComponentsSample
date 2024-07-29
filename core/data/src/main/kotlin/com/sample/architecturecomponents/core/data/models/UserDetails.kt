@@ -1,11 +1,11 @@
 package com.sample.architecturecomponents.core.data.models
 
-import com.sample.architecturecomponents.core.database.model.DetailsEntity
-import com.sample.architecturecomponents.core.model.Details
+import com.sample.architecturecomponents.core.database.model.UserDetailsEntity
+import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.network.converters.dateTimeConverter
 import com.sample.architecturecomponents.core.network.models.NetworkDetails
 
-internal fun Details.toDetailsEntity() = DetailsEntity(
+internal fun UserDetails.toDetailsEntity() = UserDetailsEntity(
     id = id,
     avatarUrl = avatarUrl,
     userId = id,
@@ -24,7 +24,7 @@ internal fun Details.toDetailsEntity() = DetailsEntity(
     url = url
 )
 
-internal fun NetworkDetails.toDetailsEntity() = DetailsEntity(
+internal fun NetworkDetails.toDetailsEntity() = UserDetailsEntity(
     userId = id,
     avatarUrl = avatarUrl,
     name = name,
@@ -42,7 +42,7 @@ internal fun NetworkDetails.toDetailsEntity() = DetailsEntity(
     url = htmlUrl
 )
 
-internal fun NetworkDetails.toExternalModel() = Details(
+internal fun NetworkDetails.toRepositoryModel() = UserDetails(
     id = id,
     url = htmlUrl,
     avatarUrl = avatarUrl,
@@ -60,4 +60,4 @@ internal fun NetworkDetails.toExternalModel() = Details(
     reposUrl = reposUrl
 )
 
-val Details.repositoriesUrl: String get() = "$url?tab=repositories"
+val UserDetails.repositoriesUrl: String get() = "$url?tab=repositories"

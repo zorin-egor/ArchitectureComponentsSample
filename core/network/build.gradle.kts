@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.sample.android.library)
     alias(libs.plugins.sample.hilt)
     id("kotlinx-serialization")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -10,10 +9,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-}
-
-secrets {
-    defaultPropertiesFileName = "secrets.defaults.properties"
 }
 
 dependencies {

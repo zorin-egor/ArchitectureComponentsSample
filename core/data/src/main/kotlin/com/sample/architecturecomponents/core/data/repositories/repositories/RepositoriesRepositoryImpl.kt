@@ -1,10 +1,10 @@
 package com.sample.architecturecomponents.core.data.repositories.repositories
 
-import com.sample.architecturecomponents.core.data.models.toExternalModel
-import com.sample.architecturecomponents.core.data.models.toRepoEntity
+import com.sample.architecturecomponents.core.data.models.toRepositoryEntities
 import com.sample.architecturecomponents.core.data.models.toRepositoryEntity
+import com.sample.architecturecomponents.core.data.models.toRepositoryModels
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
-import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.di.IoScope
@@ -36,12 +36,12 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                         .body()
             }
 
-            val result = response.getOrNull()?.networkItems
+            val result = response.getOrNull()?.networkRepositories
             if (result?.isNotEmpty() == true) {
                 Timber.d("getRepositories() - db == network")
-                emit(result.toExternalModel())
+                emit(result.toRepositoryModels())
                 ioScope.launch {
-                    runCatching { repositoriesDao.insertAll(result.toRepositoryEntity()) }
+                    runCatching { repositoriesDao.insertAll(result.toRepositoryEntities()) }
                         .exceptionOrNull()?.let(Timber::e)
                 }
                 return@flow
@@ -56,7 +56,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                 .catch { Timber.e(it) }
                 .mapNotNull {
                     it.takeIf { it.isNotEmpty() }
-                        ?.asExternalModel()
+                        ?.asExternalModels()
                 }
                 .collect(::emit)
 
@@ -64,8 +64,8 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insert(item: Repository) = repositoriesDao.insert(item.toRepoEntity())
+    override suspend fun insert(item: Repository) = repositoriesDao.insert(item.toRepositoryEntity())
 
-    override suspend fun delete(item: Repository) = repositoriesDao.delete(item.toRepoEntity())
+    override suspend fun delete(item: Repository) = repositoriesDao.delete(item.toRepositoryEntity())
 
 }

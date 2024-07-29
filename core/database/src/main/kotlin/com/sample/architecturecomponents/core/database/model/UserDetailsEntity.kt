@@ -8,11 +8,11 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.sample.architecturecomponents.core.model.Details
+import com.sample.architecturecomponents.core.model.UserDetails
 import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = "Details",
+    tableName = "UserDetails",
     indices = [
         Index(value = ["user_id"], unique = true),
         Index(value = ["name"])
@@ -27,7 +27,7 @@ import kotlinx.datetime.Instant
         )
     ]
 )
-data class DetailsEntity(
+data class UserDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "user_id") val userId: Long,
     @ColumnInfo(name = "url") val url: String,
@@ -46,8 +46,8 @@ data class DetailsEntity(
     @ColumnInfo(name = "repos_url") val reposUrl: String?
 )
 
-data class UserAndDetails(
-    @Embedded val details: DetailsEntity? = null,
+data class UserAndUserDetails(
+    @Embedded val details: UserDetailsEntity? = null,
     @Relation(
         entity = UserEntity::class,
         parentColumn = "user_id",
@@ -55,7 +55,7 @@ data class UserAndDetails(
     ) val user: UserEntity?
 )
 
-fun DetailsEntity.asExternalModel() = Details(
+fun UserDetailsEntity.asExternalModel() = UserDetails(
     id = userId,
     avatarUrl = avatarUrl,
     name = name,
@@ -73,7 +73,7 @@ fun DetailsEntity.asExternalModel() = Details(
     url = url
 )
 
-fun UserEntity.toDetailsEntity() = DetailsEntity(
+fun UserEntity.toUserDetailsEntity() = UserDetailsEntity(
     id = 0,
     userId = userId,
     avatarUrl = avatarUrl,

@@ -2,8 +2,10 @@ package com.sample.architecturecomponents.core.datastore
 
 import androidx.datastore.core.DataStore
 import com.sample.architecturecomponents.core.model.DarkThemeConfig
+import com.sample.architecturecomponents.core.model.SettingsPreferenceData
 import com.sample.architecturecomponents.core.model.ThemeBrand
 import com.sample.architecturecomponents.core.model.ThemeData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,6 +37,13 @@ internal class DataStoreProto @Inject constructor(
             )
         }
 
+    override val settingsData: Flow<SettingsPreferenceData> = userPreferences.data
+        .map {
+            SettingsPreferenceData(
+                isNotificationEnabled = it.notificationEnabled
+            )
+        }
+
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         userPreferences.updateData {
             it.copy {
@@ -60,6 +69,14 @@ internal class DataStoreProto @Inject constructor(
                     DarkThemeConfig.LIGHT -> DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
+            }
+        }
+    }
+
+    override suspend fun setNotificationEnabled(value: Boolean) {
+        userPreferences.updateData {
+            it.copy {
+                notificationEnabled = value
             }
         }
     }

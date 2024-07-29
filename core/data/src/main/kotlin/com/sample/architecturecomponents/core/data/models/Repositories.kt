@@ -4,49 +4,35 @@ import com.sample.architecturecomponents.core.database.model.RepositoryEntity
 import com.sample.architecturecomponents.core.model.License
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.converters.dateTimeConverter
-import com.sample.architecturecomponents.core.network.models.common.NetworkItem
 import com.sample.architecturecomponents.core.network.models.common.NetworkLicense
+import com.sample.architecturecomponents.core.network.models.common.NetworkRepository
 
-internal fun Repository.toRepoEntity() = RepositoryEntity(
+internal fun Repository.toRepositoryEntity() = RepositoryEntity(
     repoId = id,
     userId = userId,
+    owner = owner,
     avatarUrl = avatarUrl,
     name = name,
-    nodeId = nodeId,
     forks = forks,
     watchersCount = watchersCount,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    pushedAt = pushedAt,
-    defaultBranch = defaultBranch,
     stargazersCount = stargazersCount,
-    description = description,
-    tagsUrl = tagsUrl,
-    branchesUrl = branchesUrl,
-    commitsUrl = commitsUrl,
-    topics = topics,
-    licence = license
+    description = description
 )
 
-internal fun NetworkItem.toRepositoryEntity() = RepositoryEntity(
+internal fun NetworkRepository.toRepositoryEntity() = RepositoryEntity(
     repoId = id,
     userId = owner.id,
+    owner = owner.login,
     avatarUrl = owner.avatarUrl,
     name = name,
-    nodeId = nodeId,
     forks = forks,
     watchersCount = watchersCount,
     createdAt = dateTimeConverter(createdAt),
     updatedAt = dateTimeConverter(updatedAt),
-    pushedAt = dateTimeConverter(pushedAt),
-    defaultBranch = defaultBranch,
     stargazersCount = stargazersCount,
-    description = description,
-    tagsUrl = tagsUrl,
-    branchesUrl = branchesUrl,
-    commitsUrl = commitsUrl,
-    topics = topics,
-    licence = networkLicense?.toLicenseEntity()
+    description = description
 )
 
 internal fun NetworkLicense.toLicenseEntity() = License(
@@ -54,27 +40,20 @@ internal fun NetworkLicense.toLicenseEntity() = License(
     url = url
 )
 
-internal fun NetworkItem.toExternalModel() = Repository(
+internal fun NetworkRepository.toRepositoryModel() = Repository(
     id = id,
     userId = owner.id,
+    owner = owner.login,
     avatarUrl = owner.avatarUrl,
     name = name,
-    nodeId = nodeId,
     forks = forks,
     watchersCount = watchersCount,
     createdAt = dateTimeConverter(createdAt),
     updatedAt = dateTimeConverter(updatedAt),
-    pushedAt = dateTimeConverter(pushedAt),
-    defaultBranch = defaultBranch,
     stargazersCount = stargazersCount,
-    description = description,
-    tagsUrl = tagsUrl,
-    branchesUrl = branchesUrl,
-    commitsUrl = commitsUrl,
-    topics = topics,
-    license = networkLicense?.toLicenseEntity()
+    description = description
 )
 
-internal fun List<NetworkItem>.toRepositoryEntity() = map { it.toRepositoryEntity() }
+internal fun List<NetworkRepository>.toRepositoryEntities(): List<RepositoryEntity> = map { it.toRepositoryEntity() }
 
-internal fun List<NetworkItem>.toExternalModel() = map { it.toExternalModel() }
+internal fun List<NetworkRepository>.toRepositoryModels(): List<Repository> = map { it.toRepositoryModel() }

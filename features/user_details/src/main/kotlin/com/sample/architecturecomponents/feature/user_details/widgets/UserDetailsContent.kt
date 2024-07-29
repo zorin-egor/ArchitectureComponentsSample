@@ -40,21 +40,21 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.data.models.repositoriesUrl
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
-import com.sample.architecturecomponents.core.model.Details
+import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.ui.ext.getHyperLink
 import com.sample.architecturecomponents.core.ui.ext.openBrowser
 import com.sample.architecturecomponents.feature.user_details.R
 
 @Composable
 fun UserDetailsContent(
-    details: Details,
+    userDetails: UserDetails,
     onUrlClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
     val imageLoader = rememberAsyncImagePainter(
-        model = details.avatarUrl,
+        model = userDetails.avatarUrl,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -105,7 +105,7 @@ fun UserDetailsContent(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = getHyperLink(details.url),
+                    text = getHyperLink(userDetails.url),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -126,7 +126,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.id.toString(),
+                    text = userDetails.id.toString(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -147,7 +147,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.name ?: "-",
+                    text = userDetails.name ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -168,7 +168,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.company ?: "-",
+                    text = userDetails.company ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -189,7 +189,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = getHyperLink(details.blog?.takeIf { it.isNotEmpty() } ?: "-"),
+                    text = getHyperLink(userDetails.blog?.takeIf { it.isNotEmpty() } ?: "-"),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -210,7 +210,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.location ?: "-",
+                    text = userDetails.location ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -231,7 +231,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text =  getHyperLink(details.email?.takeIf { it.isNotEmpty() } ?: "-"),
+                    text =  getHyperLink(userDetails.email?.takeIf { it.isNotEmpty() } ?: "-"),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -252,7 +252,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.bio ?: "-",
+                    text = userDetails.bio ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -273,7 +273,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.publicRepos.toString(),
+                    text = userDetails.publicRepos.toString(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -294,7 +294,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.followers.toString(),
+                    text = userDetails.followers.toString(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -315,7 +315,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.createdAt?.toFormatterDateTime ?: "-",
+                    text = userDetails.createdAt?.toFormatterDateTime ?: "-",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -336,7 +336,7 @@ fun UserDetailsContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = details.repositoriesUrl,
+                    text = userDetails.repositoriesUrl,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Blue,
@@ -346,7 +346,7 @@ fun UserDetailsContent(
                         indication = null
                     ) {
                         context.openBrowser(
-                            uri = Uri.parse(details.repositoriesUrl),
+                            uri = Uri.parse(userDetails.repositoriesUrl),
                             toolbarColor = Color.Blue.toArgb()
                         )
                     }
