@@ -15,7 +15,7 @@ class GetUserDetailsUseCase @Inject constructor(
     @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
 ) {
 
-    operator fun invoke(userId: Long, url: String): Flow<UserDetails> =
+    operator fun invoke(userId: Long, url: String): Flow<Result<UserDetails>> =
         userDetailsRepository.getDetails(userId = userId, url = url)
             .flowOn(dispatcher)
 }

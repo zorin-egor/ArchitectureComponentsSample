@@ -4,6 +4,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
@@ -14,13 +15,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.sample.architecturecomponents.app.navigation.TopLevelDestination
 import com.sample.architecturecomponents.core.network.connection.NetworkMonitor
+import com.sample.architecturecomponents.feature.repositories.navigation.REPOSITORIES_ROUTE
 import com.sample.architecturecomponents.feature.repositories.navigation.navigateToRepositories
+import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.settings.navigation.navigateToSettings
+import com.sample.architecturecomponents.feature.users.navigation.USERS_ROUTE
 import com.sample.architecturecomponents.feature.users.navigation.navigateToUsers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+
+val LocalAppStateComposition = compositionLocalOf<AppState?> { null }
+
+val NavHostController.currentDestinationFromState: NavDestination?
+    @Composable get() = currentBackStackEntryAsState().value?.destination
 
 @Composable
 fun rememberAppState(
@@ -53,7 +62,15 @@ class AppState(
     networkMonitor: NetworkMonitor,
 ) {
     val currentDestination: NavDestination?
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
+        @Composable get() = navController.currentDestinationFromState
+
+    val currentTopLevelDestination: TopLevelDestination?
+        @Composable get() = when (currentDestination?.route) {
+            USERS_ROUTE -> TopLevelDestination.USERS
+            REPOSITORIES_ROUTE -> TopLevelDestination.REPOSITORIES
+            SETTINGS_ROUTE -> TopLevelDestination.SETTINGS
+            else -> null
+        }
 
     val isOffline = networkMonitor.isOnline
         .map(Boolean::not)

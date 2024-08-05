@@ -4,18 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.sample.architecturecomponents.app.ui.AppState
+import com.sample.architecturecomponents.app.ui.users_details_list_2_pane.usersListDetailsScreen
 import com.sample.architecturecomponents.feature.repositories.navigation.repositoriesScreen
 import com.sample.architecturecomponents.feature.repository_details.navigation.navigateToRepositoryDetails
 import com.sample.architecturecomponents.feature.repository_details.navigation.repositoryDetailsScreen
 import com.sample.architecturecomponents.feature.settings.navigation.settingsScreen
-import com.sample.architecturecomponents.feature.user_details.navigation.navigateToUserDetails
-import com.sample.architecturecomponents.feature.user_details.navigation.userDetailsScreen
 import com.sample.architecturecomponents.feature.users.navigation.USERS_ROUTE
-import com.sample.architecturecomponents.feature.users.navigation.usersScreen
 import timber.log.Timber
 
 @Composable
-fun NavHost(
+fun AppNavHost(
     appState: AppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     showThemeDialog: () -> Unit,
@@ -31,18 +29,8 @@ fun NavHost(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        usersScreen(
-            onUserClick = { id, url ->
-                navController.navigateToUserDetails(userId = id, userUrl = url)
-            },
-            onShowSnackbar = onShowSnackbar
-        )
-        userDetailsScreen(
-            showBackButton = true,
-            onBackClick = navController::navigateUp,
-            onUrlClick = {
-                Timber.d("userDetailsScreen($it)")
-            },
+        usersListDetailsScreen(
+            appState = appState,
             onShowSnackbar = onShowSnackbar
         )
         settingsScreen(

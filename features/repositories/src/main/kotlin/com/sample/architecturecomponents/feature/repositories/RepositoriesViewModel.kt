@@ -54,8 +54,27 @@ internal class RepositoriesViewModel @Inject constructor(
     private var recentSearchJob: Job? = null
     private var organizationsJob: Job? = null
 
-    private fun Flow<List<Repository>>.getOrganizations(query: String): Job =
-        catch {
+    private fun Flow<Result<List<Repository>>>.getOrganizations(query: String): Job =
+        map {
+            val items = it.getOrNull()
+            val error = it.exceptionOrNull()
+            val state = when {
+                it.isSuccess && items?.isNotEmpty() == true -> {
+                    setRecentSearchUseCase(query = query, tag = RecentSearchTags.Repositories)
+                    RepositoriesByNameUiStates.Success(repositories = items, isBottomProgress = false)
+                }
+                it.isSuccess && items?.isNotEmpty() == false -> RepositoriesByNameUiStates.Empty
+                it.isFailure && error != null -> throw error
+                else -> throw IllegalStateException("Unknown state")
+            }
+
+            _state.value.copy(
+                query = query,
+                state =state
+            )
+        }
+        .onEach(_state::emit)
+        .catch {
             val error = context.getErrorMessage(it)
             Timber.e(error)
 
@@ -70,18 +89,6 @@ internal class RepositoriesViewModel @Inject constructor(
 
             setBottomProgress(false)
         }
-        .map {
-            _state.value.copy(
-                query = query,
-                state = if (it.isNotEmpty()) {
-                    setRecentSearchUseCase(query = query, tag = RecentSearchTags.Repositories)
-                    RepositoriesByNameUiStates.Success(repositories = it, isBottomProgress = false)
-                } else {
-                    RepositoriesByNameUiStates.Empty
-                }
-            )
-        }
-        .onEach(_state::emit)
         .launchIn(scope = viewModelScope)
 
     fun queryRepositories(name: String) {
@@ -107,9 +114,16 @@ internal class RepositoriesViewModel @Inject constructor(
         recentSearchJob?.cancel()
         recentSearchJob = viewModelScope.launch {
             getRecentSearchUseCase(query = name, tag = RecentSearchTags.Repositories)
+                .map {
+                    val items = it.getOrNull()
+                    when {
+                        it.isSuccess && items != null -> mapTo(items)
+                        else -> emptyList()
+                    }
+                }
                 .collect {
                     Timber.d("getRecentSearchUseCase() - collect($it)")
-                    setRecentSearch(items = mapTo(it))
+                    setRecentSearch(items = it)
                 }
 
             organizationsJob = getReposByNameUseCase(name = name)

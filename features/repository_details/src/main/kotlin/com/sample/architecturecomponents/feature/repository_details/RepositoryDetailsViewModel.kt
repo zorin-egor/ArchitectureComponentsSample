@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.domain.usecases.GetRepositoryDetailsByOwnerAndRepoUseCase
+import com.sample.architecturecomponents.core.domain.usecases.GetRepositoryDetailsByOwnerUseCase
 import com.sample.architecturecomponents.feature.repository_details.navigation.RepositoryDetailsArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -23,7 +23,7 @@ import com.sample.architecturecomponents.core.ui.R as CoreUiR
 @HiltViewModel
 class RepositoryDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    getRepositoryDetailsByIdUseCase: GetRepositoryDetailsByOwnerAndRepoUseCase,
+    getRepositoryDetailsByIdUseCase: GetRepositoryDetailsByOwnerUseCase,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -38,12 +38,21 @@ class RepositoryDetailsViewModel @Inject constructor(
     val action: SharedFlow<RepositoryDetailsActions> = _action.asSharedFlow()
 
     val state: StateFlow<RepositoryDetailsUiState> = getRepositoryDetailsByIdUseCase(owner = owner, repo = repo)
+        .map {
+            val item = it.getOrNull()
+            val error = it.exceptionOrNull()
+            when {
+                it.isSuccess && item != null -> RepositoryDetailsUiState.Success(repositoryDetails = item)
+                it.isSuccess && item == null -> RepositoryDetailsUiState.Loading
+                it.isFailure && error != null -> throw error
+                else -> throw IllegalStateException("Unknown state")
+            }
+        }
         .catch {
             val error = it.message ?: context.getString(CoreUiR.string.error_unknown)
             Timber.e(error)
             _action.emit(RepositoryDetailsActions.ShowError(error))
         }
-        .map { RepositoryDetailsUiState.Success(repositoryDetails = it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

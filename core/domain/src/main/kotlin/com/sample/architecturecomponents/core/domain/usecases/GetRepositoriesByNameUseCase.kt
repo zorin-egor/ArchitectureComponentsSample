@@ -32,26 +32,31 @@ class GetRepositoriesByNameUseCase @Inject constructor(
     private var hasNext = true
     private var page = AtomicLong(START_PAGE)
 
-    operator fun invoke(): Flow<List<Repository>> {
+    operator fun invoke(): Flow<Result<List<Repository>>> {
         Timber.d("invoke($hasNext, $previousName) - next")
 
         synchronized(mutex) {
             if (!hasNext || previousName.isEmpty()) {
-                return flowOf(repositories.toList())
+                return flowOf(Result.success(repositories.toList()))
             }
         }
 
         return repositoriesRepository.getRepositoriesByName(name = previousName, page = page.get() + 1, limit = LIMIT)
             .map { new ->
-                synchronized(mutex) {
-                    page.incrementAndGet()
-                    hasNext = new.size >= LIMIT
-                    new.forEach { item ->
-                        if (repositories.find { it.id == item.id } == null) {
-                            repositories.add(item)
+                val items = new.getOrNull()
+                if (new.isSuccess && items?.isNotEmpty() == true) {
+                    synchronized(mutex) {
+                        page.incrementAndGet()
+                        hasNext = items.size >= LIMIT
+                        items.forEach { item ->
+                            if (repositories.find { it.id == item.id } == null) {
+                                repositories.add(item)
+                            }
                         }
+                        Result.success(repositories.toList())
                     }
-                    repositories.toList()
+                } else {
+                    new
                 }
             }
             .onCompletion {
@@ -61,12 +66,12 @@ class GetRepositoriesByNameUseCase @Inject constructor(
             .flowOn(dispatcher)
     }
 
-    operator fun invoke(name: String): Flow<List<Repository>> {
+    operator fun invoke(name: String): Flow<Result<List<Repository>>> {
         Timber.d("invoke($name, $previousName) - new")
 
         synchronized(mutex) {
             if (name == previousName && repositories.isNotEmpty()) {
-                return flowOf(repositories.toList())
+                return flowOf(Result.success(repositories.toList()))
             }
         }
 
@@ -75,14 +80,19 @@ class GetRepositoriesByNameUseCase @Inject constructor(
                 Timber.d("invoke($name, $previousName) - onStart")
                 delay(500)
             }
-            .map {
-                synchronized(mutex) {
-                    previousName = name
-                    page.getAndSet(START_PAGE)
-                    hasNext = it.size >= LIMIT
-                    repositories.clear()
-                    repositories.addAll(it)
-                    repositories.toList()
+            .map { new ->
+                val items = new.getOrNull()
+                if (new.isSuccess && items?.isNotEmpty() == true) {
+                    synchronized(mutex) {
+                        previousName = name
+                        page.getAndSet(START_PAGE)
+                        hasNext = items.size >= LIMIT
+                        repositories.clear()
+                        repositories.addAll(items)
+                        Result.success(repositories.toList())
+                    }
+                } else {
+                    new
                 }
             }
             .flowOn(dispatcher)

@@ -38,12 +38,21 @@ class UserDetailsViewModel @Inject constructor(
     val action: SharedFlow<UserDetailsActions> = _action.asSharedFlow()
 
     val state: StateFlow<UserDetailsUiState> = getUserDetailsUseCase(userId = userId, url = userUrl)
+        .map {
+            val item = it.getOrNull()
+            val error = it.exceptionOrNull()
+            when {
+                it.isSuccess && item != null -> UserDetailsUiState.Success(userDetails = item)
+                it.isSuccess && item == null -> UserDetailsUiState.Loading
+                it.isFailure && error != null -> throw error
+                else -> throw IllegalStateException("Unknown state")
+            }
+        }
         .catch {
             val error = it.message ?: context.getString(CoreUiR.string.error_unknown)
             Timber.e(error)
             _action.emit(UserDetailsActions.ShowError(error))
         }
-        .map { UserDetailsUiState.Success(userDetails = it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

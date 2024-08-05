@@ -47,30 +47,33 @@ class UsersViewModel @Inject constructor(
             .getUsers()
     }
 
-    private fun Flow<List<User>>.getUsers(): Job =
-        catch {
-            Timber.e(it)
-            val error = context.getErrorMessage(it)
-
-            when(it) {
-               EmptyException -> _state.emit(UsersUiState.Empty)
-               else -> _action.emit(UsersActions.ShowError(error))
-            }
-
-            setBottomProgress(false)
-        }
-        .map {
-            if (it.isNotEmpty()) {
-                UsersUiState.Success(users = it, isBottomProgress = false)
-            } else {
-                UsersUiState.Loading
+    private fun Flow<Result<List<User>>>.getUsers(): Job =
+        map {
+            val items = it.getOrNull()
+            val error = it.exceptionOrNull()
+            when {
+                it.isSuccess && items?.isNotEmpty() == true -> UsersUiState.Success(users = items, isBottomProgress = false)
+                it.isSuccess && items?.isNotEmpty() == false -> UsersUiState.Loading
+                it.isFailure && error != null -> throw error
+                else -> throw IllegalStateException("Unknown state")
             }
         }
         .onEach {
+            Timber.d("Flow.getUsers() - onEach($it)")
             _state.emit(it)
-            delay(1000)
+            delay(500)
+        }
+        .catch {
+            Timber.e(it)
+            val error = context.getErrorMessage(it)
+            when(it) {
+                EmptyException -> _state.emit(UsersUiState.Empty)
+                else -> _action.emit(UsersActions.ShowError(error))
+            }
+            setBottomProgress(false)
         }
         .launchIn(scope = viewModelScope)
+
 
     fun nextUsers() {
         if (usersJob?.isActive == true) return
@@ -85,6 +88,7 @@ class UsersViewModel @Inject constructor(
     private suspend fun setBottomProgress(isBottomProgress: Boolean) {
         val prevState = _state.value
         if (prevState is UsersUiState.Success) {
+            Timber.d("setBottomProgress($prevState)")
             _state.emit(prevState.copy(isBottomProgress = isBottomProgress))
         }
     }

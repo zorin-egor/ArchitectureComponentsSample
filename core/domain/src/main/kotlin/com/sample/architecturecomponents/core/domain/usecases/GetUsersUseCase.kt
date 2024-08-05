@@ -27,42 +27,54 @@ class GetUsersUseCase @Inject constructor(
     private var lastId = SINCE_ID
     private var hasNext = true
 
-    operator fun invoke(id: Long): Flow<List<User>> {
+    operator fun invoke(id: Long): Flow<Result<List<User>>> {
         Timber.d("invoke($hasNext, $id) - new")
 
         return usersRepository.getUsers(sinceId = id, limit = LIMIT)
             .map { new ->
-                synchronized(mutex) {
-                    hasNext = new.size >= LIMIT
-                    lastId = new.lastOrNull()?.id ?: lastId
-                    users.clear()
-                    users.addAll(new)
-                    users.toList()
+                val items = new.getOrNull()
+                if (new.isSuccess && items?.isNotEmpty() == true) {
+                    Timber.d("invoke($id) - map: ${items.size}")
+                    synchronized(mutex) {
+                        hasNext = items.size >= LIMIT
+                        lastId = items.lastOrNull()?.id ?: lastId
+                        users.clear()
+                        users.addAll(items)
+                        Result.success(users.toList())
+                    }
+                } else {
+                    new
                 }
             }
             .flowOn(dispatcher)
     }
 
-    operator fun invoke(): Flow<List<User>> {
+    operator fun invoke(): Flow<Result<List<User>>> {
         Timber.d("invoke($hasNext, $lastId) - next")
 
         synchronized(mutex) {
             if (!hasNext) {
-                return flowOf(users.toList())
+                return flowOf(Result.success(users.toList()))
             }
         }
 
         return usersRepository.getUsers(sinceId = lastId, limit = LIMIT)
             .map { new ->
-                synchronized(mutex) {
-                    hasNext = new.size >= LIMIT
-                    lastId = new.lastOrNull()?.id ?: lastId
-                    new.forEach { item ->
-                        if (users.find { it.id == item.id } == null) {
-                            users.add(item)
+                val items = new.getOrNull()
+                if (new.isSuccess && items?.isNotEmpty() == true) {
+                    Timber.d("invoke() - map: ${items.size}")
+                    synchronized(mutex) {
+                        hasNext = items.size >= LIMIT
+                        lastId = items.lastOrNull()?.id ?: lastId
+                        items.forEach { item ->
+                            if (users.find { it.id == item.id } == null) {
+                                users.add(item)
+                            }
                         }
+                        Result.success(users.toList())
                     }
-                    users.toList()
+                } else {
+                    new
                 }
             }
             .flowOn(dispatcher)

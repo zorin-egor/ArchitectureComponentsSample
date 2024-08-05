@@ -28,8 +28,8 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
     @IoScope private val ioScope: CoroutineScope
 ) : RepositoryDetailsRepository {
 
-    override fun getDetails(owner: String, repo: String): Flow<RepositoryDetails> {
-        return flow<RepositoryDetails> {
+    override fun getDetails(owner: String, repo: String): Flow<Result<RepositoryDetails>> {
+        return flow<Result<RepositoryDetails>> {
             Timber.d("getDetails($owner, $repo)")
 
             Timber.d("getDetails() - db")
@@ -38,8 +38,9 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
                 .take(1)
                 .filterNotNull()
                 .map { it.asExternalModels() }
-                .catch { Timber.e(it) }
                 .onEach { dbRepositoryDetails = it }
+                .map { Result.success(it) }
+                .catch { Timber.e(it) }
                 .collect(::emit)
 
             Timber.d("getDetails() - network request")
@@ -51,7 +52,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            emit(result)
+            emit(Result.success(result))
 
             ioScope.launch {
                 runCatching { repositoryDetailsDao.insert(result.toRepositoryDetailsEntity()) }
@@ -59,6 +60,8 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
             }
 
             Timber.d("getDetails() - end")
+        }.catch {
+            emit(Result.failure(it))
         }
     }
 

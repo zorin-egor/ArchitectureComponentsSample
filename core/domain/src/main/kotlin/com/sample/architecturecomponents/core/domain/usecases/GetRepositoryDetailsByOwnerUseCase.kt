@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 
-class GetRepositoryDetailsByOwnerAndRepoUseCase @Inject constructor(
+class GetRepositoryDetailsByOwnerUseCase @Inject constructor(
     private val repositoryDetailsRepository: RepositoryDetailsRepository,
     @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
 ) {
 
-    operator fun invoke(owner: String, repo: String): Flow<RepositoryDetails> =
+    operator fun invoke(owner: String, repo: String): Flow<Result<RepositoryDetails>> =
         repositoryDetailsRepository.getDetails(owner = owner, repo = repo)
             .flowOn(dispatcher)
 }

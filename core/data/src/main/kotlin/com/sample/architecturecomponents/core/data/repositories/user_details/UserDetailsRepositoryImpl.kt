@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.zip
@@ -29,8 +30,8 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
     @IoScope private val ioScope: CoroutineScope
 ) : UserDetailsRepository {
 
-    override fun getDetails(userId: Long, url: String): Flow<UserDetails> {
-        return flow<UserDetails> {
+    override fun getDetails(userId: Long, url: String): Flow<Result<UserDetails>> {
+        return flow<Result<UserDetails>> {
             Timber.d("getDetails($userId, $url)")
 
             Timber.d("getDetails() - db")
@@ -41,9 +42,10 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
                     (details ?: users?.toUserDetailsEntity())?.asExternalModel()
                 }
                 .take(1)
-                .catch { Timber.e(it) }
                 .filterNotNull()
                 .onEach { dbUserDetails = it }
+                .map { Result.success(it) }
+                .catch { Timber.e(it) }
                 .collect(::emit)
 
             Timber.d("getDetails() - network request")
@@ -54,7 +56,8 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            emit(result)
+            Timber.d("getDetails() - network emit")
+            emit(Result.success(result))
 
             ioScope.launch {
                 runCatching { detailsDao.insert(result.toDetailsEntity()) }
@@ -62,6 +65,8 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
             }
 
             Timber.d("getDetails() - end")
+        }.catch {
+            emit(Result.failure(it))
         }
     }
 

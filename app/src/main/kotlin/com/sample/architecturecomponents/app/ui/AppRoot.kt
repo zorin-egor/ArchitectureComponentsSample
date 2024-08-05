@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.sample.architecturecomponents.app.navigation.NavHost
+import com.sample.architecturecomponents.app.navigation.AppNavHost
 import com.sample.architecturecomponents.app.navigation.TopLevelDestination
 import com.sample.architecturecomponents.core.designsystem.component.AppBackground
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationBar
@@ -55,7 +55,7 @@ import com.sample.architecturecomponents.core.designsystem.icon.Icons
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE
 import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.themes.ThemesDialog
-import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
+import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE_PATH
 import timber.log.Timber
 import com.sample.architecturecomponents.app.R as AppR
 import com.sample.architecturecomponents.feature.repository_details.R as RepoDetailsR
@@ -100,7 +100,7 @@ fun AppRoot(appState: AppState) {
                         destinations = appState.topLevelDestinations,
                         onNavigateToDestination = appState::navigateToTopLevelDestination,
                         currentDestination = appState.currentDestination,
-                        modifier = Modifier.testTag("NiaBottomBar"),
+                        modifier = Modifier.testTag("AppBottomBar"),
                     )
                 }
             }
@@ -123,21 +123,19 @@ fun AppRoot(appState: AppState) {
                         onNavigateToDestination = appState::navigateToTopLevelDestination,
                         currentDestination = appState.currentDestination,
                         modifier = Modifier
-                            .testTag("NiaNavRail")
+                            .testTag("AppNavRail")
                             .safeDrawingPadding(),
                     )
                 }
 
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .consumeWindowInsets(padding),
-                ) {
+                Column(Modifier.fillMaxSize()) {
+                    NavAppTopBar(
+                        state = appState,
+                        route = appState.currentDestination?.route,
+                        backAction = appState.navController::navigateUp
+                    )
 
-                    NavAppTopBar(state = appState)
-
-                    NavHost(
+                    AppNavHost(
                         appState = appState,
                         showThemeDialog = { showThemesDialog = true },
                         onShowSnackbar = { message, action ->
@@ -156,8 +154,11 @@ fun AppRoot(appState: AppState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NavAppTopBar(state: AppState) {
-
+internal fun NavAppTopBar(
+    state: AppState,
+    route: String?,
+    backAction: () -> Boolean
+) {
     var isTopBarVisible = false
     var toolbarTitle: Int? = null
     var navigationIcon: ImageVector? = null
@@ -165,24 +166,24 @@ private fun NavAppTopBar(state: AppState) {
     var actionIcon: ImageVector? = null
     var actionDesc: String? = null
     var actionClick: () -> Unit = {}
-    var navigationClick: () -> Unit = {}
+    var backClick: () -> Unit =  { backAction() }
 
-    when(val route = state.currentDestination?.route) {
-        USER_DETAILS_ROUTE -> {
+    Timber.d("NavAppTopBar() - ${state.shouldShowBottomBar}, $route")
+
+    when {
+        route == USER_DETAILS_ROUTE_PATH && state.shouldShowBottomBar -> {
             toolbarTitle = UserDetailsR.string.feature_user_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(UserDetailsR.string.feature_user_details_title)
-            navigationClick = { state.navController.navigateUp() }
             isTopBarVisible = true
         }
-        REPOSITORY_DETAILS_ROUTE -> {
+        route == REPOSITORY_DETAILS_ROUTE -> {
             toolbarTitle = RepoDetailsR.string.feature_repository_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)
-            navigationClick = { state.navController.navigateUp() }
             isTopBarVisible = true
         }
-        SETTINGS_ROUTE -> {
+        route == SETTINGS_ROUTE -> {
             toolbarTitle = SettingsR.string.feature_settings_title
             isTopBarVisible = true
         }
@@ -205,7 +206,7 @@ private fun NavAppTopBar(state: AppState) {
             containerColor = Color.Transparent,
         ),
         onActionClick = actionClick,
-        onNavigationClick = navigationClick,
+        onNavigationClick = backClick,
     )
 }
 

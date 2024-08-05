@@ -21,8 +21,16 @@ class GetRecentSearchUseCase @Inject constructor(
         private const val LIMIT = 5L
     }
 
-    operator fun invoke(query: String, tag: RecentSearchTags = RecentSearchTags.None): Flow<List<RecentSearch>> =
+    operator fun invoke(query: String, tag: RecentSearchTags = RecentSearchTags.None): Flow<Result<List<RecentSearch>>> =
         recentSearchRepository.getRecentSearch(query = query, limit = LIMIT, tag = tag)
-            .map { tags -> tags.filter { it.value != query  } }
+            .map { tags ->
+                val items = tags.getOrNull()
+                if (tags.isSuccess && items?.isNotEmpty() == true) {
+                    Result.success(items.filter { it.value != query })
+                } else {
+                    tags
+                }
+            }
             .flowOn(dispatcher)
+
 }

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RepositoriesRepository {
 
-    fun getRepositoriesByName(name: String, page: Long, limit: Long = 30): Flow<List<Repository>>
+    fun getRepositoriesByName(name: String, page: Long, limit: Long = 30): Flow<Result<List<Repository>>>
 
     suspend fun insert(item: Repository)
 

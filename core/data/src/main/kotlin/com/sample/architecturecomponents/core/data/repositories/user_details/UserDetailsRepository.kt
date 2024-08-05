@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserDetailsRepository {
 
-    fun getDetails(userId: Long, url: String): Flow<UserDetails>
+    fun getDetails(userId: Long, url: String): Flow<Result<UserDetails>>
 
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -25,8 +26,8 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
     @IoScope private val ioScope: CoroutineScope
 ) : RepositoriesRepository {
 
-    override fun getRepositoriesByName(name: String, page: Long, limit: Long): Flow<List<Repository>> {
-        return flow<List<Repository>> {
+    override fun getRepositoriesByName(name: String, page: Long, limit: Long): Flow<Result<List<Repository>>> {
+        return flow<Result<List<Repository>>> {
             Timber.d("getRepositories($name)")
 
             Timber.d("getRepositories() - network request")
@@ -39,7 +40,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
             val result = response.getOrNull()?.networkRepositories
             if (result?.isNotEmpty() == true) {
                 Timber.d("getRepositories() - db == network")
-                emit(result.toRepositoryModels())
+                emit(Result.success(result.toRepositoryModels()))
                 ioScope.launch {
                     runCatching { repositoriesDao.insertAll(result.toRepositoryEntities()) }
                         .exceptionOrNull()?.let(Timber::e)
@@ -53,14 +54,17 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
             val offset = (page - 1) * limit
             repositoriesDao.getRepositoriesByName(name = name, offset = offset, limit = limit)
                 .take(1)
-                .catch { Timber.e(it) }
                 .mapNotNull {
                     it.takeIf { it.isNotEmpty() }
                         ?.asExternalModels()
                 }
+                .map { Result.success(it) }
+                .catch { Timber.e(it) }
                 .collect(::emit)
 
             Timber.d("getRepositories() - end")
+        }.catch {
+            emit(Result.failure(it))
         }
     }
 

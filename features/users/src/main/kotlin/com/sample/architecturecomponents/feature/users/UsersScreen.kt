@@ -18,7 +18,7 @@ import com.sample.architecturecomponents.feature.users.widgets.UsersItemContent
 import timber.log.Timber
 
 @Composable
-internal fun UsersScreen(
+fun UsersScreen(
     onUserClick: (Long, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
@@ -29,14 +29,7 @@ internal fun UsersScreen(
     val usersUiState: UsersUiState by viewModel.state.collectAsStateWithLifecycle()
     val usersAction: UsersActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
 
-    when(val action = usersAction) {
-        is UsersActions.ShowError -> {
-            LaunchedEffect(key1 = action.error.hashCode()) {
-                onShowSnackbar(action.error, null)
-            }
-        }
-        else -> {}
-    }
+    Timber.d("UsersScreen() - state: $usersUiState, $usersAction")
 
     when(val state = usersUiState) {
         UsersUiState.Loading -> CircularContent()
@@ -62,6 +55,15 @@ internal fun UsersScreen(
                 )
             }
         }
+    }
+
+    when(val action = usersAction) {
+        is UsersActions.ShowError -> {
+            LaunchedEffect(key1 = action.error.hashCode()) {
+                onShowSnackbar(action.error, null)
+            }
+        }
+        else -> {}
     }
 }
 

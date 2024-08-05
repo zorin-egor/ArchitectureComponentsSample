@@ -20,15 +20,17 @@ internal class RecentSearchRepositoryImpl @Inject constructor(
     @IoScope private val ioScope: CoroutineScope
 ) : RecentSearchRepository {
 
-    override fun getRecentSearch(query: String, limit: Long, tag: RecentSearchTags): Flow<List<RecentSearch>> {
-        return flow<List<RecentSearch>> {
+    override fun getRecentSearch(query: String, limit: Long, tag: RecentSearchTags): Flow<Result<List<RecentSearch>>> {
+        return flow<Result<List<RecentSearch>>> {
             Timber.d("getRecentSearch($query, $tag)")
 
             recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
                 .take(1)
+                .map { Result.success(it.asExternalModels()) }
                 .catch { Timber.e(it) }
-                .map { it.asExternalModels() }
                 .collect(::emit)
+        }.catch {
+            emit(Result.failure(it))
         }
     }
 
