@@ -9,7 +9,6 @@ import com.sample.architecturecomponents.feature.user_details.navigation.UserDet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -35,7 +34,16 @@ class UserDetailsViewModel @Inject constructor(
 
     private val _action = MutableSharedFlow<UserDetailsActions>(replay = 0, extraBufferCapacity = 1)
 
-    val action: SharedFlow<UserDetailsActions> = _action.asSharedFlow()
+    val action: StateFlow<UserDetailsActions?> = _action.asSharedFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null,
+        )
+
+    init {
+        Timber.d("init($userId, $userUrl)")
+    }
 
     val state: StateFlow<UserDetailsUiState> = getUserDetailsUseCase(userId = userId, url = userUrl)
         .map {
@@ -58,4 +66,9 @@ class UserDetailsViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = UserDetailsUiState.Loading,
         )
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.d("onCleared($this)")
+    }
 }

@@ -2,13 +2,13 @@ package com.sample.architecturecomponents.feature.repositories
 
 import com.sample.architecturecomponents.core.model.Repository
 
-internal data class RepositoriesByNameUiState(
+data class RepositoriesByNameUiState(
     val query: String,
     val recentSearch: List<Pair<String, String>>,
     val state: RepositoriesByNameUiStates
 )
 
-internal sealed interface RepositoriesByNameUiStates {
+sealed interface RepositoriesByNameUiStates {
     data class Success(
         val repositories: List<Repository>,
         val isBottomProgress: Boolean

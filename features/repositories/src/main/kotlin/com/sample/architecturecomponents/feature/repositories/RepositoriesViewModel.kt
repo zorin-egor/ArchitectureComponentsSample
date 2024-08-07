@@ -31,7 +31,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-internal class RepositoriesViewModel @Inject constructor(
+class RepositoriesViewModel @Inject constructor(
     private val getReposByNameUseCase: GetRepositoriesByNameUseCase,
     private val getRecentSearchUseCase: GetRecentSearchUseCase,
     private val setRecentSearchUseCase: SetRecentSearchUseCase,

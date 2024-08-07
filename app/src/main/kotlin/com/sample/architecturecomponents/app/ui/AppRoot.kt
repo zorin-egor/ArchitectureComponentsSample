@@ -52,7 +52,7 @@ import com.sample.architecturecomponents.core.designsystem.component.AppNavigati
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationRailItem
 import com.sample.architecturecomponents.core.designsystem.component.AppTopBar
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
-import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE
+import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE_PATH
 import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.themes.ThemesDialog
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE_PATH
@@ -177,7 +177,7 @@ internal fun NavAppTopBar(
             navigationDesc = stringResource(UserDetailsR.string.feature_user_details_title)
             isTopBarVisible = true
         }
-        route == REPOSITORY_DETAILS_ROUTE -> {
+        route == REPOSITORY_DETAILS_ROUTE_PATH -> {
             toolbarTitle = RepoDetailsR.string.feature_repository_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)

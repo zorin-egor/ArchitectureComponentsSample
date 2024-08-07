@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.app.ui.users_details_list_2_pane
+package com.sample.architecturecomponents.app.ui.repositories_details_list_2_pane
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -21,22 +21,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.app.ui.NavAppTopBar
-import com.sample.architecturecomponents.feature.user_details.UserDetailsPlaceholder
-import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
-import com.sample.architecturecomponents.feature.user_details.navigation.navigateToUserDetails
-import com.sample.architecturecomponents.feature.user_details.navigation.userDetailsScreen
-import com.sample.architecturecomponents.feature.users.UsersScreen
-import com.sample.architecturecomponents.feature.users.navigation.USERS_ROUTE
+import com.sample.architecturecomponents.feature.repositories.RepositoriesScreen
+import com.sample.architecturecomponents.feature.repositories.navigation.REPOSITORIES_ROUTE
+import com.sample.architecturecomponents.feature.repository_details.RepositoryDetailsPlaceholder
+import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE
+import com.sample.architecturecomponents.feature.repository_details.navigation.navigateToRepositoryDetails
+import com.sample.architecturecomponents.feature.repository_details.navigation.repositoryDetailsScreen
 import timber.log.Timber
 
-private const val USER_DETAILS_PANE_ROUTE = "user_details_pane_route"
+private const val REPOSITORIES_DETAILS_PANE_ROUTE = "repositories_details_pane_route"
 
-fun NavGraphBuilder.usersListDetailsScreen(
+fun NavGraphBuilder.repositoriesListDetailsScreen(
     appState: AppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
-    composable(route = USERS_ROUTE) {
-        UsersListScreen(
+    composable(route = REPOSITORIES_ROUTE) {
+        RepositoriesListScreen(
             appState = appState,
 //            onShowSnackbar = onShowSnackbar
         )
@@ -44,28 +44,28 @@ fun NavGraphBuilder.usersListDetailsScreen(
 }
 
 @Composable
-internal fun UsersListScreen(
+internal fun RepositoriesListScreen(
     appState: AppState,
 //    onShowSnackbar: suspend (String, String?) -> Boolean,
-    viewModel: UsersDetailsList2PaneViewModel = hiltViewModel(),
+    viewModel: RepositoriesDetailsList2PaneViewModel = hiltViewModel(),
 ) {
-    val selectedUser by viewModel.selectedUser.collectAsStateWithLifecycle()
-    UsersListScreen(
+    val selectedUser by viewModel.selectedRepository.collectAsStateWithLifecycle()
+    RepositoriesListScreen(
         appState = appState,
-        selectedUserId = selectedUser?.userId,
-        selectedUserUrl = selectedUser?.userUrl,
-        onUserClick = viewModel::onUserClick,
+        selectedRepoOwner = selectedUser?.userOwner,
+        selectedRepoUrl = selectedUser?.userUrl,
+        onRepositoryClick = viewModel::onRepositoryClick,
 //        onShowSnackbar = onShowSnackbar
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-internal fun UsersListScreen(
+internal fun RepositoriesListScreen(
     appState: AppState,
-    selectedUserId: Long?,
-    selectedUserUrl: String?,
-    onUserClick: (Long, String) -> Unit,
+    selectedRepoOwner: String?,
+    selectedRepoUrl: String?,
+    onRepositoryClick: (String, String) -> Unit,
 //    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val listDetailNavigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
@@ -75,11 +75,11 @@ internal fun UsersListScreen(
 
     val nestedNavController = rememberNavController()
 
-    fun onUserClickShowDetailPane(userId: Long, userUrl: String) {
-        Timber.d("onUserClickShowDetailPane($userId, $userUrl)")
-        onUserClick(userId, userUrl)
-        nestedNavController.navigateToUserDetails(userId = userId, userUrl = userUrl) {
-            popUpTo(USER_DETAILS_PANE_ROUTE)
+    fun onRepoClickShowDetailPane(repoOwner: String, repoUrl: String) {
+        Timber.d("onRepoClickShowDetailPane($repoOwner, $repoUrl)")
+        onRepositoryClick(repoOwner, repoUrl)
+        nestedNavController.navigateToRepositoryDetails(owner = repoOwner, repo = repoUrl) {
+            popUpTo(REPOSITORIES_DETAILS_PANE_ROUTE)
         }
         listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
     }
@@ -88,8 +88,8 @@ internal fun UsersListScreen(
         value = listDetailNavigator.scaffoldValue,
         directive = listDetailNavigator.scaffoldDirective,
         listPane = {
-            UsersScreen(
-                onUserClick = ::onUserClickShowDetailPane,
+            RepositoriesScreen(
+                onRepositoryClick = ::onRepoClickShowDetailPane,
                 onShowSnackbar = { a1, a2 -> true },
             )
         },
@@ -107,18 +107,18 @@ internal fun UsersListScreen(
 
                 NavHost(
                     navController = nestedNavController,
-                    startDestination = USER_DETAILS_ROUTE,
-                    route = USER_DETAILS_PANE_ROUTE,
+                    startDestination = REPOSITORY_DETAILS_ROUTE,
+                    route = REPOSITORIES_DETAILS_PANE_ROUTE,
                 ) {
-                    composable(route = USER_DETAILS_ROUTE) {
-                        UserDetailsPlaceholder()
+                    composable(route = REPOSITORY_DETAILS_ROUTE) {
+                        RepositoryDetailsPlaceholder()
                     }
-                    userDetailsScreen(
+                    repositoryDetailsScreen(
                         showBackButton = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
                         onShowSnackbar = { a1, a2 -> false },
                         onUrlClick = {
-                            Timber.d("detailPane() - userDetailsScreen: $it")
+                            Timber.d("detailPane() - repositoryDetailsScreen: $it")
                         },
                     )
                 }
@@ -128,8 +128,8 @@ internal fun UsersListScreen(
     )
 
     LaunchedEffect(Unit) {
-        if (selectedUserId != null && selectedUserUrl != null) {
-            onUserClickShowDetailPane(selectedUserId, selectedUserUrl)
+        if (selectedRepoOwner != null && selectedRepoUrl != null) {
+            onRepoClickShowDetailPane(selectedRepoOwner, selectedRepoUrl)
         }
     }
 }

@@ -22,7 +22,7 @@ import timber.log.Timber
 import com.sample.architecturecomponents.core.ui.R as CoreUiR
 
 @Composable
-internal fun RepositoriesScreen(
+fun RepositoriesScreen(
     onRepositoryClick: (String, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,

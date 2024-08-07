@@ -20,10 +20,10 @@ internal fun UserDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
-    Timber.d("UserDetailsScreen()")
+    Timber.d("UserDetailsScreen($viewModel)")
 
     val detailsState: UserDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
-    val detailsAction: UserDetailsActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
+    val detailsAction: UserDetailsActions? by viewModel.action.collectAsStateWithLifecycle()
 
     when(val action = detailsAction) {
         is UserDetailsActions.ShowError -> {
@@ -34,7 +34,7 @@ internal fun UserDetailsScreen(
         else -> {}
     }
 
-    Timber.d("DetailsScreen() - state: $detailsState, $detailsAction")
+    Timber.d("UserDetailsScreen() - state: $detailsState, $detailsAction")
 
     when (val state = detailsState) {
         UserDetailsUiState.Loading -> CircularContent()

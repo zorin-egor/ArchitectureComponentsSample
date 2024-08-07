@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.feature.user_details
+package com.sample.architecturecomponents.feature.repository_details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,7 @@ import com.sample.architecturecomponents.core.designsystem.icon.Icons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 
 @Composable
-fun UserDetailsPlaceholder(modifier: Modifier = Modifier) {
+fun RepositoryDetailsPlaceholder(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -39,7 +39,7 @@ fun UserDetailsPlaceholder(modifier: Modifier = Modifier) {
                 tint = MaterialTheme.colorScheme.primary,
             )
             Text(
-                text = stringResource(id = R.string.feature_user_details_title),
+                text = stringResource(id = R.string.feature_repository_details_title),
                 style = MaterialTheme.typography.titleLarge,
             )
         }
@@ -48,8 +48,8 @@ fun UserDetailsPlaceholder(modifier: Modifier = Modifier) {
 
 @Preview(widthDp = 200, heightDp = 300)
 @Composable
-fun UserDetailsPlaceholderPreview() {
+fun RepositoryDetailPlaceholderPreview() {
     AppTheme {
-        UserDetailsPlaceholder()
+        RepositoryDetailsPlaceholder()
     }
 }

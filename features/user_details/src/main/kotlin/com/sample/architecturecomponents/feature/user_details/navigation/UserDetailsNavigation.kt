@@ -8,7 +8,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.sample.architecturecomponents.feature.user_details.UserDetailsScreen
-import timber.log.Timber
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -49,7 +48,6 @@ fun NavGraphBuilder.userDetailsScreen(
             navArgument(USER_URL_ARG) { type = NavType.StringType },
         ),
     ) {
-        Timber.d("UserDetailsScreen() - detailsScreen")
         UserDetailsScreen(
             onUrlClick = onUrlClick,
             onShowSnackbar = onShowSnackbar
