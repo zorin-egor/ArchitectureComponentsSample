@@ -9,16 +9,18 @@
 │   ├── common.......... Utilities, extension functions, helpers
 │   ├── network.......... Interaction with the network
 │   ├── datastore.......... Logic for saving primitive data and objectsв
-│   ├── datastore-proto.......... Description of interaction models
-│   ├── database....... Database
-│   ├── data....... Repositories
-│   ├── domain....... Business logic
+│   ├── datastore-proto.... Description of interaction models
+│   ├── database.... Database
+│   ├── data........ Repositories
+│   ├── domain...... Business logic
 │   ├── model....... Business logic models
 │   ├── designsystem....... Basic UI components, themes, color schemes
 │   ├── ui....... Comprehensive UI components for a specific presentation
 ├── features....... All screens are divided into module-features
 │   ├── users.......... Feature list of users
-│   ├── details.......... Feature details about the user
+│   ├── user_details.......... Feature details about the user
+│   ├── repositories.......... Feature list of repositories
+│   ├── repository_details.....Feature details about the repository
 │   └── settings.......... Feature customization of the application theme
 └──gradle-plugins.......... Convention gradle plugin for forwarding dependencies between modules
 ```

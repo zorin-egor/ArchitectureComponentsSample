@@ -93,6 +93,13 @@ class RepositoriesViewModel @Inject constructor(
 
     fun queryRepositories(name: String) {
         Timber.d("queryRepositories($name)")
+
+        val query = _state.value.query
+        if (name == query) {
+            Timber.d("queryRepositories() - previous name: $query")
+            return
+        }
+
         organizationsJob?.cancel()
 
         if (name.trim().isEmpty()) {
@@ -101,11 +108,6 @@ class RepositoriesViewModel @Inject constructor(
                 recentSearch = emptyList(),
                 state = RepositoriesByNameUiStates.Start
             ))
-            return
-        }
-
-        if (name == _state.value.query) {
-            Timber.d("queryRepositories() - previous name: ${_state.value.query}")
             return
         }
 

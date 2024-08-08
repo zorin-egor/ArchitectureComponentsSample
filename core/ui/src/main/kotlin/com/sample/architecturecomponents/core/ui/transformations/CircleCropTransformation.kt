@@ -28,7 +28,7 @@ class CircleCropTransformation(
         val minSize = minOf(input.width, input.height)
         val minSizeFactor = (minSize * radiusFactor).toInt()
         val radius = minSizeFactor / 2f
-        val output = createBitmap(minSizeFactor, minSizeFactor, input.config)
+        val output = createBitmap(minSizeFactor, minSizeFactor, input.config ?: Bitmap.Config.ARGB_8888)
 
         output.applyCanvas {
             drawCircle(radius, radius, radius, bitmapPaint)

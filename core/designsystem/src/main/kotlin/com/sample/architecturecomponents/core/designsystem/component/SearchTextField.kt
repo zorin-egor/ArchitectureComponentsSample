@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -153,7 +154,8 @@ fun SearchTextField(
         value = searchQuery,
         keyboardOptions = KeyboardOptions(
             imeAction = imeAction,
-            keyboardType = keyboardType
+            keyboardType = keyboardType,
+            capitalization = KeyboardCapitalization.None
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
