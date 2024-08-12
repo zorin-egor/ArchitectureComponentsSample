@@ -4,7 +4,6 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
@@ -25,8 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-
-val LocalAppStateComposition = compositionLocalOf<AppState?> { null }
 
 val NavHostController.currentDestinationFromState: NavDestination?
     @Composable get() = currentBackStackEntryAsState().value?.destination
@@ -61,6 +58,7 @@ class AppState(
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
 ) {
+
     val currentDestination: NavDestination?
         @Composable get() = navController.currentDestinationFromState
 
@@ -103,4 +101,5 @@ class AppState(
             TopLevelDestination.REPOSITORIES -> navController.navigateToRepositories(navOptions = topLevelNavOptions)
         }
     }
+
 }

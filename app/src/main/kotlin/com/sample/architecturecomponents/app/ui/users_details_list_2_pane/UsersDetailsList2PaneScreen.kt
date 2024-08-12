@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.app.ui.users_details_list_2_pane
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -21,7 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.app.ui.NavAppTopBar
-import com.sample.architecturecomponents.feature.user_details.UserDetailsPlaceholder
+import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.ui.R
+import com.sample.architecturecomponents.core.ui.widgets.RoundedPlaceholderWidget
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
 import com.sample.architecturecomponents.feature.user_details.navigation.navigateToUserDetails
 import com.sample.architecturecomponents.feature.user_details.navigation.userDetailsScreen
@@ -38,7 +42,7 @@ fun NavGraphBuilder.usersListDetailsScreen(
     composable(route = USERS_ROUTE) {
         UsersListScreen(
             appState = appState,
-//            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar
         )
     }
 }
@@ -46,7 +50,7 @@ fun NavGraphBuilder.usersListDetailsScreen(
 @Composable
 internal fun UsersListScreen(
     appState: AppState,
-//    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: UsersDetailsList2PaneViewModel = hiltViewModel(),
 ) {
     val selectedUser by viewModel.selectedUser.collectAsStateWithLifecycle()
@@ -55,7 +59,7 @@ internal fun UsersListScreen(
         selectedUserId = selectedUser?.userId,
         selectedUserUrl = selectedUser?.userUrl,
         onUserClick = viewModel::onUserClick,
-//        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar
     )
 }
 
@@ -66,7 +70,7 @@ internal fun UsersListScreen(
     selectedUserId: Long?,
     selectedUserUrl: String?,
     onUserClick: (Long, String) -> Unit,
-//    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val listDetailNavigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     BackHandler(listDetailNavigator.canNavigateBack()) {
@@ -90,7 +94,7 @@ internal fun UsersListScreen(
         listPane = {
             UsersScreen(
                 onUserClick = ::onUserClickShowDetailPane,
-                onShowSnackbar = { a1, a2 -> true },
+                onShowSnackbar = onShowSnackbar,
             )
         },
         detailPane = {
@@ -100,8 +104,6 @@ internal fun UsersListScreen(
                 if (appState.shouldShowBottomBar) {
                     NavAppTopBar(
                         state = appState,
-                        route = nestedNavController.currentDestination?.route,
-                        backAction = listDetailNavigator::navigateBack
                     )
                 }
 
@@ -111,12 +113,17 @@ internal fun UsersListScreen(
                     route = USER_DETAILS_PANE_ROUTE,
                 ) {
                     composable(route = USER_DETAILS_ROUTE) {
-                        UserDetailsPlaceholder()
+                        RoundedPlaceholderWidget(
+                            header = R.string.empty_placeholder_header,
+                            image = Icons.Users,
+                            imageContentDescription = R.string.empty_placeholder_header,
+                            modifier = Modifier.padding(all = 8.dp)
+                        )
                     }
                     userDetailsScreen(
                         showBackButton = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
-                        onShowSnackbar = { a1, a2 -> false },
+                        onShowSnackbar = onShowSnackbar,
                         onUrlClick = {
                             Timber.d("detailPane() - userDetailsScreen: $it")
                         },

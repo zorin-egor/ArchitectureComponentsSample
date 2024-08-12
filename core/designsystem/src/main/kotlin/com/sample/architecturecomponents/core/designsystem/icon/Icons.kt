@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.core.designsystem.icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.SupervisedUserCircle
 import androidx.compose.material.icons.rounded.Autorenew
@@ -33,4 +34,5 @@ object Icons {
     val RepositoriesBorder = Icons.Outlined.Storage
     val Start = Icons.Rounded.Star
     val ForkLeft = Icons.Rounded.ForkLeft
+    val Share = Icons.Outlined.Share
 }

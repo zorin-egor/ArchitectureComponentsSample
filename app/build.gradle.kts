@@ -71,7 +71,6 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
 
-    implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.activity.compose)

@@ -52,12 +52,16 @@ import com.sample.architecturecomponents.core.designsystem.component.AppNavigati
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationRailItem
 import com.sample.architecturecomponents.core.designsystem.component.AppTopBar
 import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.ui.ext.rootViewModel
+import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationState
+import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationViewModel
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE_PATH
 import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.themes.ThemesDialog
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE_PATH
 import timber.log.Timber
 import com.sample.architecturecomponents.app.R as AppR
+import com.sample.architecturecomponents.core.ui.R as CoreUiR
 import com.sample.architecturecomponents.feature.repository_details.R as RepoDetailsR
 import com.sample.architecturecomponents.feature.settings.R as SettingsR
 import com.sample.architecturecomponents.feature.user_details.R as UserDetailsR
@@ -129,11 +133,7 @@ fun AppRoot(appState: AppState) {
                 }
 
                 Column(Modifier.fillMaxSize()) {
-                    NavAppTopBar(
-                        state = appState,
-                        route = appState.currentDestination?.route,
-                        backAction = appState.navController::navigateUp
-                    )
+                    NavAppTopBar(state = appState)
 
                     AppNavHost(
                         appState = appState,
@@ -156,34 +156,37 @@ fun AppRoot(appState: AppState) {
 @Composable
 internal fun NavAppTopBar(
     state: AppState,
-    route: String?,
-    backAction: () -> Boolean
 ) {
-    var isTopBarVisible = false
+    val viewModel: TopBarNavigationViewModel? = rootViewModel()
+
+    var isTopBarVisible = true
     var toolbarTitle: Int? = null
     var navigationIcon: ImageVector? = null
     var navigationDesc: String? = null
     var actionIcon: ImageVector? = null
     var actionDesc: String? = null
     var actionClick: () -> Unit = {}
-    var backClick: () -> Unit =  { backAction() }
+    val backClick: () -> Unit = { state.navController.navigateUp() }
 
-    Timber.d("NavAppTopBar() - ${state.shouldShowBottomBar}, $route")
+    Timber.d("NavAppTopBar() - ${state.shouldShowBottomBar}")
 
-    when {
-        route == USER_DETAILS_ROUTE_PATH && state.shouldShowBottomBar -> {
+    when (val route = state.currentDestination?.route) {
+        USER_DETAILS_ROUTE_PATH -> {
             toolbarTitle = UserDetailsR.string.feature_user_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(UserDetailsR.string.feature_user_details_title)
+            actionIcon = Icons.Share
+            actionDesc = stringResource(id = CoreUiR.string.share)
+            actionClick = { viewModel?.emit(route, TopBarNavigationState.Menu) }
             isTopBarVisible = true
         }
-        route == REPOSITORY_DETAILS_ROUTE_PATH -> {
+        REPOSITORY_DETAILS_ROUTE_PATH -> {
             toolbarTitle = RepoDetailsR.string.feature_repository_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)
             isTopBarVisible = true
         }
-        route == SETTINGS_ROUTE -> {
+        SETTINGS_ROUTE -> {
             toolbarTitle = SettingsR.string.feature_settings_title
             isTopBarVisible = true
         }

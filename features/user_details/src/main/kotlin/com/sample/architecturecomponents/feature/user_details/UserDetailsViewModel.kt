@@ -41,10 +41,6 @@ class UserDetailsViewModel @Inject constructor(
             initialValue = null,
         )
 
-    init {
-        Timber.d("init($userId, $userUrl)")
-    }
-
     val state: StateFlow<UserDetailsUiState> = getUserDetailsUseCase(userId = userId, url = userUrl)
         .map {
             val item = it.getOrNull()
@@ -66,9 +62,4 @@ class UserDetailsViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = UserDetailsUiState.Loading,
         )
-
-    override fun onCleared() {
-        super.onCleared()
-        Timber.d("onCleared($this)")
-    }
 }

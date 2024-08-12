@@ -20,7 +20,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.sample.architecturecomponents.app.ui.AppRoot
-import com.sample.architecturecomponents.app.ui.LocalAppStateComposition
 import com.sample.architecturecomponents.app.ui.rememberAppState
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 import com.sample.architecturecomponents.core.model.DarkThemeConfig
@@ -94,9 +93,7 @@ class MainActivity : ComponentActivity() {
                 networkMonitor = networkMonitor,
             )
 
-            CompositionLocalProvider(
-                LocalAppStateComposition provides appState
-            ) {
+            CompositionLocalProvider() {
                 AppTheme(
                     darkTheme = darkTheme,
                     androidTheme = shouldUseAndroidTheme(uiState),

@@ -1,24 +1,15 @@
 package com.sample.architecturecomponents.feature.user_details.widgets
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,22 +18,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.data.models.repositoriesUrl
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.UserDetails
+import com.sample.architecturecomponents.core.ui.ext.getEmailLink
 import com.sample.architecturecomponents.core.ui.ext.getHyperLink
-import com.sample.architecturecomponents.core.ui.ext.openBrowser
+import com.sample.architecturecomponents.core.ui.ext.toAnnotatedString
+import com.sample.architecturecomponents.core.ui.widgets.TwoSeparatedTextWidget
 import com.sample.architecturecomponents.feature.user_details.R
 
 @Composable
@@ -61,9 +47,7 @@ fun UserDetailsContent(
         },
     )
 
-    val context = LocalContext.current
     val scroll = rememberScrollState()
-    val scheme = MaterialTheme.colorScheme
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -86,272 +70,68 @@ fun UserDetailsContent(
                     .align(Alignment.CenterHorizontally)
                     .height(300.dp)
                     .clip(shape = RoundedCornerShape(8.dp))
+                    .clickable { onUrlClick("") }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_id,
+                title = { userDetails.id.toAnnotatedString() }
+            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_url).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_url,
+                title = { getHyperLink(userDetails.url) }
+            )
 
-                Spacer(modifier = Modifier.width(8.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_name,
+                title = { userDetails.name?.toAnnotatedString() }
+            )
 
-                Text(
-                    text = getHyperLink(userDetails.url),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_company,
+                title = { userDetails.company?.toAnnotatedString() }
+            )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_blog,
+                title = { getHyperLink(userDetails.blog) }
+            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_id).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.id.toString(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_location,
+                title = { userDetails.location?.toAnnotatedString() }
+            )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_location,
+                title = { getEmailLink(userDetails.email, userDetails.email) }
+            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_name).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.name ?: "-",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_bio,
+                title = { userDetails.bio?.toAnnotatedString() }
+            )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_public_repos,
+                title = { userDetails.bio?.toAnnotatedString() }
+            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_company).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.company ?: "-",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_followers,
+                title = { userDetails.followers?.toAnnotatedString() }
+            )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_created,
+                title = { userDetails.createdAt?.toFormatterDateTime?.toAnnotatedString() }
+            )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_blog).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = getHyperLink(userDetails.blog?.takeIf { it.isNotEmpty() } ?: "-"),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_location).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.location ?: "-",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_email).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text =  getHyperLink(userDetails.email?.takeIf { it.isNotEmpty() } ?: "-"),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_bio).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.bio ?: "-",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_public_repos).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.publicRepos.toString(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_followers).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.followers.toString(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_created).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.createdAt?.toFormatterDateTime ?: "-",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.feature_user_details_user_repos).plus(":"),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userDetails.repositoriesUrl,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Blue,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        context.openBrowser(
-                            uri = Uri.parse(userDetails.repositoriesUrl),
-                            toolbarColor = Color.Blue.toArgb()
-                        )
-                    }
-                )
-            }
+            TwoSeparatedTextWidget(
+                headerResId = R.string.feature_user_details_user_repos,
+                title = { getHyperLink(userDetails.repositoriesUrl) }
+            )
         }
     }
 }

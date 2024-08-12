@@ -29,10 +29,10 @@ import com.sample.architecturecomponents.core.ui.R
 @Composable
 fun SimplePlaceholderContent(
     header: Int,
-    title: Int,
     image: ImageVector,
-    imageContentDescription: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: Int? = null,
+    imageContentDescription: Int? = null
 ) {
     val materialTheme = MaterialTheme.colorScheme
 
@@ -46,12 +46,14 @@ fun SimplePlaceholderContent(
 
         Image(
             imageVector = image,
-            contentDescription = stringResource(id = imageContentDescription),
+            contentDescription = if (imageContentDescription != null)
+                stringResource(id = imageContentDescription) else null,
             modifier = Modifier
                 .size(160.dp)
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally)
+                .alpha(0.7f),
             alignment = Alignment.Center,
-            colorFilter = ColorFilter.tint(materialTheme.surfaceVariant)
+            colorFilter = ColorFilter.tint(materialTheme.primary)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -67,16 +69,17 @@ fun SimplePlaceholderContent(
                 .alpha(0.5f),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = stringResource(id = title),
-            fontSize = 16.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.align(Alignment.CenterHorizontally).alpha(0.5f)
-        )
+        if (title != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(id = title),
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Normal,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.align(Alignment.CenterHorizontally).alpha(0.5f)
+            )
+        }
     }
 }
 

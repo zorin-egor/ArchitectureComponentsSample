@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.app.ui.repositories_details_list_2_pan
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -21,13 +23,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.app.ui.NavAppTopBar
+import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.ui.widgets.RoundedPlaceholderWidget
 import com.sample.architecturecomponents.feature.repositories.RepositoriesScreen
 import com.sample.architecturecomponents.feature.repositories.navigation.REPOSITORIES_ROUTE
-import com.sample.architecturecomponents.feature.repository_details.RepositoryDetailsPlaceholder
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE
 import com.sample.architecturecomponents.feature.repository_details.navigation.navigateToRepositoryDetails
 import com.sample.architecturecomponents.feature.repository_details.navigation.repositoryDetailsScreen
 import timber.log.Timber
+import com.sample.architecturecomponents.core.ui.R as CoreUiR
 
 private const val REPOSITORIES_DETAILS_PANE_ROUTE = "repositories_details_pane_route"
 
@@ -38,7 +42,7 @@ fun NavGraphBuilder.repositoriesListDetailsScreen(
     composable(route = REPOSITORIES_ROUTE) {
         RepositoriesListScreen(
             appState = appState,
-//            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar
         )
     }
 }
@@ -46,7 +50,7 @@ fun NavGraphBuilder.repositoriesListDetailsScreen(
 @Composable
 internal fun RepositoriesListScreen(
     appState: AppState,
-//    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: RepositoriesDetailsList2PaneViewModel = hiltViewModel(),
 ) {
     val selectedUser by viewModel.selectedRepository.collectAsStateWithLifecycle()
@@ -55,7 +59,7 @@ internal fun RepositoriesListScreen(
         selectedRepoOwner = selectedUser?.userOwner,
         selectedRepoUrl = selectedUser?.userUrl,
         onRepositoryClick = viewModel::onRepositoryClick,
-//        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar
     )
 }
 
@@ -66,7 +70,7 @@ internal fun RepositoriesListScreen(
     selectedRepoOwner: String?,
     selectedRepoUrl: String?,
     onRepositoryClick: (String, String) -> Unit,
-//    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val listDetailNavigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     BackHandler(listDetailNavigator.canNavigateBack()) {
@@ -90,7 +94,7 @@ internal fun RepositoriesListScreen(
         listPane = {
             RepositoriesScreen(
                 onRepositoryClick = ::onRepoClickShowDetailPane,
-                onShowSnackbar = { a1, a2 -> true },
+                onShowSnackbar = onShowSnackbar,
             )
         },
         detailPane = {
@@ -99,9 +103,7 @@ internal fun RepositoriesListScreen(
 
                 if (appState.shouldShowBottomBar) {
                     NavAppTopBar(
-                        state = appState,
-                        route = nestedNavController.currentDestination?.route,
-                        backAction = listDetailNavigator::navigateBack
+                        state = appState
                     )
                 }
 
@@ -111,12 +113,17 @@ internal fun RepositoriesListScreen(
                     route = REPOSITORIES_DETAILS_PANE_ROUTE,
                 ) {
                     composable(route = REPOSITORY_DETAILS_ROUTE) {
-                        RepositoryDetailsPlaceholder()
+                        RoundedPlaceholderWidget(
+                            header = CoreUiR.string.empty_placeholder_header,
+                            image = Icons.Repositories,
+                            imageContentDescription = CoreUiR.string.empty_placeholder_header,
+                            modifier = Modifier.padding(all = 8.dp)
+                        )
                     }
                     repositoryDetailsScreen(
                         showBackButton = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
-                        onShowSnackbar = { a1, a2 -> false },
+                        onShowSnackbar = onShowSnackbar,
                         onUrlClick = {
                             Timber.d("detailPane() - repositoryDetailsScreen: $it")
                         },

@@ -155,7 +155,7 @@ fun RepositoriesItemContent(
             )
 
             Text(
-                text = repository.updatedAt.toFormatterDateTime,
+                text = repository.updatedAt.toFormatterDateTime ?: "-",
                 fontSize = 10.sp,
                 lineHeight = 10.sp,
                 maxLines = 3,

@@ -24,7 +24,8 @@ fun Context.openBrowser(uri: Uri, @ColorInt toolbarColor: Int) {
     customTabsIntent.launchUrl(this, uri)
 }
 
-fun getHyperLink(url: String, title: String? = null): AnnotatedString {
+fun getHyperLink(url: String?, title: String? = null): AnnotatedString? {
+    url?.takeIf { it.isNotEmpty() } ?: return null
     return buildAnnotatedString {
         withLink(link = LinkAnnotation.Url(
             url = url,
@@ -33,4 +34,9 @@ fun getHyperLink(url: String, title: String? = null): AnnotatedString {
             append(title ?: url)
         }
     }
+}
+
+fun getEmailLink(email: String?, title: String? = null): AnnotatedString? {
+    email ?: return null
+    return getHyperLink("mailto:$email", title)
 }
