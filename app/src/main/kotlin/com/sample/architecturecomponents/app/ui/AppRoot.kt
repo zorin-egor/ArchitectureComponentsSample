@@ -184,6 +184,8 @@ internal fun NavAppTopBar(
             toolbarTitle = RepoDetailsR.string.feature_repository_details_title
             navigationIcon = Icons.ArrowBack
             navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)
+            actionDesc = stringResource(id = CoreUiR.string.share)
+            actionClick = { viewModel?.emit(route, TopBarNavigationState.Menu) }
             isTopBarVisible = true
         }
         SETTINGS_ROUTE -> {

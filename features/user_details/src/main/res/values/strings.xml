@@ -13,4 +13,5 @@
     <string name="feature_user_details_user_followers">Followers</string>
     <string name="feature_user_details_user_created">Created</string>
     <string name="feature_user_details_user_repos">Repos url</string>
+    <string name="feature_user_details_share_title">Github user profile</string>
 </resources>

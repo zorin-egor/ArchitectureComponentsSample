@@ -12,4 +12,5 @@
     <string name="feature_repository_details_description">Description</string>
     <string name="feature_repository_details_topics">Topics</string>
     <string name="feature_repository_details_license">License</string>
+    <string name="feature_repository_details_share_title">Github repository page</string>
 </resources>

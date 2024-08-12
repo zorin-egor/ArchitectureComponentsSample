@@ -2,14 +2,18 @@ package com.sample.architecturecomponents.feature.user_details.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.data.models.repositoriesUrl
+import com.sample.architecturecomponents.core.designsystem.icon.Icons
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.ui.ext.getEmailLink
@@ -33,8 +38,10 @@ import com.sample.architecturecomponents.feature.user_details.R
 
 @Composable
 fun UserDetailsContent(
+    isTopBarVisible: Boolean,
     userDetails: UserDetails,
     onUrlClick: (String) -> Unit,
+    onShareClick: (UserDetails) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -61,17 +68,28 @@ fun UserDetailsContent(
                 .fillMaxHeight()
                 .verticalScroll(scroll)
         ) {
-            Image(
-                painter = imageLoader,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .height(300.dp)
-                    .clip(shape = RoundedCornerShape(8.dp))
-                    .clickable { onUrlClick("") }
-            )
+            Box(modifier = Modifier.wrapContentSize()) {
+                Image(
+                    painter = imageLoader,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .height(300.dp)
+                        .clip(shape = RoundedCornerShape(8.dp))
+                )
+                if (!isTopBarVisible) {
+                    Icon(
+                        imageVector = Icons.Share,
+                        contentDescription = null,
+                        modifier = Modifier.wrapContentSize()
+                            .padding(16.dp)
+                            .align(Alignment.TopEnd)
+                            .clickable { onShareClick(userDetails) }
+                    )
+                }
+            }
 
             TwoSeparatedTextWidget(
                 headerResId = R.string.feature_user_details_user_id,

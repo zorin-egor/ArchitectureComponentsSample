@@ -1,22 +1,24 @@
 package com.sample.architecturecomponents.core.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.receiveAsFlow
 
 abstract class ResultViewModel<T> : ViewModel() {
 
-    private val _result = Channel<Pair<String, T?>>()
+    private val _result = MutableSharedFlow<Pair<String, T?>>(replay = 1, onBufferOverflow = BufferOverflow.SUSPEND)
 
     fun emit(key: String, value: T) {
-        _result.trySend(key to value)
+        _result.tryEmit(key to value)
     }
 
-    fun collect(key: String, initialValue: T? = null): Flow<T> =
-        _result.receiveAsFlow()
+    fun collect(key: String): Flow<T> =
+        _result.asSharedFlow()
             .filter { it.first == key }
             .mapNotNull { it.second }
+
 }

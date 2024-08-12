@@ -50,7 +50,8 @@ fun UsersScreen(
                 UsersItemContent(
                     user = user,
                     onUserClick = onClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(250.dp)
                 )
             }

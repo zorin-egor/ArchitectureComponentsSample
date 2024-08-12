@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.core.ui.viewmodels
 
 import androidx.compose.runtime.compositionLocalOf
 
-val LocalTopBarNavigationState = compositionLocalOf<TopBarNavigationState> { error("Must be set before use") }
+val LocalTopBarNavigationState = compositionLocalOf<TopBarNavigationState> { error("Must be provide before use") }
 
 class TopBarNavigationViewModel : ResultViewModel<TopBarNavigationState>()
 

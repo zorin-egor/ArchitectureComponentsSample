@@ -28,7 +28,7 @@ fun NavController.navigateToRepositoryDetails(owner: String, repo: String, navOp
 }
 
 fun NavGraphBuilder.repositoryDetailsScreen(
-    showBackButton: Boolean,
+    isTopBarVisible: Boolean,
     onBackClick: () -> Unit,
     onUrlClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean
@@ -42,6 +42,7 @@ fun NavGraphBuilder.repositoryDetailsScreen(
     ) {
         Timber.d("DetailsScreen() - detailsScreen")
         RepositoryDetailsScreen(
+            isTopBarVisible = isTopBarVisible,
             onUrlClick = onUrlClick,
             onShowSnackbar = onShowSnackbar
         )

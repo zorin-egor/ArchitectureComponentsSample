@@ -121,7 +121,7 @@ internal fun RepositoriesListScreen(
                         )
                     }
                     repositoryDetailsScreen(
-                        showBackButton = !listDetailNavigator.isListPaneVisible(),
+                        isTopBarVisible = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
                         onShowSnackbar = onShowSnackbar,
                         onUrlClick = {
