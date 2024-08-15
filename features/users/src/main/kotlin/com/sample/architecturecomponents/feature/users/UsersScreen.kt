@@ -43,13 +43,12 @@ fun UsersScreen(
             ListContentWidget(
                 items = state.users,
                 onKey = { it.id.toString() },
-                onItemClick = { onUserClick(it.id, it.url) },
                 onBottomEvent = viewModel::nextUsers,
                 isBottomProgress = state.isBottomProgress
-            ) { user, onClick ->
+            ) { user ->
                 UsersItemContent(
                     user = user,
-                    onUserClick = onClick,
+                    onUserClick = { onUserClick(user.id, user.url) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)

@@ -20,12 +20,11 @@ import com.sample.architecturecomponents.core.designsystem.component.setEdgeEven
 fun <Item> ListContentWidget(
     items: List<Item>,
     onKey: (Item) -> String,
-    onItemClick: (Item) -> Unit,
     onBottomEvent: () -> Unit,
     isBottomProgress: Boolean,
     modifier: Modifier = Modifier,
     prefetch: Int = 3,
-    content: @Composable (Item, (Item) -> Unit) -> Unit
+    content: @Composable (Item) -> Unit
 ) {
     println("ItemsOrganizationsContent()")
 
@@ -55,8 +54,8 @@ fun <Item> ListContentWidget(
             items(
                 items = items,
                 key = onKey
-            ) { item ->
-                content(item, onItemClick)
+            ) {
+                content(it)
             }
         }
 

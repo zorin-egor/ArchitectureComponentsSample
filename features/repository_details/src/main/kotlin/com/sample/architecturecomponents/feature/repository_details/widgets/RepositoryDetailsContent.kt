@@ -94,65 +94,90 @@ fun RepositoryDetailsContent(
                 }
             }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_repository_name,
-                title = { repositoryDetails.name.toAnnotatedString() }
-            )
+            repositoryDetails.name.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_repository_name,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_forks,
-                title = { repositoryDetails.forks.toAnnotatedString() }
-            )
+            repositoryDetails.forks.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_forks,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_watchers,
-                title = { repositoryDetails.watchersCount.toAnnotatedString() }
-            )
+            repositoryDetails.watchersCount.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_watchers,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_created_at,
-                title = { repositoryDetails.createdAt.toFormatterDateTime?.toAnnotatedString() }
-            )
+            repositoryDetails.createdAt.toFormatterDateTime?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_created_at,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_updated_at,
-                title = { repositoryDetails.updatedAt.toFormatterDateTime?.toAnnotatedString() }
-            )
+            repositoryDetails.updatedAt.toFormatterDateTime?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_updated_at,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_pushed_at,
-                title = { repositoryDetails.pushedAt.toFormatterDateTime?.toAnnotatedString() }
-            )
+            repositoryDetails.pushedAt.toFormatterDateTime?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_pushed_at,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_default_branch,
-                title = { repositoryDetails.defaultBranch.toAnnotatedString() }
-            )
+            repositoryDetails.defaultBranch.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_default_branch,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_stargazers_count,
-                title = { repositoryDetails.stargazersCount.toAnnotatedString() }
-            )
+            repositoryDetails.stargazersCount.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_stargazers_count,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_stargazers_count,
-                title = { repositoryDetails.stargazersCount.toAnnotatedString() }
-            )
+            repositoryDetails.stargazersCount.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_stargazers_count,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_description,
-                title = { repositoryDetails.description?.toAnnotatedString() }
-            )
+            repositoryDetails.description?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_description,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_topics,
-                title = { repositoryDetails.topics.joinToString(separator = "-") { it }.toAnnotatedString() }
-            )
+            repositoryDetails.topics.joinToString(separator = "-") { it }.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_topics,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_repository_details_license,
-                title = { getHyperLink(repositoryDetails.license?.url) }
-            )
+            getHyperLink(repositoryDetails.license?.url)?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_repository_details_license,
+                    title = it
+                )
+            }
+
         }
     }
 }

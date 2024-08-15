@@ -82,13 +82,12 @@ fun RepositoriesScreen(
                 ListContentWidget(
                     items = state.repositories,
                     onKey = { it.id.toString() },
-                    onItemClick = { onRepositoryClick(it.owner, it.name) },
                     onBottomEvent = viewModel::nextRepositories,
                     isBottomProgress = state.isBottomProgress
-                ) { repository, onClick ->
+                ) { repository ->
                     RepositoriesItemContent(
                         repository = repository,
-                        onRepositoryClick = onClick,
+                        onRepositoryClick = { onRepositoryClick(it.owner, it.name) },
                         modifier = Modifier.fillMaxWidth()
                             .height(110.dp)
                     )

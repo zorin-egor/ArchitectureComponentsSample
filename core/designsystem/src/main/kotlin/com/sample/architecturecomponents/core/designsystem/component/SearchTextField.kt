@@ -93,11 +93,11 @@ fun SearchTextField(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val onSearchExplicitlyTriggered = {
+    val onSearchExplicitlyTriggered = remember {{
         Timber.d("SearchTextField() - onSearchExplicitlyTriggered()")
         keyboardController?.hide()
         onSearchTriggered?.invoke(searchQuery.text)
-    }
+    }}
 
     TextField(
         colors = TextFieldDefaults.colors(

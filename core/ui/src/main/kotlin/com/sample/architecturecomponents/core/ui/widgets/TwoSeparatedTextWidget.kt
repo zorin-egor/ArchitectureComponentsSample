@@ -22,13 +22,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun TwoSeparatedTextWidget(
     @StringRes headerResId: Int,
-    title: () -> AnnotatedString?,
+    title: AnnotatedString,
     modifier: Modifier = Modifier,
     separator: String = ":",
     spacerHeight: Dp = 8.dp
 ) {
-    val annotatedTitle = title() ?: return
-
     Spacer(modifier = Modifier.height(height = spacerHeight))
 
     Row(
@@ -44,7 +42,7 @@ fun TwoSeparatedTextWidget(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = annotatedTitle,
+            text = title,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )

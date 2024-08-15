@@ -59,6 +59,10 @@ import com.sample.architecturecomponents.feature.repository_details.navigation.R
 import com.sample.architecturecomponents.feature.settings.navigation.SETTINGS_ROUTE
 import com.sample.architecturecomponents.feature.themes.ThemesDialog
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE_PATH
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import timber.log.Timber
 import com.sample.architecturecomponents.app.R as AppR
 import com.sample.architecturecomponents.core.ui.R as CoreUiR
@@ -101,7 +105,7 @@ fun AppRoot(appState: AppState) {
             bottomBar = {
                 if (appState.shouldShowBottomBar) {
                     AppBottomBar(
-                        destinations = appState.topLevelDestinations,
+                        destinations = appState.topLevelDestinations.toImmutableList(),
                         onNavigateToDestination = appState::navigateToTopLevelDestination,
                         currentDestination = appState.currentDestination,
                         modifier = Modifier.testTag("AppBottomBar"),
@@ -122,7 +126,7 @@ fun AppRoot(appState: AppState) {
             ) {
                 if (appState.shouldShowNavRail) {
                     AppNavRail(
-                        destinations = appState.topLevelDestinations,
+                        destinations = appState.topLevelDestinations.toImmutableSet(),
                         destinationsWithUnreadResources = setOf(TopLevelDestination.SETTINGS),
                         onNavigateToDestination = appState::navigateToTopLevelDestination,
                         currentDestination = appState.currentDestination,
@@ -217,7 +221,7 @@ internal fun NavAppTopBar(
 
 @Composable
 private fun AppBottomBar(
-    destinations: List<TopLevelDestination>,
+    destinations: ImmutableList<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier,
@@ -251,7 +255,7 @@ private fun AppBottomBar(
 
 @Composable
 private fun AppNavRail(
-    destinations: List<TopLevelDestination>,
+    destinations: ImmutableSet<TopLevelDestination>,
     destinationsWithUnreadResources: Set<TopLevelDestination>,
     onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,

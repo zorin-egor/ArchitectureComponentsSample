@@ -91,65 +91,89 @@ fun UserDetailsContent(
                 }
             }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_id,
-                title = { userDetails.id.toAnnotatedString() }
-            )
+            userDetails.id.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_id,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_url,
-                title = { getHyperLink(userDetails.url) }
-            )
+            getHyperLink(userDetails.url)?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_url,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_name,
-                title = { userDetails.name?.toAnnotatedString() }
-            )
+            userDetails.name?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_name,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_company,
-                title = { userDetails.company?.toAnnotatedString() }
-            )
+            userDetails.company?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_company,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_blog,
-                title = { getHyperLink(userDetails.blog) }
-            )
+            getHyperLink(userDetails.blog)?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_blog,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_location,
-                title = { userDetails.location?.toAnnotatedString() }
-            )
+            userDetails.location?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_location,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_location,
-                title = { getEmailLink(userDetails.email, userDetails.email) }
-            )
+            getEmailLink(userDetails.email, userDetails.email)?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_location,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_bio,
-                title = { userDetails.bio?.toAnnotatedString() }
-            )
+            userDetails.bio?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_bio,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_public_repos,
-                title = { userDetails.bio?.toAnnotatedString() }
-            )
+            userDetails.bio?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_public_repos,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_followers,
-                title = { userDetails.followers?.toAnnotatedString() }
-            )
+            userDetails.followers?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_followers,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_created,
-                title = { userDetails.createdAt?.toFormatterDateTime?.toAnnotatedString() }
-            )
+            userDetails.createdAt?.toFormatterDateTime?.toAnnotatedString()?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_created,
+                    title = it
+                )
+            }
 
-            TwoSeparatedTextWidget(
-                headerResId = R.string.feature_user_details_user_repos,
-                title = { getHyperLink(userDetails.repositoriesUrl) }
-            )
+            getHyperLink(userDetails.repositoriesUrl)?.let {
+                TwoSeparatedTextWidget(
+                    headerResId = R.string.feature_user_details_user_repos,
+                    title = it
+                )
+            }
         }
     }
 }
