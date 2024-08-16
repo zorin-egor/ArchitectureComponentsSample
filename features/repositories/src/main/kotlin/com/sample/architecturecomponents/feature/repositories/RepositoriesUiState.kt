@@ -1,10 +1,11 @@
 package com.sample.architecturecomponents.feature.repositories
 
+import com.sample.architecturecomponents.core.designsystem.component.SearchTextDataItem
 import com.sample.architecturecomponents.core.model.Repository
 
 data class RepositoriesByNameUiState(
     val query: String,
-    val recentSearch: List<Pair<String, String>>,
+    val recentSearch: List<SearchTextDataItem>,
     val state: RepositoriesByNameUiStates
 )
 

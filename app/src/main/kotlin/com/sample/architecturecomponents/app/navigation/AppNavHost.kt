@@ -85,7 +85,7 @@ private fun NavGraphBuilder.usersDetailsPaneScreen(
 private fun NavGraphBuilder.repositoriesDetailsPaneScreen(
     appState: AppState,
     navController: NavController,
-    onShowSnackbar: suspend (String, String?) -> Boolean
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     if (appState.shouldShowNavRail) {
         repositoriesListDetailsScreen(

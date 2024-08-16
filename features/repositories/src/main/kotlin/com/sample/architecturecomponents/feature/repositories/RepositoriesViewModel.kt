@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.feature.repositories
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sample.architecturecomponents.core.designsystem.component.SearchTextDataItem
 import com.sample.architecturecomponents.core.domain.usecases.GetRecentSearchUseCase
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoriesByNameUseCase
 import com.sample.architecturecomponents.core.domain.usecases.SetRecentSearchUseCase
@@ -158,7 +159,7 @@ class RepositoriesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setRecentSearch(items: List<Pair<String, String>>) {
+    private suspend fun setRecentSearch(items: List<SearchTextDataItem>) {
         _state.emit(_state.value.copy(recentSearch = items))
     }
 
@@ -168,8 +169,8 @@ class RepositoriesViewModel @Inject constructor(
 
 }
 
-private fun mapTo(item: RecentSearch): Pair<String, String> =
-    Pair(first = item.value, second = item.tag.name)
+private fun mapTo(item: RecentSearch): SearchTextDataItem =
+    SearchTextDataItem(id = item.tag.name, text = item.value)
 
-private fun mapTo(item: List<RecentSearch>): List<Pair<String, String>> =
+private fun mapTo(item: List<RecentSearch>): List<SearchTextDataItem> =
     item.map(::mapTo)

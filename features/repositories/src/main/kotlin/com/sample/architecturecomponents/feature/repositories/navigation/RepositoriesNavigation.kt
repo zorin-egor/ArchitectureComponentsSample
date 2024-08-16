@@ -15,11 +15,16 @@ fun NavController.navigateToRepositories(navOptions: NavOptions) {
 
 fun NavGraphBuilder.repositoriesScreen(
     onRepositoryClick: (String, String) -> Unit,
+    onSearchClear: (() -> Unit)? = null,
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable(
         route = REPOSITORIES_ROUTE,
     ) {
-        RepositoriesScreen(onRepositoryClick = onRepositoryClick, onShowSnackbar = onShowSnackbar )
+        RepositoriesScreen(
+            onRepositoryClick = onRepositoryClick,
+            onSearchClear = onSearchClear,
+            onShowSnackbar = onShowSnackbar
+        )
     }
 }

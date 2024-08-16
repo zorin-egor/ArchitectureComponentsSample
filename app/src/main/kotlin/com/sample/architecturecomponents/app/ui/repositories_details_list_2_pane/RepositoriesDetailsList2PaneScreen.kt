@@ -13,6 +13,7 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -79,6 +80,10 @@ internal fun RepositoriesListScreen(
 
     val nestedNavController = rememberNavController()
 
+    val searchClear = remember {{
+        nestedNavController.navigate(route = REPOSITORY_DETAILS_ROUTE)
+    }}
+
     fun onRepoClickShowDetailPane(repoOwner: String, repoUrl: String) {
         Timber.d("onRepoClickShowDetailPane($repoOwner, $repoUrl)")
         onRepositoryClick(repoOwner, repoUrl)
@@ -95,6 +100,7 @@ internal fun RepositoriesListScreen(
             RepositoriesScreen(
                 onRepositoryClick = ::onRepoClickShowDetailPane,
                 onShowSnackbar = onShowSnackbar,
+                onSearchClear = searchClear
             )
         },
         detailPane = {

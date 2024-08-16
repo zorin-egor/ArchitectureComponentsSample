@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,12 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import timber.log.Timber
 
+@Stable
+data class SearchTextDataItem(
+    val id: String = "",
+    val text: String,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExposedSearchTextField(
     searchQuery: String,
-    options: List<Pair<String, String>>,
-    onSearchQueryChanged: (Pair<String, String?>) -> Unit,
+    options: List<SearchTextDataItem>,
+    onSearchQueryChanged: (SearchTextDataItem) -> Unit,
     modifier: Modifier = Modifier,
     onSearchTriggered: ((String) -> Unit)? = null,
     contentDescriptionSearch: String? = null,
@@ -65,7 +72,7 @@ fun ExposedSearchTextField(
                 if (!expanded) {
                     expanded = true
                 }
-                onSearchQueryChanged(it to null)
+                onSearchQueryChanged(SearchTextDataItem(text = it))
             },
             onSearchTriggered = onSearchTriggered,
             inputFilter = inputFilter,
@@ -94,7 +101,7 @@ fun ExposedSearchTextField(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(text = option.first) },
+                    text = { Text(text = option.text) },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     onClick = {
                         Timber.d("ExposedSearchTextField() - onClick($option)")

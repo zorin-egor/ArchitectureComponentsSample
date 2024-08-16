@@ -26,6 +26,7 @@ fun RepositoriesScreen(
     onRepositoryClick: (String, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
+    onSearchClear: (() -> Unit)? = null,
     viewModel: RepositoriesViewModel = hiltViewModel(),
 ) {
     Timber.d("RepositoriesScreen()")
@@ -54,7 +55,10 @@ fun RepositoriesScreen(
             contentDescriptionClose = "contentDescriptionClose",
             onSearchQueryChanged = {
                 Timber.d("RepositoriesScreen() - onSearchQueryChanged: $it")
-                viewModel.queryRepositories(it.first)
+                viewModel.queryRepositories(it.text)
+                if (it.text.isEmpty()) {
+                    onSearchClear?.invoke()
+                }
             },
             onSearchTriggered = {
                 Timber.d("RepositoriesScreen() - onSearchTriggered: $it")
