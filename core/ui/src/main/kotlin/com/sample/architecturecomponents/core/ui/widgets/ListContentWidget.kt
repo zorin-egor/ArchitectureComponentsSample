@@ -24,6 +24,7 @@ fun <Item> ListContentWidget(
     isBottomProgress: Boolean,
     modifier: Modifier = Modifier,
     prefetch: Int = 3,
+    contentType: (item: Item) -> Any? = { null },
     content: @Composable (Item) -> Unit
 ) {
     println("ItemsOrganizationsContent()")
@@ -53,7 +54,8 @@ fun <Item> ListContentWidget(
         ) {
             items(
                 items = items,
-                key = onKey
+                key = onKey,
+                contentType = contentType
             ) {
                 content(it)
             }

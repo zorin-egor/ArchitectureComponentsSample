@@ -13,6 +13,7 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -78,6 +79,7 @@ internal fun UsersListScreen(
     }
 
     val nestedNavController = rememberNavController()
+    val onUrlClick: (String) -> Unit = remember {{ Timber.d("detailPane() - userDetailsScreen: $it") }}
 
     fun onUserClickShowDetailPane(userId: Long, userUrl: String) {
         Timber.d("onUserClickShowDetailPane($userId, $userUrl)")
@@ -124,9 +126,7 @@ internal fun UsersListScreen(
                         isTopBarVisible = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
                         onShowSnackbar = onShowSnackbar,
-                        onUrlClick = {
-                            Timber.d("detailPane() - userDetailsScreen: $it")
-                        },
+                        onUrlClick = onUrlClick,
                     )
                 }
             }

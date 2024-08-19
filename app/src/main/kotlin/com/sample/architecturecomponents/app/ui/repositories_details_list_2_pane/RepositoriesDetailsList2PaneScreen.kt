@@ -79,10 +79,8 @@ internal fun RepositoriesListScreen(
     }
 
     val nestedNavController = rememberNavController()
-
-    val searchClear = remember {{
-        nestedNavController.navigate(route = REPOSITORY_DETAILS_ROUTE)
-    }}
+    val searchClear = remember {{ nestedNavController.navigate(route = REPOSITORY_DETAILS_ROUTE) }}
+    val onUrlClick: (String) -> Unit = remember {{ Timber.d("detailPane() - repositoryDetailsScreen: $it") }}
 
     fun onRepoClickShowDetailPane(repoOwner: String, repoUrl: String) {
         Timber.d("onRepoClickShowDetailPane($repoOwner, $repoUrl)")
@@ -130,9 +128,7 @@ internal fun RepositoriesListScreen(
                         isTopBarVisible = !listDetailNavigator.isListPaneVisible(),
                         onBackClick = listDetailNavigator::navigateBack,
                         onShowSnackbar = onShowSnackbar,
-                        onUrlClick = {
-                            Timber.d("detailPane() - repositoryDetailsScreen: $it")
-                        },
+                        onUrlClick = onUrlClick,
                     )
                 }
             }

@@ -36,6 +36,9 @@ Run the following command to get and analyse compose compiler metrics:
 ## Screenshots
 <p align="center">
   <a>
-    //<img alt="ArchitectureComponentsSample" src="https://github.com/zorin-egor/ArchitectureComponentsSample/assets/13707343/24a332fc-380c-4965-8261-0a741e19d239" />
+    //<img alt="ArchitectureComponentsSample" src="https://github.com/user-attachments/assets/40108436-ea58-405a-9a4a-a840db507053" />
+  </a>
+  <a>
+    //<img alt="ArchitectureComponentsSample" src="https://github.com/user-attachments/assets/2c40e579-618a-4169-9d45-46cf5601cea9" />
   </a>
 </p>

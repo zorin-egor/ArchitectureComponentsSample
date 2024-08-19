@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.core.designsystem.component
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -19,6 +20,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -93,11 +95,35 @@ fun SearchTextField(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val onSearchExplicitlyTriggered = remember {{
-        Timber.d("SearchTextField() - onSearchExplicitlyTriggered()")
+    val onSearchAction = remember {{
+        Timber.d("SearchTextField() - onSearchAction()")
         keyboardController?.hide()
         onSearchTriggered?.invoke(searchQuery.text)
     }}
+
+    val onKeyAction: (KeyEvent) -> Boolean = remember {{
+        Timber.d("SearchTextField() - onKeyEvent($it)")
+        if (it.key == Key.Enter) {
+            onSearchAction()
+            true
+        } else {
+            false
+        }
+    }}
+
+    val onValueChangeAction: (TextFieldValue) -> Unit = remember {{
+        if (inputFilter(it.text) && it.text != searchQuery.text) {
+            Timber.d("SearchTextField() - onValueChangeAction($it)")
+            onSearchQueryChanged(it.text)
+        }
+    }}
+
+    val onValueChangeClearAction: () -> Unit = remember {{
+        Timber.d("SearchTextField() - onValueChangeClearAction()")
+        onSearchQueryChanged("")
+    }}
+
+    val onSearchDerived: KeyboardActionScope.() -> Unit = remember {{ onSearchAction() }}
 
     TextField(
         colors = TextFieldDefaults.colors(
@@ -115,10 +141,7 @@ fun SearchTextField(
         trailingIcon = {
             if (searchQuery.text.isNotEmpty()) {
                 IconButton(
-                    onClick = {
-                        Timber.d("SearchTextField() - IconButton() - onClick")
-                        onSearchQueryChanged("")
-                    },
+                    onClick = onValueChangeClearAction,
                 ) {
                     Icon(
                         imageVector = Icons.Close,
@@ -128,26 +151,12 @@ fun SearchTextField(
                 }
             }
         },
-        onValueChange = {
-            Timber.d("SearchTextField() - onValueChange($it)")
-            if (inputFilter(it.text) && it.text != searchQuery.text) {
-                Timber.d("SearchTextField() - onValueChange() - changed")
-                onSearchQueryChanged(it.text)
-            }
-        },
+        onValueChange = onValueChangeAction,
         placeholder = { if (placeholder != null) Text(text = stringResource(id = placeholder)) },
         modifier = modifier
             .fillMaxWidth()
             .padding(padding)
-            .onKeyEvent {
-                Timber.d("SearchTextField() - onKeyEvent($it)")
-                if (it.key == Key.Enter) {
-                    onSearchExplicitlyTriggered()
-                    true
-                } else {
-                    false
-                }
-            }
+            .onKeyEvent(onKeyAction)
             .testTag("searchTextField")
             .focusRequester(focusRequester),
         shape = RoundedCornerShape(16.dp),
@@ -158,10 +167,7 @@ fun SearchTextField(
             capitalization = KeyboardCapitalization.None
         ),
         keyboardActions = KeyboardActions(
-            onSearch = {
-                Timber.d("SearchTextField() - onSearch($this)")
-                onSearchExplicitlyTriggered()
-            },
+            onSearch = onSearchDerived,
         ),
         singleLine = true,
         visualTransformation = visualTransformation
