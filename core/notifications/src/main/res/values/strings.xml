@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_notifications_notification_simple_text">Simple text notification</string>
+    <string name="core_notifications_channel_common">Common channel</string>
+    <string name="core_notifications_channel_action">Action channel</string>
+    <string name="core_notifications_channel_image">Image channel</string>
+</resources>

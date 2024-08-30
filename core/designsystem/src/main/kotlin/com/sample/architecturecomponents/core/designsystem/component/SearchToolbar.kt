@@ -35,7 +35,7 @@ fun SearchToolbar(
         modifier = modifier.fillMaxWidth(),
     ) {
         if (onBackClick != null) {
-            IconButton(onClick = { onBackClick() }) {
+            IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.ArrowBack,
                     contentDescription = contentDescriptionBack,

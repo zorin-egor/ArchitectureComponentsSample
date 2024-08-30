@@ -35,8 +35,10 @@ androidxComposeConstaint = "1.1.0-alpha14"
 androidxBrowser = "1.8.0"
 kotlinxDatetime = "0.5.0"
 javaxInject = "1"
+accompanist = "0.34.0"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 android-tools-build-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 android-tools-common = { module = "com.android.tools:common", version.ref = "androidTools" }

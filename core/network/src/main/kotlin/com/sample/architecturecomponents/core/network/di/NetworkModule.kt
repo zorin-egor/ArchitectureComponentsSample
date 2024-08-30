@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.core.network.di
 import android.content.Context
 import coil.ImageLoader
 import coil.decode.SvgDecoder
+import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.network.BuildConfig
@@ -54,6 +55,8 @@ internal object NetworkModule {
             .callFactory { okHttpClient }
             .components { add(SvgDecoder.Factory()) }
             .respectCacheHeaders(false)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
             .apply {
                 if (BuildConfig.DEBUG) {
                     logger(DebugLogger())

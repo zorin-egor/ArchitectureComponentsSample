@@ -99,3 +99,27 @@ inline fun <reified T : Activity> Context.restartApp(isExit: Boolean = false) {
         Runtime.getRuntime().exit(0)
     }
 }
+
+fun Context.getTopIntent(clazz: Class<*>): Intent {
+    return Intent(this, clazz)
+        .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+}
+
+fun Context.getNewIntent(clazz: Class<*>): Intent {
+    return Intent(this, clazz)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+}
+
+inline fun <reified T : Activity> Context.getTopIntent(): Intent {
+    return Intent(this, T::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+}
+
+inline fun <reified T : Activity> Context.getNewIntent(): Intent {
+    return Intent(this, T::class.java)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+}

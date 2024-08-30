@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.model.SettingsData
+import com.sample.architecturecomponents.core.ui.ext.PermissionEffect
 import com.sample.architecturecomponents.core.ui.ext.openBrowser
 import com.sample.architecturecomponents.core.ui.widgets.IconSwitchWidget
 import com.sample.architecturecomponents.core.ui.widgets.SettingsColumnBlockWidget
@@ -53,6 +54,15 @@ fun SettingsScreen(
     var settingsData: SettingsData? = null
     if (settingsUiValue is SettingsUiState.Success) {
         settingsData = settingsUiValue.settings
+    }
+
+    when(val action = settingsAction) {
+        is SettingsActions.RequestPermission -> {
+            PermissionEffect(permission = action.permission, onSuccessResult = {
+                viewModel.postNotification()
+            })
+        }
+        else -> {}
     }
 
     Timber.d("SettingsScreen() - settings ui state: $settingsUiValue")
