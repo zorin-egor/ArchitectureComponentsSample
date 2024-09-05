@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.app.ui.NavAppTopBar
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.R
 import com.sample.architecturecomponents.core.ui.widgets.RoundedPlaceholderWidget
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_DETAILS_ROUTE
@@ -117,7 +117,7 @@ internal fun UsersListScreen(
                     composable(route = USER_DETAILS_ROUTE) {
                         RoundedPlaceholderWidget(
                             header = R.string.empty_placeholder_header,
-                            image = Icons.Users,
+                            image = AppIcons.Users,
                             imageContentDescription = R.string.empty_placeholder_header,
                             modifier = Modifier.padding(all = 8.dp)
                         )

@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sample.architecturecomponents.app.ui.AppState
 import com.sample.architecturecomponents.app.ui.NavAppTopBar
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.widgets.RoundedPlaceholderWidget
 import com.sample.architecturecomponents.feature.repositories.RepositoriesScreen
 import com.sample.architecturecomponents.feature.repositories.navigation.REPOSITORIES_ROUTE
@@ -119,7 +119,7 @@ internal fun RepositoriesListScreen(
                     composable(route = REPOSITORY_DETAILS_ROUTE) {
                         RoundedPlaceholderWidget(
                             header = CoreUiR.string.empty_placeholder_header,
-                            image = Icons.Repositories,
+                            image = AppIcons.Repositories,
                             imageContentDescription = CoreUiR.string.empty_placeholder_header,
                             modifier = Modifier.padding(all = 8.dp)
                         )

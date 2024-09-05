@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 
 @Composable
@@ -66,12 +66,12 @@ fun AppNavigationBar(
 fun AppNavigationBarPreview() {
     val items = listOf("Menu1", "Menu2")
     val icons = listOf(
-        Icons.Users,
-        Icons.Settings,
+        AppIcons.Users,
+        AppIcons.Settings,
     )
     val selectedIcons = listOf(
-        Icons.UsersBorder,
-        Icons.SettingsBorder,
+        AppIcons.UsersBorder,
+        AppIcons.SettingsBorder,
     )
 
     AppTheme {

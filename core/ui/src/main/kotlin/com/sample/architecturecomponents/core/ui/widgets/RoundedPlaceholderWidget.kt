@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 import com.sample.architecturecomponents.core.ui.R
 
@@ -44,7 +44,7 @@ fun RoundedPlaceholderWidgetPreview() {
         RoundedPlaceholderWidget(
             header = R.string.empty_placeholder_header,
             title = R.string.empty_placeholder_title,
-            image = Icons.Empty,
+            image = AppIcons.Empty,
             imageContentDescription = R.string.empty_placeholder_header
         )
     }

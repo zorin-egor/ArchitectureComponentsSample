@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 
 @Composable
@@ -72,9 +72,9 @@ private fun AppTopBarPreview() {
     AppTheme {
         AppTopBar(
             titleRes = android.R.string.untitled,
-            actionIcon = Icons.Settings,
+            actionIcon = AppIcons.Settings,
             actionIconContentDescription = "Action icon",
-            navigationIcon = Icons.ArrowBack,
+            navigationIcon = AppIcons.ArrowBack,
             navigationIconContentDescription = "Navigation icon",
         )
     }

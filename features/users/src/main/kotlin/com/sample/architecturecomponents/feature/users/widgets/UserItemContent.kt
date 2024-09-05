@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
 
@@ -69,7 +69,7 @@ fun UsersItemContent(
                 isError = isError,
                 isLoading = isLoading,
                 painter = imageLoader,
-                placeHolder = Icons.UserBorder,
+                placeHolder = AppIcons.UserBorder,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()

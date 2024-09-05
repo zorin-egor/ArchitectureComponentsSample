@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.designsystem.theme.AppTheme
 
 @Composable
@@ -34,7 +34,7 @@ fun RepositoryDetailsPlaceholder(modifier: Modifier = Modifier) {
             ),
         ) {
             Icon(
-                imageVector = Icons.Users,
+                imageVector = AppIcons.Users,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
             )

@@ -18,7 +18,7 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material.icons.rounded.SupervisedUserCircle
 
-object Icons {
+object AppIcons {
     val ArrowBack = Icons.AutoMirrored.Rounded.ArrowBack
     val Check = Icons.Rounded.Check
     val Close = Icons.Rounded.Close

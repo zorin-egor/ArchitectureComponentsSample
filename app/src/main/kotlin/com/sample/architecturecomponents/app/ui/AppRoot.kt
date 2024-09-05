@@ -51,7 +51,7 @@ import com.sample.architecturecomponents.core.designsystem.component.AppNavigati
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationRail
 import com.sample.architecturecomponents.core.designsystem.component.AppNavigationRailItem
 import com.sample.architecturecomponents.core.designsystem.component.AppTopBar
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.ext.rootViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationState
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationViewModel
@@ -177,16 +177,16 @@ internal fun NavAppTopBar(
     when (val route = state.currentDestination?.route) {
         USER_DETAILS_ROUTE_PATH -> {
             toolbarTitle = UserDetailsR.string.feature_user_details_title
-            navigationIcon = Icons.ArrowBack
+            navigationIcon = AppIcons.ArrowBack
             navigationDesc = stringResource(UserDetailsR.string.feature_user_details_title)
-            actionIcon = Icons.Share
+            actionIcon = AppIcons.Share
             actionDesc = stringResource(id = CoreUiR.string.share)
             actionClick = { viewModel?.emit(route, TopBarNavigationState.Menu) }
             isTopBarVisible = true
         }
         REPOSITORY_DETAILS_ROUTE_PATH -> {
             toolbarTitle = RepoDetailsR.string.feature_repository_details_title
-            navigationIcon = Icons.ArrowBack
+            navigationIcon = AppIcons.ArrowBack
             navigationDesc = stringResource(RepoDetailsR.string.feature_repository_details_title)
             actionDesc = stringResource(id = CoreUiR.string.share)
             actionClick = { viewModel?.emit(route, TopBarNavigationState.Menu) }

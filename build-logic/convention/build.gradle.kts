@@ -59,10 +59,6 @@ gradlePlugin {
             id = "sample.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
-        register("sampleJvm") {
-            id = "sample.jvm"
-            implementationClass = "JvmLibraryConventionPlugin"
-        }
         register("sampleRoom") {
             id = "sample.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
@@ -70,6 +66,14 @@ gradlePlugin {
         register("sampleFeature") {
             id = "sample.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
+        }
+        register("androidLint") {
+            id = "sample.android.lint"
+            implementationClass = "AndroidLintConventionPlugin"
+        }
+        register("sampleJvm") {
+            id = "sample.jvm"
+            implementationClass = "JvmLibraryConventionPlugin"
         }
     }
 }

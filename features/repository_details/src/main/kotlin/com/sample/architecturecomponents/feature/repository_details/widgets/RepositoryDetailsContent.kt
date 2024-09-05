@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.RepositoryDetails
 import com.sample.architecturecomponents.core.ui.ext.getHyperLink
@@ -83,7 +83,7 @@ fun RepositoryDetailsContent(
                 )
                 if (!isTopBarVisible) {
                     Icon(
-                        imageVector = Icons.Share,
+                        imageVector = AppIcons.Share,
                         contentDescription = null,
                         modifier = Modifier
                             .wrapContentSize()

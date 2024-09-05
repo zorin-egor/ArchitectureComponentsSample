@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.R
 
 @Composable
@@ -89,7 +89,7 @@ fun SearchPlaceholderContentPreview() {
     SimplePlaceholderContent(
         header = R.string.search_placeholder_header,
         title = R.string.search_placeholder_title,
-        image = Icons.Search,
+        image = AppIcons.Search,
         imageContentDescription = R.string.search_placeholder_header
     )
 }
@@ -100,7 +100,7 @@ fun EmptyPlaceholderContentPreview() {
     SimplePlaceholderContent(
         header = R.string.empty_placeholder_header,
         title = R.string.empty_placeholder_title,
-        image = Icons.Empty,
+        image = AppIcons.Empty,
         imageContentDescription = R.string.empty_placeholder_header
     )
 }

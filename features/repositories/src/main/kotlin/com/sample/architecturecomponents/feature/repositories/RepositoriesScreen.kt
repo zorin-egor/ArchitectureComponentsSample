@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
 import com.sample.architecturecomponents.core.designsystem.component.ExposedSearchTextField
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.widgets.ListContentWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimplePlaceholderContent
 import com.sample.architecturecomponents.feature.repositories.widgets.RepositoriesItemContent
@@ -73,13 +73,13 @@ fun RepositoriesScreen(
             RepositoriesByNameUiStates.Empty -> SimplePlaceholderContent(
                 header = CoreUiR.string.empty_placeholder_header,
                 title = CoreUiR.string.empty_placeholder_title,
-                image = Icons.Empty,
+                image = AppIcons.Empty,
                 imageContentDescription = CoreUiR.string.empty_placeholder_header
             )
             RepositoriesByNameUiStates.Start -> SimplePlaceholderContent(
                 header = CoreUiR.string.search_placeholder_header,
                 title = CoreUiR.string.search_placeholder_title,
-                image = Icons.Search,
+                image = AppIcons.Search,
                 imageContentDescription = CoreUiR.string.search_placeholder_header
             )
             is RepositoriesByNameUiStates.Success -> {

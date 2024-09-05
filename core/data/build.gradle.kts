@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    lintChecks(projects.lint)
     api(projects.core.common)
     api(projects.core.database)
     api(projects.core.datastore)

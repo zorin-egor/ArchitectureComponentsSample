@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.data.models.repositoriesUrl
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.ui.ext.getEmailLink
@@ -81,7 +81,7 @@ fun UserDetailsContent(
                 )
                 if (!isTopBarVisible) {
                     Icon(
-                        imageVector = Icons.Share,
+                        imageVector = AppIcons.Share,
                         contentDescription = null,
                         modifier = Modifier.wrapContentSize()
                             .padding(16.dp)

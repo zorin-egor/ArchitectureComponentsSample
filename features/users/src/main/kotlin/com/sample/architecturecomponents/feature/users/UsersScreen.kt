@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.R
 import com.sample.architecturecomponents.core.ui.widgets.ListContentWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimplePlaceholderContent
@@ -36,7 +36,7 @@ fun UsersScreen(
         UsersUiState.Empty -> SimplePlaceholderContent(
             header = R.string.empty_placeholder_header,
             title = R.string.empty_placeholder_title,
-            image = Icons.Empty,
+            image = AppIcons.Empty,
             imageContentDescription = R.string.empty_placeholder_header
         )
         is UsersUiState.Success -> {

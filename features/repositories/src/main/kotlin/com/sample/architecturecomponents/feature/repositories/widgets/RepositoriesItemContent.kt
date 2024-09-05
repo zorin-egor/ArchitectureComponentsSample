@@ -30,7 +30,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import coil.compose.rememberAsyncImagePainter
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.ui.ext.BorderCircleImageRequest
@@ -81,7 +81,7 @@ fun RepositoriesItemContent(
                 contentScale = ContentScale.Crop,
                 isError = isError.value,
                 isLoading = isLoading.value,
-                placeHolder = Icons.UserBorder,
+                placeHolder = AppIcons.UserBorder,
                 placeholderColorFilter = ColorFilter.tint(color = materialTheme.onSurfaceVariant),
                 modifier = Modifier
                     .constrainAs(image) {
@@ -181,7 +181,7 @@ fun RepositoriesItemContent(
             )
 
             Icon(
-                imageVector = Icons.Start,
+                imageVector = AppIcons.Start,
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(starsIcon) {
@@ -213,7 +213,7 @@ fun RepositoriesItemContent(
             )
 
             Icon(
-                imageVector = Icons.ForkLeft,
+                imageVector = AppIcons.ForkLeft,
                 contentDescription = null,
                 modifier = Modifier
                     .constrainAs(forksIcon) {

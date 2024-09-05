@@ -11,7 +11,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 
 @Composable
 fun SearchToolbar(
@@ -37,7 +37,7 @@ fun SearchToolbar(
         if (onBackClick != null) {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    imageVector = Icons.ArrowBack,
+                    imageVector = AppIcons.ArrowBack,
                     contentDescription = contentDescriptionBack,
                 )
             }

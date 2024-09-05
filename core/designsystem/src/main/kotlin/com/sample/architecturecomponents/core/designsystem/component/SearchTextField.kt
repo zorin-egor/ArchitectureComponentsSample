@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.sample.architecturecomponents.core.designsystem.icon.Icons
+import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import timber.log.Timber
 
 @Composable
@@ -133,7 +133,7 @@ fun SearchTextField(
         ),
         leadingIcon = {
             Icon(
-                imageVector = Icons.Search,
+                imageVector = AppIcons.Search,
                 contentDescription = contentDescriptionSearch,
                 tint = MaterialTheme.colorScheme.onSurface,
             )
@@ -144,7 +144,7 @@ fun SearchTextField(
                     onClick = onValueChangeClearAction,
                 ) {
                     Icon(
-                        imageVector = Icons.Close,
+                        imageVector = AppIcons.Close,
                         contentDescription = contentDescriptionClose,
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
