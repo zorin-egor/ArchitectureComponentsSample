@@ -4,6 +4,7 @@ androidGradlePlugin = "8.3.2"
 androidxActivity = "1.9.1"
 androidxComposeBom = "2024.06.00"
 androidxComposeCompiler = "1.5.15"
+androidxComposeAlpha = "1.7.0"
 androidxComposeFoundation = "1.7.0-beta07"
 androidxComposeMaterial3Adaptive = "1.0.0-beta04"
 androidxCore = "1.13.1"
@@ -12,10 +13,10 @@ androidxLifecycle = "2.8.4"
 androidxNavigation = "2.7.7"
 androidxDataStore = "1.1.1"
 androidxCoreSplashscreen = "1.0.1"
-coroutines = "1.8.0"
 hilt = "2.51.1"
 hiltExt = "1.2.0"
 kotlin = "2.0.10"
+kotlinxCoroutines = "1.8.1"
 kotlinCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.6.3"
 okhttp = "4.12.0"
@@ -36,6 +37,7 @@ androidxBrowser = "1.8.0"
 kotlinxDatetime = "0.5.0"
 javaxInject = "1"
 accompanist = "0.34.0"
+turbine = "1.1.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
@@ -72,11 +74,13 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject"}
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlin-compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
-kotlin-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinCollectionsImmutable" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlin-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinCollectionsImmutable" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 
 lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "androidTools" }
 lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "androidTools" }
@@ -100,6 +104,10 @@ room-gradlePlugin = { module = "androidx.room:room-gradle-plugin", version.ref =
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 timber-log = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
+androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidxComposeAlpha" }
+androidx-compose-ui-testManifest = { module = "androidx.compose.ui:ui-test-manifest" }
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -126,6 +134,10 @@ sample-feature = { id = "sample.android.feature", version = "unspecified" }
 sample-android-lint = { id = "sample.android.lint", version = "unspecified" }
 
 [bundles]
+androidx-compose-ui-test = [
+    "androidx-compose-ui-test",
+    "androidx-compose-ui-testManifest"
+]
 network = [
     "square-okhttp",
     "square-okhttp-logging-interceptor",
