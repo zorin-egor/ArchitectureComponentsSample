@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.domain.usecases
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.Dispatcher
@@ -32,15 +33,14 @@ class GetUsersUseCase @Inject constructor(
 
         return usersRepository.getUsers(sinceId = id, limit = LIMIT)
             .map { new ->
-                val items = new.getOrNull()
-                if (new.isSuccess && items?.isNotEmpty() == true) {
-                    Timber.d("invoke($id) - map: ${items.size}")
+                if (new is Result.Success && new.data.isNotEmpty()) {
+                    Timber.d("invoke($id) - map: ${new.data.size}")
                     synchronized(mutex) {
-                        hasNext = items.size >= LIMIT
-                        lastId = items.lastOrNull()?.id ?: lastId
+                        hasNext = new.data.size >= LIMIT
+                        lastId = new.data.lastOrNull()?.id ?: lastId
                         users.clear()
-                        users.addAll(items)
-                        Result.success(users.toList())
+                        users.addAll(new.data)
+                        Result.Success(users.toList())
                     }
                 } else {
                     new
@@ -54,24 +54,23 @@ class GetUsersUseCase @Inject constructor(
 
         synchronized(mutex) {
             if (!hasNext) {
-                return flowOf(Result.success(users.toList()))
+                return flowOf(Result.Success(users.toList()))
             }
         }
 
         return usersRepository.getUsers(sinceId = lastId, limit = LIMIT)
             .map { new ->
-                val items = new.getOrNull()
-                if (new.isSuccess && items?.isNotEmpty() == true) {
-                    Timber.d("invoke() - map: ${items.size}")
+                if (new is Result.Success && new.data.isNotEmpty()) {
+                    Timber.d("invoke() - map: ${new.data.size}")
                     synchronized(mutex) {
-                        hasNext = items.size >= LIMIT
-                        lastId = items.lastOrNull()?.id ?: lastId
-                        items.forEach { item ->
+                        hasNext = new.data.size >= LIMIT
+                        lastId = new.data.lastOrNull()?.id ?: lastId
+                        new.data.forEach { item ->
                             if (users.find { it.id == item.id } == null) {
                                 users.add(item)
                             }
                         }
-                        Result.success(users.toList())
+                        Result.Success(users.toList())
                     }
                 } else {
                     new

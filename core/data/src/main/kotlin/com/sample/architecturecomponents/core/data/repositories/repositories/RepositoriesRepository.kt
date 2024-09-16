@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.data.repositories.repositories
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.model.Repository
 import kotlinx.coroutines.flow.Flow
 

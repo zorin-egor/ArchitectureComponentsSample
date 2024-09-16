@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.data.repositories.user_details
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.model.UserDetails
 import kotlinx.coroutines.flow.Flow
 

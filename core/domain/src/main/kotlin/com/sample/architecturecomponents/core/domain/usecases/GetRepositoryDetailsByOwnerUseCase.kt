@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.domain.usecases
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.repository_details.RepositoryDetailsRepository
 import com.sample.architecturecomponents.core.model.RepositoryDetails
 import com.sample.architecturecomponents.core.network.Dispatcher

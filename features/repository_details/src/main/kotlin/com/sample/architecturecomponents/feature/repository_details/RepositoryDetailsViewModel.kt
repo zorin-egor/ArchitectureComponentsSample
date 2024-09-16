@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoryDetailsByOwnerUseCase
 import com.sample.architecturecomponents.core.model.RepositoryDetails
 import com.sample.architecturecomponents.feature.repository_details.navigation.RepositoryDetailsArgs
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,17 +43,14 @@ class RepositoryDetailsViewModel @Inject constructor(
         private set
 
     val state: StateFlow<RepositoryDetailsUiState> = getRepositoryDetailsByIdUseCase(owner = owner, repo = repo)
-        .map {
-            val item = it.getOrNull()
-            val error = it.exceptionOrNull()
-            when {
-                it.isSuccess && item != null -> {
-                    repositoryDetails = item
-                    RepositoryDetailsUiState.Success(repositoryDetails = item)
+        .mapNotNull { item ->
+            when(item) {
+                Result.Loading -> null
+                is Result.Error -> throw item.exception
+                is Result.Success -> {
+                    repositoryDetails = item.data
+                    RepositoryDetailsUiState.Success(repositoryDetails = item.data)
                 }
-                it.isSuccess && item == null -> RepositoryDetailsUiState.Loading
-                it.isFailure && error != null -> throw error
-                else -> throw IllegalStateException("Unknown state")
             }
         }
         .catch {

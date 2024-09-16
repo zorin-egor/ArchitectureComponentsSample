@@ -1,5 +1,7 @@
 package com.sample.architecturecomponents.core.data.repositories.repository_details
 
+import com.sample.architecturecomponents.core.common.result.Result
+import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRepositoryDetailsEntity
 import com.sample.architecturecomponents.core.data.models.toRepositoryDetailsModel
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
@@ -29,7 +31,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
 ) : RepositoryDetailsRepository {
 
     override fun getDetails(owner: String, repo: String): Flow<Result<RepositoryDetails>> {
-        return flow<Result<RepositoryDetails>> {
+        return flow<RepositoryDetails> {
             Timber.d("getDetails($owner, $repo)")
 
             Timber.d("getDetails() - db")
@@ -39,7 +41,6 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
                 .filterNotNull()
                 .map { it.asExternalModels() }
                 .onEach { dbRepositoryDetails = it }
-                .map { Result.success(it) }
                 .catch { Timber.e(it) }
                 .collect(::emit)
 
@@ -52,7 +53,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            emit(Result.success(result))
+            emit(result)
 
             ioScope.launch {
                 runCatching { repositoryDetailsDao.insert(result.toRepositoryDetailsEntity()) }
@@ -60,9 +61,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
             }
 
             Timber.d("getDetails() - end")
-        }.catch {
-            emit(Result.failure(it))
-        }
+        }.asResult()
     }
 
     override suspend fun insert(item: RepositoryDetails) = repositoryDetailsDao.insert(item.toRepositoryDetailsEntity())

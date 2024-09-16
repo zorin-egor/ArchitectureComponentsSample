@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.domain.usecases
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepository
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
@@ -24,9 +25,8 @@ class GetRecentSearchUseCase @Inject constructor(
     operator fun invoke(query: String, tag: RecentSearchTags = RecentSearchTags.None): Flow<Result<List<RecentSearch>>> =
         recentSearchRepository.getRecentSearch(query = query, limit = LIMIT, tag = tag)
             .map { tags ->
-                val items = tags.getOrNull()
-                if (tags.isSuccess && items?.isNotEmpty() == true) {
-                    Result.success(items.filter { it.value != query })
+                if (tags is Result.Success && tags.data.isNotEmpty()) {
+                    Result.Success(tags.data.filter { it.value != query })
                 } else {
                     tags
                 }

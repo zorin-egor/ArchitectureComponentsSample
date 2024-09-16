@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.feature.users
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.exceptions.EmptyException
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
@@ -48,14 +49,11 @@ class UsersViewModel @Inject constructor(
     }
 
     private fun Flow<Result<List<User>>>.getUsers(): Job =
-        map {
-            val items = it.getOrNull()
-            val error = it.exceptionOrNull()
-            when {
-                it.isSuccess && items?.isNotEmpty() == true -> UsersUiState.Success(users = items, isBottomProgress = false)
-                it.isSuccess && items?.isNotEmpty() == false -> UsersUiState.Loading
-                it.isFailure && error != null -> throw error
-                else -> throw IllegalStateException("Unknown state")
+        mapNotNull { item ->
+            when(item) {
+                Result.Loading -> null
+                is Result.Error -> throw item.exception
+                is Result.Success -> UsersUiState.Success(users = item.data, isBottomProgress = false)
             }
         }
         .onEach {

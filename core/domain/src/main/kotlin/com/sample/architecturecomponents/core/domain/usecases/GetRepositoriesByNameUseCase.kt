@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.domain.usecases
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.repositories.RepositoriesRepository
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.Dispatcher
@@ -37,23 +38,22 @@ class GetRepositoriesByNameUseCase @Inject constructor(
 
         synchronized(mutex) {
             if (!hasNext || previousName.isEmpty()) {
-                return flowOf(Result.success(repositories.toList()))
+                return flowOf(Result.Success(repositories.toList()))
             }
         }
 
         return repositoriesRepository.getRepositoriesByName(name = previousName, page = page.get() + 1, limit = LIMIT)
             .map { new ->
-                val items = new.getOrNull()
-                if (new.isSuccess && items?.isNotEmpty() == true) {
+                if (new is Result.Success && new.data.isNotEmpty()) {
                     synchronized(mutex) {
                         page.incrementAndGet()
-                        hasNext = items.size >= LIMIT
-                        items.forEach { item ->
+                        hasNext = new.data.size >= LIMIT
+                        new.data.forEach { item ->
                             if (repositories.find { it.id == item.id } == null) {
                                 repositories.add(item)
                             }
                         }
-                        Result.success(repositories.toList())
+                        Result.Success(repositories.toList())
                     }
                 } else {
                     new
@@ -71,7 +71,7 @@ class GetRepositoriesByNameUseCase @Inject constructor(
 
         synchronized(mutex) {
             if (name == previousName && repositories.isNotEmpty()) {
-                return flowOf(Result.success(repositories.toList()))
+                return flowOf(Result.Success(repositories.toList()))
             }
         }
 
@@ -81,15 +81,14 @@ class GetRepositoriesByNameUseCase @Inject constructor(
                 delay(500)
             }
             .map { new ->
-                val items = new.getOrNull()
-                if (new.isSuccess && items?.isNotEmpty() == true) {
+                if (new is Result.Success && new.data.isNotEmpty()) {
                     synchronized(mutex) {
                         previousName = name
                         page.getAndSet(START_PAGE)
-                        hasNext = items.size >= LIMIT
+                        hasNext = new.data.size >= LIMIT
                         repositories.clear()
-                        repositories.addAll(items)
-                        Result.success(repositories.toList())
+                        repositories.addAll(new.data)
+                        Result.Success(repositories.toList())
                     }
                 } else {
                     new

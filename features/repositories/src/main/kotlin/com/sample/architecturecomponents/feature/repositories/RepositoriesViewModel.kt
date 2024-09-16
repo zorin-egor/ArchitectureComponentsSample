@@ -3,6 +3,7 @@ package com.sample.architecturecomponents.feature.repositories
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.designsystem.component.SearchTextDataItem
 import com.sample.architecturecomponents.core.domain.usecases.GetRecentSearchUseCase
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoriesByNameUseCase
@@ -24,7 +25,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -56,17 +57,14 @@ class RepositoriesViewModel @Inject constructor(
     private var organizationsJob: Job? = null
 
     private fun Flow<Result<List<Repository>>>.getOrganizations(query: String): Job =
-        map {
-            val items = it.getOrNull()
-            val error = it.exceptionOrNull()
-            val state = when {
-                it.isSuccess && items?.isNotEmpty() == true -> {
+        mapNotNull { item ->
+            val state = when(item) {
+                Result.Loading -> return@mapNotNull null
+                is Result.Error -> throw item.exception
+                is Result.Success -> {
                     setRecentSearchUseCase(query = query, tag = RecentSearchTags.Repositories)
-                    RepositoriesByNameUiStates.Success(repositories = items, isBottomProgress = false)
+                    RepositoriesByNameUiStates.Success(repositories = item.data, isBottomProgress = false)
                 }
-                it.isSuccess && items?.isNotEmpty() == false -> RepositoriesByNameUiStates.Empty
-                it.isFailure && error != null -> throw error
-                else -> throw IllegalStateException("Unknown state")
             }
 
             _state.value.copy(
@@ -117,13 +115,14 @@ class RepositoriesViewModel @Inject constructor(
         recentSearchJob?.cancel()
         recentSearchJob = viewModelScope.launch {
             getRecentSearchUseCase(query = name, tag = RecentSearchTags.Repositories)
-                .map {
-                    val items = it.getOrNull()
-                    when {
-                        it.isSuccess && items != null -> mapTo(items)
-                        else -> emptyList()
+                .mapNotNull {
+                    when(it) {
+                        Result.Loading -> null
+                        is Result.Error -> emptyList()
+                        is Result.Success -> it.data.let(::mapTo)
                     }
                 }
+                .catch { Timber.e(it) }
                 .collect {
                     Timber.d("getRecentSearchUseCase() - collect($it)")
                     setRecentSearch(items = it)

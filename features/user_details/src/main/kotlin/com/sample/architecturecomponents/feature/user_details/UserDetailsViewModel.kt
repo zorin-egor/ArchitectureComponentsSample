@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUserDetailsUseCase
 import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.feature.user_details.navigation.UserDetailsArgs
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,17 +43,14 @@ class UserDetailsViewModel @Inject constructor(
     val action: Flow<UserDetailsActions?> = _action.asSharedFlow()
 
     val state: StateFlow<UserDetailsUiState> = getUserDetailsUseCase(userId = userId, url = userUrl)
-        .map {
-            val item = it.getOrNull()
-            val error = it.exceptionOrNull()
-            when {
-                it.isSuccess && item != null -> {
-                    userDetails = item
-                    UserDetailsUiState.Success(userDetails = item)
+        .mapNotNull { item ->
+            when(item) {
+                Result.Loading -> null
+                is Result.Error -> throw item.exception
+                is Result.Success -> {
+                    userDetails = item.data
+                    UserDetailsUiState.Success(userDetails = item.data)
                 }
-                it.isSuccess && item == null -> UserDetailsUiState.Loading
-                it.isFailure && error != null -> throw error
-                else -> throw IllegalStateException("Unknown state")
             }
         }
         .catch {

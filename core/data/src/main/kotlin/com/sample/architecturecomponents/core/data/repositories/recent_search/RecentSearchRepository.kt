@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.data.repositories.recent_search
 
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import kotlinx.coroutines.flow.Flow

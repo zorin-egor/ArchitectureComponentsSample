@@ -1,5 +1,7 @@
 package com.sample.architecturecomponents.core.data.repositories.recent_search
 
+import com.sample.architecturecomponents.core.common.result.Result
+import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRecentSearchEntity
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
 import com.sample.architecturecomponents.core.database.model.asExternalModels
@@ -21,17 +23,14 @@ internal class RecentSearchRepositoryImpl @Inject constructor(
 ) : RecentSearchRepository {
 
     override fun getRecentSearch(query: String, limit: Long, tag: RecentSearchTags): Flow<Result<List<RecentSearch>>> {
-        return flow<Result<List<RecentSearch>>> {
+        return flow<List<RecentSearch>> {
             Timber.d("getRecentSearch($query, $tag)")
-
             recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
                 .take(1)
-                .map { Result.success(it.asExternalModels()) }
+                .map { it.asExternalModels() }
                 .catch { Timber.e(it) }
                 .collect(::emit)
-        }.catch {
-            emit(Result.failure(it))
-        }
+        }.asResult()
     }
 
     override suspend fun insert(item: RecentSearch) =

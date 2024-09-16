@@ -1,5 +1,7 @@
 package com.sample.architecturecomponents.core.data.repositories.users
 
+import com.sample.architecturecomponents.core.common.result.Result
+import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRepositoryModel
 import com.sample.architecturecomponents.core.data.models.toUserEntity
 import com.sample.architecturecomponents.core.database.dao.UsersDao
@@ -16,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
@@ -34,7 +35,7 @@ internal class UsersRepositoryImpl @Inject constructor(
 ) : UsersRepository {
 
     override fun getUsers(sinceId: Long, limit: Long): Flow<Result<List<User>>> {
-        return flow<Result<List<User>>> {
+        return flow<List<User>> {
             Timber.d("getUsers($sinceId)")
 
             // For test
@@ -49,7 +50,6 @@ internal class UsersRepositoryImpl @Inject constructor(
                         ?.asExternalModels()
                 }
                 .onEach(dbItems::addAll)
-                .map { Result.success(it) }
                 .catch { Timber.e(it) }
                 .collect(::emit)
 
@@ -64,7 +64,7 @@ internal class UsersRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            emit(Result.success(result))
+            emit(result)
 
             ioScope.launch {
                 runCatching { usersDao.insertAll(response.toUserEntity()) }
@@ -72,9 +72,7 @@ internal class UsersRepositoryImpl @Inject constructor(
             }
 
             Timber.d("getUsers() - end")
-        }.catch {
-            emit(Result.failure(it))
-        }
+        }.asResult()
     }
 
     override suspend fun insert(item: User) = usersDao.insert(item.toUserEntity())

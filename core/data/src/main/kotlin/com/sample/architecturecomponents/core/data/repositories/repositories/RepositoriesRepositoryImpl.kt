@@ -1,5 +1,7 @@
 package com.sample.architecturecomponents.core.data.repositories.repositories
 
+import com.sample.architecturecomponents.core.common.result.Result
+import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRepositoryEntities
 import com.sample.architecturecomponents.core.data.models.toRepositoryEntity
 import com.sample.architecturecomponents.core.data.models.toRepositoryModels
@@ -13,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
 ) : RepositoriesRepository {
 
     override fun getRepositoriesByName(name: String, page: Long, limit: Long): Flow<Result<List<Repository>>> {
-        return flow<Result<List<Repository>>> {
+        return flow<List<Repository>> {
             Timber.d("getRepositories($name)")
 
             Timber.d("getRepositories() - network request")
@@ -40,7 +41,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
             val result = response.getOrNull()?.networkRepositories
             if (result?.isNotEmpty() == true) {
                 Timber.d("getRepositories() - db == network")
-                emit(Result.success(result.toRepositoryModels()))
+                emit(result.toRepositoryModels())
                 ioScope.launch {
                     runCatching { repositoriesDao.insertAll(result.toRepositoryEntities()) }
                         .exceptionOrNull()?.let(Timber::e)
@@ -58,14 +59,11 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                     it.takeIf { it.isNotEmpty() }
                         ?.asExternalModels()
                 }
-                .map { Result.success(it) }
                 .catch { Timber.e(it) }
                 .collect(::emit)
 
             Timber.d("getRepositories() - end")
-        }.catch {
-            emit(Result.failure(it))
-        }
+        }.asResult()
     }
 
     override suspend fun insert(item: Repository) = repositoriesDao.insert(item.toRepositoryEntity())
