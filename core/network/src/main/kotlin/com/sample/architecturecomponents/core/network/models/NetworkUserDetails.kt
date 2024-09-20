@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class NetworkDetails(
+data class NetworkUserDetails(
     @SerialName("id") val id: Long,
     @SerialName("login") val login: String,
     @SerialName("node_id") val nodeId: String,

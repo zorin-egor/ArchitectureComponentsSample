@@ -7,9 +7,8 @@ import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.network.BuildConfig
-import com.sample.architecturecomponents.core.network.NetworkDataSource
+import com.sample.architecturecomponents.core.network.dev.DevAssetManager
 import com.sample.architecturecomponents.core.network.retrofit.HeaderInterceptor
-import com.sample.architecturecomponents.core.network.retrofit.RetrofitNetwork
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +24,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun providesDevAssetManager(
+        @ApplicationContext context: Context,
+    ): DevAssetManager = DevAssetManager(context.assets::open)
 
     @Provides
     @Singleton
@@ -63,10 +68,5 @@ internal object NetworkModule {
                 }
             }
             .build()
-
-    @Provides
-    @Singleton
-    fun providesNetworkDataSource(json: Json, okHttpClient: OkHttpClient, preference: SettingsPreference): NetworkDataSource =
-        RetrofitNetwork(okHttpClient = okHttpClient, json = json, settingsPreference = preference)
 
 }

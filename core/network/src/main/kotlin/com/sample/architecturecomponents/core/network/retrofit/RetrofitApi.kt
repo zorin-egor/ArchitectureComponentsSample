@@ -1,8 +1,8 @@
 package com.sample.architecturecomponents.core.network.retrofit
 
-import com.sample.architecturecomponents.core.network.models.NetworkDetails
 import com.sample.architecturecomponents.core.network.models.NetworkRepositories
 import com.sample.architecturecomponents.core.network.models.NetworkUser
+import com.sample.architecturecomponents.core.network.models.NetworkUserDetails
 import com.sample.architecturecomponents.core.network.models.common.NetworkRepository
 import retrofit2.Response
 import retrofit2.http.GET
@@ -19,7 +19,7 @@ interface RetrofitApi {
     ): Response<List<NetworkUser>>
 
     @GET
-    suspend fun getDetails(@Url url: String): Response<NetworkDetails>
+    suspend fun getDetails(@Url url: String): Response<NetworkUserDetails>
 
     @GET("search/repositories")
     suspend fun getRepositories(

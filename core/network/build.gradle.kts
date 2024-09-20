@@ -9,6 +9,11 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -20,4 +25,6 @@ dependencies {
     implementation(libs.coil.kt.svg)
     implementation(libs.kotlinx.serialization.json)
     implementation(projects.core.datastore)
+
+    testImplementation(libs.kotlinx.coroutines.test)
 }

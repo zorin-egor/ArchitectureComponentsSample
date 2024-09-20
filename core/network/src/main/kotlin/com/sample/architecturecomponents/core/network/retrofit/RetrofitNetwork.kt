@@ -6,9 +6,9 @@ import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.ext.SORT_ASC
 import com.sample.architecturecomponents.core.network.ext.SORT_DESC
-import com.sample.architecturecomponents.core.network.models.NetworkDetails
 import com.sample.architecturecomponents.core.network.models.NetworkRepositories
 import com.sample.architecturecomponents.core.network.models.NetworkUser
+import com.sample.architecturecomponents.core.network.models.NetworkUserDetails
 import com.sample.architecturecomponents.core.network.models.common.NetworkRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -37,7 +37,7 @@ internal class RetrofitNetwork @Inject constructor(
     override suspend fun getUsers(since: Long, perPage: Long): Response<List<NetworkUser>> =
         api.getUsers(since = since, perPage = perPage)
 
-    override suspend fun getUserDetails(url: String): Response<NetworkDetails> =
+    override suspend fun getUserDetails(url: String): Response<NetworkUserDetails> =
         api.getDetails(url)
 
     override suspend fun getRepositories(name: String, page: Int, perPage: Int, sort: String?,

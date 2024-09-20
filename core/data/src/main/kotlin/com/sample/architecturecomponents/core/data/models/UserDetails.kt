@@ -3,7 +3,7 @@ package com.sample.architecturecomponents.core.data.models
 import com.sample.architecturecomponents.core.database.model.UserDetailsEntity
 import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.network.converters.dateTimeConverter
-import com.sample.architecturecomponents.core.network.models.NetworkDetails
+import com.sample.architecturecomponents.core.network.models.NetworkUserDetails
 
 internal fun UserDetails.toDetailsEntity() = UserDetailsEntity(
     id = id,
@@ -24,7 +24,7 @@ internal fun UserDetails.toDetailsEntity() = UserDetailsEntity(
     url = url
 )
 
-internal fun NetworkDetails.toDetailsEntity() = UserDetailsEntity(
+internal fun NetworkUserDetails.toDetailsEntity() = UserDetailsEntity(
     userId = id,
     avatarUrl = avatarUrl,
     name = name,
@@ -42,7 +42,7 @@ internal fun NetworkDetails.toDetailsEntity() = UserDetailsEntity(
     url = htmlUrl
 )
 
-internal fun NetworkDetails.toRepositoryModel() = UserDetails(
+internal fun NetworkUserDetails.toRepositoryModel() = UserDetails(
     id = id,
     url = htmlUrl,
     avatarUrl = avatarUrl,
