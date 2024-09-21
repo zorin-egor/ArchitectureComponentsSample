@@ -12,4 +12,8 @@ dependencies {
     api(projects.core.model)
     implementation(libs.kotlinx.datetime)
     implementation(libs.square.retrofit2.gson.converter)
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }

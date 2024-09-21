@@ -2,10 +2,9 @@ package com.sample.architecturecomponents.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.sample.architecturecomponents.core.database.model.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -21,11 +20,11 @@ interface RepositoriesDao {
     )
     fun getRepositoriesByName(name: String, offset: Long, limit: Long = 30): Flow<List<RepositoryEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun insert(item: RepositoryEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<RepositoryEntity>)
+    @Upsert
+    suspend fun insert(items: List<RepositoryEntity>)
 
     @Delete
     suspend fun delete(item: RepositoryEntity)
@@ -36,6 +35,6 @@ interface RepositoriesDao {
     @Transaction
     suspend fun clearInsert(items: List<RepositoryEntity>) {
         delete()
-        insertAll(items)
+        insert(items)
     }
 }

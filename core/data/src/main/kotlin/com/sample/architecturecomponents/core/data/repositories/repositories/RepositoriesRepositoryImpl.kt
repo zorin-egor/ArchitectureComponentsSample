@@ -6,7 +6,7 @@ import com.sample.architecturecomponents.core.data.models.toRepositoryEntities
 import com.sample.architecturecomponents.core.data.models.toRepositoryEntity
 import com.sample.architecturecomponents.core.data.models.toRepositoryModels
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
-import com.sample.architecturecomponents.core.database.model.asExternalModels
+import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.di.IoScope
@@ -43,7 +43,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                 Timber.d("getRepositories() - db == network")
                 emit(result.toRepositoryModels())
                 ioScope.launch {
-                    runCatching { repositoriesDao.insertAll(result.toRepositoryEntities()) }
+                    runCatching { repositoriesDao.insert(result.toRepositoryEntities()) }
                         .exceptionOrNull()?.let(Timber::e)
                 }
                 return@flow
@@ -57,7 +57,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
                 .take(1)
                 .mapNotNull {
                     it.takeIf { it.isNotEmpty() }
-                        ?.asExternalModels()
+                        ?.asExternalModel()
                 }
                 .catch { Timber.e(it) }
                 .collect(::emit)

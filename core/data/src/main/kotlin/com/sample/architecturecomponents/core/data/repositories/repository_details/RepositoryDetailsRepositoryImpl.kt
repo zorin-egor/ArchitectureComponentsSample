@@ -6,7 +6,7 @@ import com.sample.architecturecomponents.core.data.models.toRepositoryDetailsEnt
 import com.sample.architecturecomponents.core.data.models.toRepositoryDetailsModel
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
 import com.sample.architecturecomponents.core.database.dao.RepositoryDetailsDao
-import com.sample.architecturecomponents.core.database.model.asExternalModels
+import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.model.RepositoryDetails
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.di.IoScope
@@ -39,7 +39,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
             repositoryDetailsDao.getDetailsByOwnerAndName(owner = owner, name = repo)
                 .take(1)
                 .filterNotNull()
-                .map { it.asExternalModels() }
+                .map { it.asExternalModel() }
                 .onEach { dbRepositoryDetails = it }
                 .catch { Timber.e(it) }
                 .collect(::emit)

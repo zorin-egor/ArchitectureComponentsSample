@@ -24,10 +24,13 @@ interface RecentSearchDao {
     fun getRecentSearch(query: String, limit: Long = 10): Flow<List<RecentSearchEntity>>
 
     @Upsert
-    suspend fun insert(user: RecentSearchEntity)
+    suspend fun insert(item: RecentSearchEntity)
+
+    @Upsert
+    suspend fun insert(items: List<RecentSearchEntity>)
 
     @Delete
-    suspend fun delete(user: RecentSearchEntity)
+    suspend fun delete(item: RecentSearchEntity)
 
     @Query("DELETE FROM RecentSearch")
     suspend fun delete()

@@ -2,10 +2,9 @@ package com.sample.architecturecomponents.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.sample.architecturecomponents.core.database.model.UserEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -24,14 +23,14 @@ interface UsersDao {
     @Query("SELECT * FROM Users WHERE user_id > :sinceId ORDER BY user_id LIMIT :limit")
     fun getUsersSinceId(sinceId: Long, limit: Long = 30): Flow<List<UserEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: UserEntity)
+    @Upsert
+    suspend fun insert(item: UserEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<UserEntity>)
+    @Upsert
+    suspend fun insert(items: List<UserEntity>)
 
     @Delete
-    suspend fun delete(user: UserEntity)
+    suspend fun delete(item: UserEntity)
 
     @Query("DELETE FROM Users")
     suspend fun delete()
@@ -39,6 +38,6 @@ interface UsersDao {
     @Transaction
     suspend fun clearInsert(items: List<UserEntity>) {
         delete()
-        insertAll(items)
+        insert(items)
     }
 }

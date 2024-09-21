@@ -44,4 +44,4 @@ fun RepositoryEntity.asExternalModel() = Repository(
     description = description
 )
 
-fun List<RepositoryEntity>.asExternalModels(): List<Repository> = map { it.asExternalModel() }
+fun List<RepositoryEntity>.asExternalModel(): List<Repository> = map { it.asExternalModel() }

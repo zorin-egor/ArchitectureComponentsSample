@@ -4,7 +4,7 @@ import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRecentSearchEntity
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
-import com.sample.architecturecomponents.core.database.model.asExternalModels
+import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import com.sample.architecturecomponents.core.network.di.IoScope
@@ -27,7 +27,7 @@ internal class RecentSearchRepositoryImpl @Inject constructor(
             Timber.d("getRecentSearch($query, $tag)")
             recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
                 .take(1)
-                .map { it.asExternalModels() }
+                .map { it.asExternalModel() }
                 .catch { Timber.e(it) }
                 .collect(::emit)
         }.asResult()

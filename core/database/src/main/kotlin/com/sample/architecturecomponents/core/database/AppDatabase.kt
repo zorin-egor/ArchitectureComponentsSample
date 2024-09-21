@@ -35,9 +35,9 @@ import com.sample.architecturecomponents.core.database.model.UserEntity
     InstantConverter::class,
     RecentSearchTagsConverter::class
 )
-internal abstract class Database : RoomDatabase() {
+internal abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun detailsDao(): UserDetailsDao
+    abstract fun userDetailsDao(): UserDetailsDao
 
     abstract fun usersDao(): UsersDao
 

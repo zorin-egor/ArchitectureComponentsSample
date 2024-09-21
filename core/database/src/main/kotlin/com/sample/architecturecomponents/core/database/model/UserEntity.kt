@@ -30,4 +30,4 @@ fun UserEntity.asExternalModel() = User(
     avatarUrl = avatarUrl,
 )
 
-fun List<UserEntity>.asExternalModels() = map { it.asExternalModel() }
+fun List<UserEntity>.asExternalModel() = map { it.asExternalModel() }

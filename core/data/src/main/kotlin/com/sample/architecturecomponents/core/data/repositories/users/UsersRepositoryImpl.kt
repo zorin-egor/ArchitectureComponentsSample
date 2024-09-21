@@ -5,7 +5,7 @@ import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRepositoryModel
 import com.sample.architecturecomponents.core.data.models.toUserEntity
 import com.sample.architecturecomponents.core.database.dao.UsersDao
-import com.sample.architecturecomponents.core.database.model.asExternalModels
+import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.Dispatcher
@@ -47,7 +47,7 @@ internal class UsersRepositoryImpl @Inject constructor(
                 .take(1)
                 .mapNotNull {
                     it.takeIf { it.isNotEmpty() }
-                        ?.asExternalModels()
+                        ?.asExternalModel()
                 }
                 .onEach(dbItems::addAll)
                 .catch { Timber.e(it) }
@@ -67,7 +67,7 @@ internal class UsersRepositoryImpl @Inject constructor(
             emit(result)
 
             ioScope.launch {
-                runCatching { usersDao.insertAll(response.toUserEntity()) }
+                runCatching { usersDao.insert(response.toUserEntity()) }
                     .exceptionOrNull()?.let(Timber::e)
             }
 

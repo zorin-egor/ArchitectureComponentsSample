@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.core.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.sample.architecturecomponents.core.database.Database
+import com.sample.architecturecomponents.core.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +17,9 @@ internal object DatabaseModule {
     @Singleton
     fun providesNiaDatabase(
         @ApplicationContext context: Context,
-    ): Database = Room.databaseBuilder(
+    ): AppDatabase = Room.databaseBuilder(
         context,
-        Database::class.java,
+        AppDatabase::class.java,
         "app-database",
     ).build()
 }

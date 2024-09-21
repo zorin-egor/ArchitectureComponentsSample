@@ -1,6 +1,6 @@
 package com.sample.architecturecomponents.core.database.di
 
-import com.sample.architecturecomponents.core.database.Database
+import com.sample.architecturecomponents.core.database.AppDatabase
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
 import com.sample.architecturecomponents.core.database.dao.RepositoryDetailsDao
@@ -17,26 +17,26 @@ internal object DaosModule {
 
     @Provides
     fun providesUsersDao(
-        database: Database,
+        database: AppDatabase,
     ): UsersDao = database.usersDao()
 
     @Provides
     fun providesDetailsDao(
-        database: Database,
-    ): UserDetailsDao = database.detailsDao()
+        database: AppDatabase,
+    ): UserDetailsDao = database.userDetailsDao()
 
     @Provides
     fun providesReposDao(
-        database: Database,
+        database: AppDatabase,
     ): RepositoriesDao = database.repositoriesDao()
 
     @Provides
     fun providesRepoDetailsDao(
-        database: Database,
+        database: AppDatabase,
     ): RepositoryDetailsDao = database.repositoryDetailsDao()
 
     @Provides
     fun providesRecentSearchDao(
-        database: Database,
+        database: AppDatabase,
     ): RecentSearchDao = database.recentSearchDao()
 }

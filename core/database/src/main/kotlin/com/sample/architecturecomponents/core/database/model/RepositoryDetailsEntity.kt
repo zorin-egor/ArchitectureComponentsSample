@@ -40,7 +40,7 @@ data class RepositoryDetailsEntity(
     @ColumnInfo(name = "license") val licence: License?,
 )
 
-fun RepositoryDetailsEntity.asExternalModels() = RepositoryDetails(
+fun RepositoryDetailsEntity.asExternalModel() = RepositoryDetails(
     id = repoId,
     userId = userId,
     userLogin = owner,
@@ -63,4 +63,4 @@ fun RepositoryDetailsEntity.asExternalModels() = RepositoryDetails(
     license = licence
 )
 
-fun List<RepositoryDetailsEntity>.asExternalModels(): List<RepositoryDetails> = map { it.asExternalModels() }
+fun List<RepositoryDetailsEntity>.asExternalModel(): List<RepositoryDetails> = map { it.asExternalModel() }

@@ -23,13 +23,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 35
                 testOptions.animationsDisabled = true
+                defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 configureFlavors(this)
             }
 
             extensions.configure<LibraryAndroidComponentsExtension> {
                 disableUnnecessaryAndroidTests(target)
             }
-
 
             dependencies {
                 add("androidTestImplementation", kotlin("test"))
