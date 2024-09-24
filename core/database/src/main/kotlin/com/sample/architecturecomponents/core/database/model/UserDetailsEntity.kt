@@ -1,13 +1,11 @@
 package com.sample.architecturecomponents.core.database.model
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 import com.sample.architecturecomponents.core.model.UserDetails
 import kotlinx.datetime.Instant
 
@@ -43,16 +41,9 @@ data class UserDetailsEntity(
     @ColumnInfo(name = "followers") val followers: Long?,
     @ColumnInfo(name = "following") val following: Long?,
     @ColumnInfo(name = "created_at") val createdAt: Instant?,
-    @ColumnInfo(name = "repos_url") val reposUrl: String?
-)
-
-data class UserAndUserDetails(
-    @Embedded val details: UserDetailsEntity? = null,
-    @Relation(
-        entity = UserEntity::class,
-        parentColumn = "user_id",
-        entityColumn = "user_id"
-    ) val user: UserEntity?
+    @ColumnInfo(name = "updated_at", defaultValue = "") val updatedAt: Instant?,
+    @ColumnInfo(name = "repos_url") val reposUrl: String?,
+    @ColumnInfo(name = "hireable", defaultValue = "0") val hireable: Boolean?,
 )
 
 fun UserDetailsEntity.asExternalModel() = UserDetails(
@@ -69,8 +60,10 @@ fun UserDetailsEntity.asExternalModel() = UserDetails(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    updatedAt = updatedAt,
     reposUrl = reposUrl,
-    url = url
+    url = url,
+    hireable = hireable ?: false
 )
 
 fun UserEntity.toUserDetailsEntity() = UserDetailsEntity(
@@ -88,6 +81,8 @@ fun UserEntity.toUserDetailsEntity() = UserDetailsEntity(
     followers = null,
     following = null,
     createdAt = null,
+    updatedAt = null,
     reposUrl = null,
-    url = url
+    url = url,
+    hireable = false
 )

@@ -20,8 +20,10 @@ internal fun UserDetails.toDetailsEntity() = UserDetailsEntity(
     followers = followers,
     following = following,
     createdAt = createdAt,
+    updatedAt = updatedAt,
     reposUrl = reposUrl,
-    url = url
+    url = url,
+    hireable = hireable
 )
 
 internal fun NetworkUserDetails.toDetailsEntity() = UserDetailsEntity(
@@ -38,8 +40,10 @@ internal fun NetworkUserDetails.toDetailsEntity() = UserDetailsEntity(
     followers = followers,
     following = following,
     createdAt = dateTimeConverter(createdAt),
+    updatedAt = dateTimeConverter(updatedAt),
     reposUrl = reposUrl,
-    url = htmlUrl
+    url = htmlUrl,
+    hireable = hireable ?: false
 )
 
 internal fun NetworkUserDetails.toRepositoryModel() = UserDetails(
@@ -57,7 +61,9 @@ internal fun NetworkUserDetails.toRepositoryModel() = UserDetails(
     followers = followers,
     following = following,
     createdAt = dateTimeConverter(createdAt),
-    reposUrl = reposUrl
+    updatedAt = dateTimeConverter(updatedAt),
+    reposUrl = reposUrl,
+    hireable = hireable ?: false
 )
 
 val UserDetails.repositoriesUrl: String get() = "$url?tab=repositories"

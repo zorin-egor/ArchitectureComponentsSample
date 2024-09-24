@@ -104,8 +104,7 @@ class AppDatabaseDaoTest {
     fun repositoryDetailsDaoFetchesItemByOwnerAndNameTest() = runTest {
         val usersEntities = mutableListOf<RepositoryDetailsEntity>()
         repeat(5) {
-            usersEntities.add(
-                testRepositoryDetailsEntity(
+            usersEntities.add(testRepositoryDetailsEntity(
                 repoId = it.toLong(),
                 userId = it.toLong(),
                 name = "repo$it",
@@ -113,8 +112,7 @@ class AppDatabaseDaoTest {
                 millisSinceEpochCreated = it.toLong(),
                 millisSinceEpochUpdated = it.toLong(),
                 millisSinceEpochPushed = it.toLong(),
-            )
-            )
+            ))
         }
 
         repositoryDetailsDao.insert(usersEntities)
@@ -133,19 +131,15 @@ class AppDatabaseDaoTest {
         val userDetailsEntities = mutableListOf<UserDetailsEntity>()
 
         repeat(5) {
-            userEntities.add(
-                testUserEntity(
+            userEntities.add(testUserEntity(
                 userId = it.toLong(),
-                login = "login$it",
-            )
-            )
+                login = "login$it"
+            ))
 
-            userDetailsEntities.add(
-                testUserDetailsEntity(
+            userDetailsEntities.add(testUserDetailsEntity(
                 userId = it.toLong(),
                 name = "name$it",
-            )
-            )
+            ))
         }
 
         usersDao.insert(userEntities)
@@ -242,7 +236,8 @@ private fun testUserEntity(
 private fun testUserDetailsEntity(
     userId: Long ,
     name: String,
-    createdAt: Long = 0
+    createdAt: Long = 0,
+    updatedAt: Long = 0
 ) = UserDetailsEntity(
     userId = userId,
     name = name,
@@ -257,6 +252,8 @@ private fun testUserDetailsEntity(
     followers = 0,
     following = 0,
     createdAt = Instant.fromEpochMilliseconds(createdAt),
+    updatedAt = Instant.fromEpochMilliseconds(updatedAt),
     reposUrl = "reposUrl",
-    url = "url"
+    url = "url",
+    hireable = false
 )

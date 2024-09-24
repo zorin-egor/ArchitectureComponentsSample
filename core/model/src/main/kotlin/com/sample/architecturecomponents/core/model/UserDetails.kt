@@ -17,5 +17,7 @@ data class UserDetails(
     val followers: Long?,
     val following: Long?,
     val createdAt: Instant?,
-    val reposUrl: String?
+    val updatedAt: Instant?,
+    val reposUrl: String?,
+    val hireable: Boolean
 )

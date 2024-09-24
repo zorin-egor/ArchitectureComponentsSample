@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RepositoryDetailsDao {
 
-    @Query("SELECT * FROM Repositories_details WHERE owner = :owner AND name = :name")
+    @Query("SELECT * FROM RepositoryDetails WHERE owner = :owner AND name = :name")
     fun getDetailsByOwnerAndName(owner: String, name: String): Flow<RepositoryDetailsEntity?>
 
     @Upsert

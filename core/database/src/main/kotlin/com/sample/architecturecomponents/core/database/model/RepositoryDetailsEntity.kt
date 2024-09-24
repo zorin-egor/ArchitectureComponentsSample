@@ -9,7 +9,7 @@ import com.sample.architecturecomponents.core.model.RepositoryDetails
 import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = "Repositories_details",
+    tableName = "RepositoryDetails",
     indices = [
         Index(value = ["repo_id", "user_id"], unique = true),
         Index(value = ["owner"]),
