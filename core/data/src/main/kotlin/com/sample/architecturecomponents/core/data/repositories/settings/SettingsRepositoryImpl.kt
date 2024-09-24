@@ -4,11 +4,11 @@ import android.content.Context
 import com.sample.architecturecomponents.core.common.tools.clearCache
 import com.sample.architecturecomponents.core.common.tools.getCacheSize
 import com.sample.architecturecomponents.core.datastore.SettingsDataStoreProto
+import com.sample.architecturecomponents.core.di.Dispatcher
+import com.sample.architecturecomponents.core.di.Dispatchers
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.AppConfig
 import com.sample.architecturecomponents.core.model.SettingsData
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
-import com.sample.architecturecomponents.core.network.di.IoScope
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -34,12 +34,12 @@ internal class SettingsRepositoryImpl @Inject constructor(
         refresh.emit(refresh.first().not())
     }
 
-    override val settingsData: Flow<SettingsData> = dataSourceProto.settingsData
+    override val settingsData: Flow<SettingsData> = dataSourceProto.settings
         .combine(refresh) { settingsData, refresh ->
             SettingsData(
                 cacheSize = context.getCacheSize(),
                 version = config.appVersion,
-                preference = settingsData
+                preference = settingsData.settingsPreference
             )
         }
         .flowOn(dispatcher)

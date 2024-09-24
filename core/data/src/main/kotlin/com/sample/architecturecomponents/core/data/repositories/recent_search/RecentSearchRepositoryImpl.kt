@@ -5,9 +5,9 @@ import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRecentSearchEntity
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
 import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
-import com.sample.architecturecomponents.core.network.di.IoScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

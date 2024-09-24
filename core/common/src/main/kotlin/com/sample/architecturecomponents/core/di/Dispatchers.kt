@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.core.network
+package com.sample.architecturecomponents.core.di
 
 import javax.inject.Qualifier
 import kotlin.annotation.AnnotationRetention.RUNTIME

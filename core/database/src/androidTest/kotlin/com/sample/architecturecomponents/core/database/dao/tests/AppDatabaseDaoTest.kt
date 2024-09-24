@@ -1,9 +1,14 @@
-package com.sample.architecturecomponents.core.database.dao
+package com.sample.architecturecomponents.core.database.dao.tests
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.sample.architecturecomponents.core.database.AppDatabase
+import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
+import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
+import com.sample.architecturecomponents.core.database.dao.RepositoryDetailsDao
+import com.sample.architecturecomponents.core.database.dao.UserDetailsDao
+import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.database.model.RecentSearchEntity
 import com.sample.architecturecomponents.core.database.model.RepositoryDetailsEntity
 import com.sample.architecturecomponents.core.database.model.RepositoryEntity
@@ -50,10 +55,12 @@ class AppDatabaseDaoTest {
     fun recentSearchDaoFetchesItemsByQueryPublishDateTest() = runTest {
         val recentSearchEntities = mutableListOf<RecentSearchEntity>()
         repeat(5) {
-            recentSearchEntities.add(testRecentSearchEntity(
+            recentSearchEntities.add(
+                testRecentSearchEntity(
                 value = "value${it}",
                 millisSinceEpoch = it.toLong(),
-            ))
+            )
+            )
         }
 
         recentSearchDao.insert(recentSearchEntities)
@@ -97,7 +104,8 @@ class AppDatabaseDaoTest {
     fun repositoryDetailsDaoFetchesItemByOwnerAndNameTest() = runTest {
         val usersEntities = mutableListOf<RepositoryDetailsEntity>()
         repeat(5) {
-            usersEntities.add(testRepositoryDetailsEntity(
+            usersEntities.add(
+                testRepositoryDetailsEntity(
                 repoId = it.toLong(),
                 userId = it.toLong(),
                 name = "repo$it",
@@ -105,7 +113,8 @@ class AppDatabaseDaoTest {
                 millisSinceEpochCreated = it.toLong(),
                 millisSinceEpochUpdated = it.toLong(),
                 millisSinceEpochPushed = it.toLong(),
-            ))
+            )
+            )
         }
 
         repositoryDetailsDao.insert(usersEntities)
@@ -124,15 +133,19 @@ class AppDatabaseDaoTest {
         val userDetailsEntities = mutableListOf<UserDetailsEntity>()
 
         repeat(5) {
-            userEntities.add(testUserEntity(
+            userEntities.add(
+                testUserEntity(
                 userId = it.toLong(),
                 login = "login$it",
-            ))
+            )
+            )
 
-            userDetailsEntities.add(testUserDetailsEntity(
+            userDetailsEntities.add(
+                testUserDetailsEntity(
                 userId = it.toLong(),
                 name = "name$it",
-            ))
+            )
+            )
         }
 
         usersDao.insert(userEntities)

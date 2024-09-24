@@ -1,9 +1,9 @@
 package com.sample.architecturecomponents.core.domain.usecases
 
 import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepository
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
-import com.sample.architecturecomponents.core.network.di.IoScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

@@ -1,7 +1,5 @@
-package com.sample.architecturecomponents.core.network.di
+package com.sample.architecturecomponents.core.di
 
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +21,7 @@ annotation class IoScope
 @Module
 @InstallIn(SingletonComponent::class)
 internal object CoroutineScopesModule {
+
     @Provides
     @Singleton
     @DefaultScope

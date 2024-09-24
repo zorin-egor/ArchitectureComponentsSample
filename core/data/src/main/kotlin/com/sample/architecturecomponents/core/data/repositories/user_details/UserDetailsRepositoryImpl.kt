@@ -8,9 +8,9 @@ import com.sample.architecturecomponents.core.database.dao.UserDetailsDao
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.database.model.toUserDetailsEntity
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.network.NetworkDataSource
-import com.sample.architecturecomponents.core.network.di.IoScope
 import com.sample.architecturecomponents.core.network.ext.getResultOrThrow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

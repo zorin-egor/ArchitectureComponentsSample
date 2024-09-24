@@ -1,8 +1,8 @@
 package com.sample.architecturecomponents.core.network.dev
 
 import JvmUnitTestDevAssetManager
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
+import com.sample.architecturecomponents.core.di.Dispatcher
+import com.sample.architecturecomponents.core.di.Dispatchers
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.models.NetworkRepositories
 import com.sample.architecturecomponents.core.network.models.NetworkUser

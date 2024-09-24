@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.core.common.di
+package com.sample.architecturecomponents.core.di
 
 import javax.inject.Qualifier
 

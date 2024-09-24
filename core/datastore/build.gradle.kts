@@ -4,10 +4,17 @@ plugins {
 }
 
 android {
+    namespace = "com.sample.architecturecomponents.core.datastore"
+
     defaultConfig {
         consumerProguardFiles("consumer-proguard-rules.pro")
     }
-    namespace = "com.sample.architecturecomponents.core.datastore"
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -15,5 +22,13 @@ dependencies {
     api(libs.androidx.dataStore.preference)
     api(projects.core.datastoreProto)
     api(projects.core.model)
+
     implementation(projects.core.common)
+    implementation(libs.androidx.test.rules)
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.test.runner)
+
+    testImplementation(libs.kotlinx.coroutines.test)
 }

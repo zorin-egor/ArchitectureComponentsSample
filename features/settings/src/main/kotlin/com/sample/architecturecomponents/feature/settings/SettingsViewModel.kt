@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sample.architecturecomponents.core.common.di.MainScreenClass
 import com.sample.architecturecomponents.core.common.extensions.getTopIntent
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsRepository
+import com.sample.architecturecomponents.core.di.MainScreenClass
 import com.sample.architecturecomponents.core.notifications.NotificationConfig
 import com.sample.architecturecomponents.core.notifications.Notifier
 import com.sample.architecturecomponents.core.notifications.removeNotification
@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
-
 import com.sample.architecturecomponents.core.ui.R as CoreUiR
 
 @HiltViewModel

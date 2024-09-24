@@ -2,9 +2,9 @@ package com.sample.architecturecomponents.core.domain.usecases
 
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
+import com.sample.architecturecomponents.core.di.Dispatcher
+import com.sample.architecturecomponents.core.di.Dispatchers
 import com.sample.architecturecomponents.core.model.User
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

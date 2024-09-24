@@ -1,6 +1,7 @@
-package com.sample.architecturecomponents.core.network.dev
+package com.sample.architecturecomponents.core.network.dev.tests
 
 import JvmUnitTestDevAssetManager
+import com.sample.architecturecomponents.core.network.dev.DevNetworkDataSource
 import com.sample.architecturecomponents.core.network.models.NetworkUser
 import com.sample.architecturecomponents.core.network.models.NetworkUserDetails
 import com.sample.architecturecomponents.core.network.models.common.NetworkRepository
@@ -88,13 +89,13 @@ class DevNetworkDataSourceTest {
 
     @Suppress("ktlint:standard:max-line-length")
     @Test
-    fun testDeserializationOfUser() = runTest(testDispatcher) {
+    fun testDeserializationOfUserTest() = runTest(testDispatcher) {
         kotlin.test.assertEquals(user, subject.getUsers(since = 0, perPage = 10).body()?.first())
     }
 
     @Suppress("ktlint:standard:max-line-length")
     @Test
-    fun testDeserializationOfRepository() = runTest(testDispatcher) {
+    fun testDeserializationOfRepositoryTest() = runTest(testDispatcher) {
         kotlin.test.assertEquals(
             NetworkRepository(
                 id = 26899533,
@@ -184,7 +185,7 @@ class DevNetworkDataSourceTest {
 
     @Suppress("ktlint:standard:max-line-length")
     @Test
-    fun testDeserializationOfUserDetails() = runTest(testDispatcher) {
+    fun testDeserializationOfUserDetailsTest() = runTest(testDispatcher) {
         kotlin.test.assertEquals(details, subject.getUserDetails(url = "url").body())
     }
 

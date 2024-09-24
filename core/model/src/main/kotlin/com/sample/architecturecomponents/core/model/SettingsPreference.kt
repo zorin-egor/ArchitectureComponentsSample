@@ -1,5 +1,5 @@
 package com.sample.architecturecomponents.core.model
 
-data class SettingsPreferenceData(
+data class SettingsPreference(
     val isNotificationEnabled: Boolean
 )

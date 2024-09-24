@@ -14,17 +14,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class DataStorePreference @Inject constructor(
+class DataStorePreference @Inject constructor(
     private val context: Context,
-    private val appConfig: AppConfig
+    private val appConfig: AppConfig,
+    private val dataStoreName: String = SETTINGS_DATASTORE
 ) : SettingsPreference {
 
     private val Context.dataStore by preferencesDataStore(
-        name = SETTINGS_DATASTORE
+        name = dataStoreName
     )
 
     private val sharedPreferences by lazy {
-        context.getSharedPreferences(SETTINGS_DATASTORE, Context.MODE_PRIVATE)
+        context.getSharedPreferences(dataStoreName, Context.MODE_PRIVATE)
     }
 
     companion object {
@@ -66,5 +67,9 @@ internal class DataStorePreference @Inject constructor(
             preferences[SINCE_USER]
         }
 
+    override suspend fun wipe() {
+        //sharedPreferences.edit().clear().commit()
+        context.dataStore.edit { it.clear() }
+    }
 }
 

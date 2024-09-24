@@ -15,4 +15,6 @@ interface SettingsPreference {
     suspend fun saveSinceUser(value: Long)
 
     fun getSinceUser(): Flow<Long?>
+
+    suspend fun wipe()
 }

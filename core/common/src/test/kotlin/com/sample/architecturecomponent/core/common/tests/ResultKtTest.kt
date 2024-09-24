@@ -1,4 +1,4 @@
-package com.sample.architecturecomponent.core.common
+package com.sample.architecturecomponent.core.common.tests
 
 import app.cash.turbine.test
 import com.sample.architecturecomponents.core.common.result.Result

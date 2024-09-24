@@ -40,6 +40,7 @@ accompanist = "0.36.0"
 turbine = "1.1.0"
 androidxTestCore = "1.6.1"
 androidxTestRunner = "1.6.2"
+androidxTestRules = "1.5.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
@@ -74,6 +75,7 @@ protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", ve
 protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject"}
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -111,6 +113,7 @@ androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", vers
 androidx-compose-ui-testManifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]

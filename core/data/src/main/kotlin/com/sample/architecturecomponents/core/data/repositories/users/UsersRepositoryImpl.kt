@@ -7,11 +7,11 @@ import com.sample.architecturecomponents.core.data.models.toUserEntity
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.database.model.asExternalModel
 import com.sample.architecturecomponents.core.datastore.SettingsPreference
+import com.sample.architecturecomponents.core.di.Dispatcher
+import com.sample.architecturecomponents.core.di.Dispatchers
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.User
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
 import com.sample.architecturecomponents.core.network.NetworkDataSource
-import com.sample.architecturecomponents.core.network.di.IoScope
 import com.sample.architecturecomponents.core.network.ext.getResultOrThrow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

@@ -2,7 +2,7 @@ package com.sample.architecturecomponents.app.di
 
 import com.sample.architecturecomponents.app.BuildConfig
 import com.sample.architecturecomponents.app.MainActivity
-import com.sample.architecturecomponents.core.common.di.MainScreenClass
+import com.sample.architecturecomponents.core.di.MainScreenClass
 import com.sample.architecturecomponents.core.model.AppConfig
 import dagger.Module
 import dagger.Provides

@@ -4,16 +4,13 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.sample.architecturecomponents.core.datastore.DataStorePreference
 import com.sample.architecturecomponents.core.datastore.DataStoreProto
 import com.sample.architecturecomponents.core.datastore.DataStoreProtoSerializer
 import com.sample.architecturecomponents.core.datastore.SettingsDataStore
 import com.sample.architecturecomponents.core.datastore.SettingsDataStoreProto
-import com.sample.architecturecomponents.core.datastore.SettingsPreference
-import com.sample.architecturecomponents.core.model.AppConfig
-import com.sample.architecturecomponents.core.network.Dispatcher
-import com.sample.architecturecomponents.core.network.Dispatchers
-import com.sample.architecturecomponents.core.network.di.DefaultScope
+import com.sample.architecturecomponents.core.di.DefaultScope
+import com.sample.architecturecomponents.core.di.Dispatcher
+import com.sample.architecturecomponents.core.di.Dispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,14 +42,7 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun providesSettingsPreference(
-        @ApplicationContext context: Context,
-        appConfig: AppConfig
-    ): SettingsPreference = DataStorePreference(context, appConfig)
-
-    @Provides
-    @Singleton
-    fun providesSettingsDataStore(
+    internal fun providesSettingsDataStore(
         dataStore: DataStore<SettingsDataStore>
     ): SettingsDataStoreProto = DataStoreProto(dataStore)
 

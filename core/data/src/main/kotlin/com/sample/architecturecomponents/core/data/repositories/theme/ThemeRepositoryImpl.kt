@@ -5,6 +5,7 @@ import com.sample.architecturecomponents.core.model.DarkThemeConfig
 import com.sample.architecturecomponents.core.model.ThemeBrand
 import com.sample.architecturecomponents.core.model.ThemeData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class ThemeRepositoryImpl @Inject constructor(
@@ -12,7 +13,7 @@ internal class ThemeRepositoryImpl @Inject constructor(
 ) : ThemeRepository {
 
     override val themeData: Flow<ThemeData> =
-        dataSourceProto.themeData
+        dataSourceProto.settings.map { it.themeData }
 
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         dataSourceProto.setThemeBrand(themeBrand)

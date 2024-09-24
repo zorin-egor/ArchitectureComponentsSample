@@ -7,9 +7,9 @@ import com.sample.architecturecomponents.core.data.models.toRepositoryEntity
 import com.sample.architecturecomponents.core.data.models.toRepositoryModels
 import com.sample.architecturecomponents.core.database.dao.RepositoriesDao
 import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.NetworkDataSource
-import com.sample.architecturecomponents.core.network.di.IoScope
 import com.sample.architecturecomponents.core.network.ext.REPOSITORY_SORT_BY_NAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
