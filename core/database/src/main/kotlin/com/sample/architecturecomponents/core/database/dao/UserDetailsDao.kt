@@ -18,7 +18,7 @@ interface UserDetailsDao {
     suspend fun insert(item: UserDetailsEntity)
 
     @Upsert
-    suspend fun insert(item: List<UserDetailsEntity>)
+    suspend fun insert(items: List<UserDetailsEntity>)
 
     @Delete
     suspend fun delete(item: UserDetailsEntity)

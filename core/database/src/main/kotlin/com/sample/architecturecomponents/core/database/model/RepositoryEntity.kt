@@ -30,7 +30,7 @@ data class RepositoryEntity(
     @ColumnInfo(name = "description") val description: String?,
 )
 
-fun RepositoryEntity.asExternalModel() = Repository(
+fun RepositoryEntity.asExternalModels() = Repository(
     id = repoId,
     userId = userId,
     owner = owner,
@@ -44,4 +44,4 @@ fun RepositoryEntity.asExternalModel() = Repository(
     description = description
 )
 
-fun List<RepositoryEntity>.asExternalModel(): List<Repository> = map { it.asExternalModel() }
+fun List<RepositoryEntity>.asExternalModels(): List<Repository> = map { it.asExternalModels() }

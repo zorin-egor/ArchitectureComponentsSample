@@ -22,7 +22,7 @@ data class UserEntity(
     @ColumnInfo(name = "avatar_url") val avatarUrl: String?
 )
 
-fun UserEntity.asExternalModel() = User(
+fun UserEntity.asExternalModels() = User(
     id = userId,
     nodeId = nodeId,
     login = login,
@@ -30,4 +30,4 @@ fun UserEntity.asExternalModel() = User(
     avatarUrl = avatarUrl,
 )
 
-fun List<UserEntity>.asExternalModel() = map { it.asExternalModel() }
+fun List<UserEntity>.asExternalModels() = map { it.asExternalModels() }

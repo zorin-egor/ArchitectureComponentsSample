@@ -5,6 +5,13 @@ plugins {
 
 android {
     namespace = "com.sample.architecturecomponents.core.data"
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -14,4 +21,8 @@ dependencies {
     api(projects.core.datastore)
     api(projects.core.network)
     implementation(projects.core.model)
+
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.serialization.json)
+    testImplementation(projects.core.testing)
 }

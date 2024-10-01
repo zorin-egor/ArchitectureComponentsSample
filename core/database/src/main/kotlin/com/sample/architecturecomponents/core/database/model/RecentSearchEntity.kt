@@ -21,10 +21,10 @@ data class RecentSearchEntity(
     @ColumnInfo(name = "tag") val tag: RecentSearchTags,
 )
 
-fun RecentSearchEntity.asExternalModel() = RecentSearch(
+fun RecentSearchEntity.asExternalModels() = RecentSearch(
     value = value,
     date = date,
     tag = tag,
 )
 
-fun List<RecentSearchEntity>.asExternalModel(): List<RecentSearch> = map { it.asExternalModel() }
+fun List<RecentSearchEntity>.asExternalModels(): List<RecentSearch> = map { it.asExternalModels() }

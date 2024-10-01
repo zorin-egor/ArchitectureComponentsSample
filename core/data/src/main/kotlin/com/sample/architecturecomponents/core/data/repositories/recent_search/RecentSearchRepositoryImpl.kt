@@ -4,17 +4,14 @@ import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.common.result.asResult
 import com.sample.architecturecomponents.core.data.models.toRecentSearchEntity
 import com.sample.architecturecomponents.core.database.dao.RecentSearchDao
-import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.di.IoScope
 import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
-import timber.log.Timber
 import javax.inject.Inject
 
 internal class RecentSearchRepositoryImpl @Inject constructor(
@@ -23,14 +20,10 @@ internal class RecentSearchRepositoryImpl @Inject constructor(
 ) : RecentSearchRepository {
 
     override fun getRecentSearch(query: String, limit: Long, tag: RecentSearchTags): Flow<Result<List<RecentSearch>>> {
-        return flow<List<RecentSearch>> {
-            Timber.d("getRecentSearch($query, $tag)")
-            recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
-                .take(1)
-                .map { it.asExternalModel() }
-                .catch { Timber.e(it) }
-                .collect(::emit)
-        }.asResult()
+        return recentSearchDao.getRecentSearch(query = query, tag = tag, limit = limit)
+            .take(1)
+            .map { it.asExternalModels() }
+            .asResult()
     }
 
     override suspend fun insert(item: RecentSearch) =

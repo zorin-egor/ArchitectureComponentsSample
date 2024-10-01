@@ -46,7 +46,7 @@ internal fun NetworkUserDetails.toDetailsEntity() = UserDetailsEntity(
     hireable = hireable ?: false
 )
 
-internal fun NetworkUserDetails.toRepositoryModel() = UserDetails(
+internal fun NetworkUserDetails.toDetailsModel() = UserDetails(
     id = id,
     url = htmlUrl,
     avatarUrl = avatarUrl,

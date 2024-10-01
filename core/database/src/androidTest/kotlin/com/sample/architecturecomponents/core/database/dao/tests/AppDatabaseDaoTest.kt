@@ -14,7 +14,7 @@ import com.sample.architecturecomponents.core.database.model.RepositoryDetailsEn
 import com.sample.architecturecomponents.core.database.model.RepositoryEntity
 import com.sample.architecturecomponents.core.database.model.UserDetailsEntity
 import com.sample.architecturecomponents.core.database.model.UserEntity
-import com.sample.architecturecomponents.core.database.model.asExternalModel
+import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -70,7 +70,7 @@ class AppDatabaseDaoTest {
         assertEquals(
             listOf(4L, 3L, 2L, 1L, 0L),
             savedRecentSearchEntities.map {
-                it.asExternalModel().date.toEpochMilliseconds()
+                it.asExternalModels().date.toEpochMilliseconds()
             },
         )
     }
@@ -95,7 +95,7 @@ class AppDatabaseDaoTest {
         assertEquals(
             listOf("repo0", "repo1", "repo2", "repo3", "repo4"),
             savedRepositoriesEntities.map {
-                it.asExternalModel().name
+                it.asExternalModels().name
             },
         )
     }
@@ -121,7 +121,7 @@ class AppDatabaseDaoTest {
 
         assertEquals(
             "repo0",
-            savedRepositoryDetailsEntities?.asExternalModel()?.name
+            savedRepositoryDetailsEntities?.asExternalModels()?.name
         )
     }
 
@@ -149,14 +149,14 @@ class AppDatabaseDaoTest {
 
         assertEquals(
             0,
-            savedUserEntities?.asExternalModel()?.id
+            savedUserEntities?.asExternalModels()?.id
         )
 
         val savedUserDetailsEntities = userDetailsDao.getDetailsById(id = 0).first()
 
         assertEquals(
             0,
-            savedUserDetailsEntities?.asExternalModel()?.id
+            savedUserDetailsEntities?.asExternalModels()?.id
         )
     }
 

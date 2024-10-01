@@ -46,7 +46,7 @@ data class UserDetailsEntity(
     @ColumnInfo(name = "hireable", defaultValue = "0") val hireable: Boolean?,
 )
 
-fun UserDetailsEntity.asExternalModel() = UserDetails(
+fun UserDetailsEntity.asExternalModels() = UserDetails(
     id = userId,
     avatarUrl = avatarUrl,
     name = name,
