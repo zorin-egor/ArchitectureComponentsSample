@@ -69,4 +69,6 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
             .distinctUntilChanged()
     }
 
+    override suspend fun insert(item: UserDetails) = detailsDao.insert(item.toDetailsEntity())
+
 }
