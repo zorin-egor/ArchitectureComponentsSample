@@ -4,7 +4,6 @@ run-name: Run test on push
 
 on:
   push:
-    branches: [ master ]
     tags:
       - 'release*'
   pull_request:
