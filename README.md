@@ -1,6 +1,6 @@
 # Architecture components sample
 
-Master branch status
+master branch status
 
 ![master](https://github.com/zorin-egor/ArchitectureComponentsSample/actions/workflows/build-tests.yml/badge.svg)
 
