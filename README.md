@@ -1,5 +1,9 @@
 # Architecture components sample
 
+Master branch status
+
+![main](https://github.com/zorin-egor/ArchitectureComponentsSample/workflows/Builds/badge.svg)
+
 <b>ArchitectureComponentsSample</b> - sample multi modals app developed with android architecture components, conventions plugins.
 
 ``` text
