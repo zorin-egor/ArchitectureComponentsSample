@@ -1,6 +1,6 @@
 name: Build
 
-run-name: Run test on push tag with release prefix
+run-name: Run test on push tag with release prefix or PR
 
 on:
   push:
