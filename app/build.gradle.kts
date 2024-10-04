@@ -1,3 +1,6 @@
+import com.sample.architecturecomponents.Flavor
+import com.sample.architecturecomponents.createSigningConfig
+
 plugins {
     alias(libs.plugins.sample.android.application)
     alias(libs.plugins.sample.android.application.compose)
@@ -9,6 +12,7 @@ plugins {
 
 val appCode = 1
 val appVersion = "0.0.1"
+val keystorePath = "$projectDir${File.separator}keystore${File.separator}"
 
 android {
     namespace = "com.sample.architecturecomponents.app"
@@ -27,12 +31,22 @@ android {
         buildConfigField("Integer", "VERSION_CODE", "$appCode")
     }
 
+    createSigningConfig(
+        name = Flavor.prod.name,
+        propertiesPath = "${keystorePath}keystore.properties",
+        keystorePath = "${keystorePath}app.keystore",
+    ) {
+        storePassword = System.getenv("KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("RELEASE_SIGN_KEY_ALIAS")
+        keyPassword = System.getenv("RELEASE_SIGN_KEY_PASSWORD")
+    }
+
     buildTypes {
-        debug {
-        }
+        debug {}
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            productFlavors[Flavor.prod.name].signingConfig = signingConfigs[Flavor.prod.name]
         }
     }
 
