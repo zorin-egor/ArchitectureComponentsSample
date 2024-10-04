@@ -12,7 +12,7 @@ plugins {
 
 val appCode = 2
 val appVersion = "0.0.2"
-val keystorePath = "$projectDir${File.separator}keystore${File.separator}"
+val keystorePath = "$rootDir${File.separator}app${File.separator}keystore${File.separator}"
 
 android {
     namespace = "com.sample.architecturecomponents.app"
