@@ -2,7 +2,7 @@
 
 Master branch status
 
-![main](https://github.com/zorin-egor/ArchitectureComponentsSample/workflows/build-tests/badge.svg)
+![master](https://github.com/zorin-egor/ArchitectureComponentsSample/actions/workflows/build-tests.yml/badge.svg)
 
 <b>ArchitectureComponentsSample</b> - sample multi modals app developed with android architecture components, conventions plugins.
 
