@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Mark start script
-        run: echo Script start!
+        run: echo Script start2
 
 #      - name: Set up JDK 17
 #        uses: actions/setup-java@v4
