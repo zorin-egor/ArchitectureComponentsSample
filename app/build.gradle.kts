@@ -10,8 +10,8 @@ plugins {
     id("kotlin-parcelize")
 }
 
-val appCode = 1
-val appVersion = "0.0.1"
+val appCode = 2
+val appVersion = "0.0.2"
 val keystorePath = "$projectDir${File.separator}keystore${File.separator}"
 
 android {
