@@ -57,7 +57,4 @@ internal class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun refresh() {
-        refreshSettings()
-    }
 }

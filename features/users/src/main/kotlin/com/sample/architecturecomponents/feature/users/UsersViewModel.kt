@@ -51,7 +51,7 @@ class UsersViewModel @Inject constructor(
     private fun Flow<Result<List<User>>>.getUsers(): Job =
         mapNotNull { item ->
             when(item) {
-                Result.Loading -> null
+                Result.Loading -> UsersUiState.Loading
                 is Result.Error -> throw item.exception
                 is Result.Success -> UsersUiState.Success(users = item.data, isBottomProgress = false)
             }
@@ -63,15 +63,13 @@ class UsersViewModel @Inject constructor(
         }
         .catch {
             Timber.e(it)
-            val error = context.getErrorMessage(it)
             when(it) {
                 EmptyException -> _state.emit(UsersUiState.Empty)
-                else -> _action.emit(UsersActions.ShowError(error))
+                else -> _action.emit(UsersActions.ShowError(context.getErrorMessage(it)))
             }
             setBottomProgress(false)
         }
         .launchIn(scope = viewModelScope)
-
 
     fun nextUsers() {
         if (usersJob?.isActive == true) return

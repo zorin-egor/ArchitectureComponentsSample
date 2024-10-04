@@ -10,4 +10,5 @@ dependencies {
     api(projects.core.data)
     api(projects.core.model)
     implementation(libs.javax.inject)
+    testImplementation(projects.core.testing)
 }

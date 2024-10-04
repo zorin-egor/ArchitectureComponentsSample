@@ -50,38 +50,38 @@ class DataStorePreferenceTest {
 
     @Test
     fun checkBaseUrlByDefaultTest() = runTest {
-        assertEquals(subject.getBaseUrl(), BASE_URL)
+        assertEquals(BASE_URL, subject.getBaseUrl())
     }
 
     @Test
     fun checkBaseUrlSetAndGetTest() = runTest {
         val testUrl = "some_test_url"
         subject.saveBaseUrl(testUrl)
-        assertEquals(subject.getBaseUrl(), testUrl)
+        assertEquals(testUrl, subject.getBaseUrl())
     }
 
     @Test
     fun checkAuthTokenByDefaultTest() = runTest {
-        assertEquals(subject.getAuthToken(), null)
+        assertEquals(null, subject.getAuthToken())
     }
 
     @Test
     fun checkAuthTokenSetAndGetTest() = runTest {
         val testToken = "some_test_token"
         subject.saveAuthToken(testToken)
-        assertEquals(subject.getAuthToken(), testToken)
+        assertEquals(testToken, subject.getAuthToken())
     }
 
     @Test
     fun checkSinceUserByDefaultTest() = runTest {
-        assertEquals(subject.getSinceUser().first(), null)
+        assertEquals(null, subject.getSinceUser().first())
     }
 
     @Test
     fun checkSinceUserSetAndGetTest() = runTest {
         val testSinceUser = 1L
         subject.saveSinceUser(testSinceUser)
-        assertEquals(subject.getSinceUser().first(), testSinceUser)
+        assertEquals(testSinceUser, subject.getSinceUser().first())
     }
 
 }

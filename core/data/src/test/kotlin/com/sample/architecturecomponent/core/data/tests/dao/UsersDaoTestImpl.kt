@@ -1,17 +1,19 @@
 package com.sample.architecturecomponent.core.data.tests.dao
 
+import com.sample.architecturecomponents.core.common.extensions.safeSubList
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.database.model.UserEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class UsersDaoTest : UsersDao {
+class UsersDaoTestImpl : UsersDao {
 
     private val dbStateFlow = MutableStateFlow(emptyList<UserEntity>())
 
-    override fun getUsers(): Flow<List<UserEntity>> = dbStateFlow
+    override fun getUsers(): Flow<List<UserEntity>> = dbStateFlow.asStateFlow()
 
     override fun getUserById(id: Long): Flow<UserEntity?> =
         dbStateFlow.map { flow ->
@@ -23,15 +25,23 @@ class UsersDaoTest : UsersDao {
 
     override fun getUsersCount(from: Long, count: Long): Flow<List<UserEntity>> =
         dbStateFlow.map { flow ->
-            flow.runCatching { subList(from.toInt(), (from + count).toInt()) }.getOrNull()
-                ?: emptyList()
+            flow.safeSubList(from.toInt(), (from + count).toInt())
         }
 
     override fun getUsersSinceId(sinceId: Long, limit: Long): Flow<List<UserEntity>> =
         dbStateFlow.map { flow ->
-            val userIndex = flow.indexOfFirst { it.userId == sinceId }
-            runCatching { flow.subList(userIndex, userIndex + limit.toInt()) }.getOrNull()
-                ?: emptyList()
+            when(val index = flow.indexOfFirst { it.userId == sinceId }) {
+                in Int.MIN_VALUE until 0 -> emptyList()
+                else -> flow.safeSubList(index + 1, index + 1 + limit.toInt())
+            }
+        }
+
+    override fun getUsersUntilSinceId(sinceId: Long, limit: Long): Flow<List<UserEntity>> =
+        dbStateFlow.map { flow ->
+            when(val index = flow.indexOfFirst { it.userId == sinceId }) {
+                in Int.MIN_VALUE until 0 -> emptyList()
+                else -> flow.safeSubList(index + 1, index + 1 + limit.toInt())
+            }
         }
 
     override suspend fun insert(item: UserEntity) =

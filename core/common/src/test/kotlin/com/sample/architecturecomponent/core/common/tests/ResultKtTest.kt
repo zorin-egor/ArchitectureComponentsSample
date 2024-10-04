@@ -13,7 +13,7 @@ class ResultKtTest {
     @Test
     fun resultCatchesErrors() = runTest {
         flow {
-            emit(2)
+            emit(1)
             throw Exception("Test Done")
         }
         .asResult()

@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 internal suspend inline fun <A> Flow<Result<A>>.firstSuccess(): A = toList().let {
     assert(it.size == 2)
-    assertEquals(it.first(), Result.Loading)
-    assertEquals(it[1]::class.simpleName, Result.Success::class.simpleName)
+    assertEquals(Result.Loading, it.first())
+    assertEquals(Result.Success::class.simpleName, it[1]::class.simpleName)
     (it[1] as Result.Success<A>).data
 }

@@ -46,24 +46,24 @@ class DataStoreProtoTest {
 
     @Test
     fun themeBrandByDefaultTest() = runTest {
-        assertEquals(subject.settings.first().themeData.themeBrand, ThemeBrand.DEFAULT)
+        assertEquals(ThemeBrand.DEFAULT, subject.settings.first().themeData.themeBrand)
     }
 
     @Test
     fun setThemeBrandAndCheckValueTest() = runTest {
         subject.setThemeBrand(ThemeBrand.ANDROID)
-        assertEquals(subject.settings.first().themeData.themeBrand, ThemeBrand.ANDROID)
+        assertEquals(ThemeBrand.ANDROID, subject.settings.first().themeData.themeBrand)
     }
 
     @Test
     fun darkThemeConfigByDefaultTest() = runTest {
-        assertEquals(subject.settings.first().themeData.darkThemeConfig, DarkThemeConfig.FOLLOW_SYSTEM)
+        assertEquals(DarkThemeConfig.FOLLOW_SYSTEM, subject.settings.first().themeData.darkThemeConfig)
     }
 
     @Test
     fun setDarkThemeConfigAndCheckValueTest() = runTest {
         subject.setDarkThemeConfig(DarkThemeConfig.DARK)
-        assertEquals(subject.settings.first().themeData.darkThemeConfig, DarkThemeConfig.DARK)
+        assertEquals(DarkThemeConfig.DARK, subject.settings.first().themeData.darkThemeConfig)
     }
 
     @Test

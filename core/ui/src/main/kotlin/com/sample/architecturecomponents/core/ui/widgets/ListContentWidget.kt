@@ -1,5 +1,6 @@
 package com.sample.architecturecomponents.core.ui.widgets
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sample.architecturecomponents.core.designsystem.component.setEdgeEvents
 
+@SuppressLint("DesignSystem")
 @Composable
 fun <Item> ListContentWidget(
     items: List<Item>,

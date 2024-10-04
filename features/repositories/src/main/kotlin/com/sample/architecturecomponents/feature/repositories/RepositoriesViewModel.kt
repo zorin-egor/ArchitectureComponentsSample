@@ -16,6 +16,7 @@ import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +73,10 @@ class RepositoriesViewModel @Inject constructor(
                 state =state
             )
         }
-        .onEach(_state::emit)
+        .onEach {
+            _state.emit(it)
+            delay(500)
+        }
         .catch {
             val error = context.getErrorMessage(it)
             Timber.e(error)

@@ -18,7 +18,7 @@ interface RepositoriesDao {
         "SELECT * FROM Repositories WHERE name LIKE '%' || :name || '%' OR " +
         "description LIKE '%' || :name || '%' ORDER BY name ASC LIMIT :limit OFFSET :offset"
     )
-    fun getRepositoriesByName(name: String, offset: Long, limit: Long = 30): Flow<List<RepositoryEntity>>
+    fun getRepositoriesByName(name: String, offset: Long = 0, limit: Long = 30): Flow<List<RepositoryEntity>>
 
     @Upsert
     suspend fun insert(item: RepositoryEntity)

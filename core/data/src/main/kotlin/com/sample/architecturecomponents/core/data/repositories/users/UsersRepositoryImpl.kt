@@ -42,14 +42,14 @@ internal class UsersRepositoryImpl @Inject constructor(
                 emit(Result.Error(it))
             }
 
-        val networkFlow = flow {
+        val networkFlow = flow<Result<List<User>>> {
             emit(Result.Loading)
 
             val response = networkDatasource.getUsers(since = sinceId, perPage = limit).getResultOrThrow()
             if (response.isNotEmpty()) {
                 ioScope.launch {
                     runCatching { usersDao.insert(response.toUserEntity()) }
-                        .exceptionOrNull()?.let(Timber::e)
+                        .onFailure(Timber::e)
                 }
             }
 

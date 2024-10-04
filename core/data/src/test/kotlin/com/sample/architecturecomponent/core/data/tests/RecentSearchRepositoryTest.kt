@@ -1,6 +1,6 @@
-package com.sample.architecturecomponent.core.data.tests.repositories
+package com.sample.architecturecomponent.core.data.tests
 
-import com.sample.architecturecomponent.core.data.tests.dao.RecentSearchDaoTest
+import com.sample.architecturecomponent.core.data.tests.dao.RecentSearchDaoTestImpl
 import com.sample.architecturecomponent.core.data.tests.ext.firstSuccess
 import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepository
 import com.sample.architecturecomponents.core.data.repositories.recent_search.RecentSearchRepositoryImpl
@@ -23,7 +23,7 @@ class RecentSearchRepositoryTest {
 
     @Before
     fun setup() {
-        recentSearchDao = RecentSearchDaoTest()
+        recentSearchDao = RecentSearchDaoTestImpl()
         subject = RecentSearchRepositoryImpl(
             recentSearchDao = recentSearchDao,
             ioScope = testScope
@@ -74,7 +74,7 @@ class RecentSearchRepositoryTest {
         val recentSearchRepoUsers2 = subject.getRecentSearch(query = "value", tag = RecentSearchTags.Users)
             .firstSuccess()
 
-        assertEquals(recentSearchRepoUsers2, emptyList())
+        assertEquals(emptyList(), recentSearchRepoUsers2)
     }
 
     @Test
@@ -100,7 +100,7 @@ class RecentSearchRepositoryTest {
         val recentSearchRepoUsersResult2 = subject.getRecentSearch(query = "value", tag = RecentSearchTags.Users)
             .firstSuccess()
 
-        assertEquals(recentSearchRepoUsersResult2, emptyList())
+        assertEquals(emptyList(), recentSearchRepoUsersResult2)
     }
 
 }

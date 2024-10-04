@@ -55,12 +55,10 @@ class AppDatabaseDaoTest {
     fun recentSearchDaoFetchesItemsByQueryPublishDateTest() = runTest {
         val recentSearchEntities = mutableListOf<RecentSearchEntity>()
         repeat(5) {
-            recentSearchEntities.add(
-                testRecentSearchEntity(
+            recentSearchEntities.add(testRecentSearchEntity(
                 value = "value${it}",
                 millisSinceEpoch = it.toLong(),
-            )
-            )
+            ))
         }
 
         recentSearchDao.insert(recentSearchEntities)

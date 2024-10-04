@@ -60,7 +60,7 @@ internal class RepositoriesRepositoryImpl @Inject constructor(
             if (response.isNotEmpty()) {
                 ioScope.launch {
                     runCatching { repositoriesDao.insert(response.toRepositoryEntities()) }
-                        .exceptionOrNull()?.let(Timber::e)
+                        .onFailure(Timber::e)
                 }
             }
 

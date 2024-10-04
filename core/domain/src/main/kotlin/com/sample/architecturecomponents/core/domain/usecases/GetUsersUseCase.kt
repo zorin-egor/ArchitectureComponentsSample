@@ -10,73 +10,67 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
+import org.jetbrains.annotations.TestOnly
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 
 class GetUsersUseCase @Inject constructor(
     private val usersRepository: UsersRepository,
-    @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher,
 ) {
+
     companion object {
         const val SINCE_ID = 0L
         private const val LIMIT = 30L
     }
 
-    private val users = ArrayList<User>()
-    private val mutex = Any()
-    private var lastId = SINCE_ID
-    private var hasNext = true
-
-    operator fun invoke(id: Long): Flow<Result<List<User>>> {
-        Timber.d("invoke($hasNext, $id) - new")
-
-        return usersRepository.getUsers(sinceId = id, limit = LIMIT)
-            .map { new ->
-                if (new is Result.Success && new.data.isNotEmpty()) {
-                    Timber.d("invoke($id) - map: ${new.data.size}")
-                    synchronized(mutex) {
-                        hasNext = new.data.size >= LIMIT
-                        lastId = new.data.lastOrNull()?.id ?: lastId
-                        users.clear()
-                        users.addAll(new.data)
-                        Result.Success(users.toList())
-                    }
-                } else {
-                    new
-                }
-            }
-            .flowOn(dispatcher)
+    @TestOnly
+    constructor(
+        usersRepository: UsersRepository,
+        @Dispatcher(Dispatchers.IO) dispatcher: CoroutineDispatcher,
+        limitPerPage: Long = LIMIT
+    ) : this(
+        usersRepository = usersRepository,
+        dispatcher = dispatcher
+    ) {
+        limit = limitPerPage
     }
 
-    operator fun invoke(): Flow<Result<List<User>>> {
-        Timber.d("invoke($hasNext, $lastId) - next")
+    private val lock = Any()
+    private val users = ArrayList<User>()
+    private var lastId = AtomicLong(SINCE_ID)
+    private var hasNext = true
+    private var limit = LIMIT
 
-        synchronized(mutex) {
-            if (!hasNext) {
+    operator fun invoke(id: Long = lastId.get()): Flow<Result<List<User>>> {
+        synchronized(lock) {
+            if (id == lastId.get() && !hasNext) {
                 return flowOf(Result.Success(users.toList()))
             }
         }
 
-        return usersRepository.getUsers(sinceId = lastId, limit = LIMIT)
+        return usersRepository.getUsers(sinceId = id, limit = limit)
             .map { new ->
-                if (new is Result.Success && new.data.isNotEmpty()) {
-                    Timber.d("invoke() - map: ${new.data.size}")
-                    synchronized(mutex) {
-                        hasNext = new.data.size >= LIMIT
-                        lastId = new.data.lastOrNull()?.id ?: lastId
-                        new.data.forEach { item ->
-                            if (users.find { it.id == item.id } == null) {
-                                users.add(item)
+                when(new) {
+                    is Result.Success -> {
+                        val items = synchronized(lock) {
+                            hasNext = new.data.size >= limit
+                            if (new.data.isEmpty()) return@synchronized users.toList()
+                            if (id != lastId.get()) users.clear()
+                            lastId.set(new.data.last().id)
+                            new.data.forEach { item ->
+                                if (users.find { it.id == item.id } == null) {
+                                    users.add(item)
+                                }
                             }
+                            users.toList()
                         }
-                        Result.Success(users.toList())
+                        Result.Success(items)
                     }
-                } else {
-                    new
+                    else -> new
                 }
-            }
-            .flowOn(dispatcher)
+            }.flowOn(dispatcher)
     }
 
 }

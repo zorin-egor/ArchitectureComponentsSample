@@ -50,7 +50,7 @@ internal class RepositoryDetailsRepositoryImpl @Inject constructor(
 
             ioScope.launch {
                 runCatching { repositoryDetailsDao.insert(response.toRepositoryDetailsEntity()) }
-                    .exceptionOrNull()?.let(Timber::e)
+                    .onFailure(Timber::e)
             }
 
             emit(Result.Success(response.toRepositoryDetailsModel()))

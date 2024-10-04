@@ -11,6 +11,4 @@ interface SettingsRepository {
 
     fun clearCache()
 
-    suspend fun refresh()
-
 }

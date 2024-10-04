@@ -12,4 +12,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(libs.bundles.coil)
     implementation(libs.androidx.compose.constraint.layout)
+
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(projects.core.testing)
 }

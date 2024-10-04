@@ -10,4 +10,7 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(projects.core.data)
+
+    testImplementation(libs.androidx.test.core)
+    testImplementation(projects.core.testing)
 }

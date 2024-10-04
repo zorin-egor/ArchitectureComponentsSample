@@ -55,7 +55,7 @@ internal class UserDetailsRepositoryImpl @Inject constructor(
 
             ioScope.launch {
                 runCatching { detailsDao.insert(response.toDetailsEntity()) }
-                    .exceptionOrNull()?.let(Timber::e)
+                    .onFailure(Timber::e)
             }
 
             emit(Result.Success(response.toDetailsModel()))

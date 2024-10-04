@@ -1,13 +1,15 @@
-package com.sample.architecturecomponent.core.data.tests.repositories
+package com.sample.architecturecomponent.core.data.tests
 
 import JvmUnitTestDevAssetManager
-import com.sample.architecturecomponent.core.data.tests.dao.UsersDaoTest
+import com.sample.architecturecomponent.core.data.tests.dao.UsersDaoTestImpl
 import com.sample.architecturecomponent.core.data.tests.ext.firstSuccess
+import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepository
 import com.sample.architecturecomponents.core.data.repositories.users.UsersRepositoryImpl
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.dev.DevNetworkDataSource
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestScope
@@ -28,7 +30,7 @@ class UsersRepositoryTest {
 
     @Before
     fun setup() {
-        daoTest = UsersDaoTest()
+        daoTest = UsersDaoTestImpl()
 
         network = DevNetworkDataSource(
             dispatcher = dispatcher,
@@ -47,10 +49,18 @@ class UsersRepositoryTest {
     }
 
     @Test
+    fun getUsersEmptyTest() = runTest(dispatcher) {
+        val result = subject.getUsers(sinceId = Long.MAX_VALUE).toList()
+        assertEquals(2, result.size)
+        assertEquals(Result.Loading, result.first())
+        assertEquals(Result.Success(emptyList()), result[1])
+    }
+
+    @Test
     fun getUsersSinceTest() = runTest(dispatcher) {
-        val users = subject.getUsers(sinceId = 2, limit = 2).firstSuccess().map { it.login }
+        val users = subject.getUsers(sinceId = 1, limit = 2).firstSuccess().map { it.login }
         val expectedNames = listOf("defunkt", "pjhyett")
-        assertEquals(users, expectedNames)
+        assertEquals(expectedNames, users)
     }
     
 }

@@ -23,6 +23,15 @@ interface UsersDao {
     @Query("SELECT * FROM Users WHERE user_id > :sinceId ORDER BY user_id LIMIT :limit")
     fun getUsersSinceId(sinceId: Long, limit: Long = 30): Flow<List<UserEntity>>
 
+    @Query("""
+        SELECT * FROM
+            (SELECT * FROM Users WHERE user_id < :sinceId ORDER BY user_id)
+        UNION
+        SELECT * FROM
+            (SELECT * FROM Users WHERE user_id >= :sinceId ORDER BY user_id LIMIT :limit)
+    """)
+    fun getUsersUntilSinceId(sinceId: Long, limit: Long = 30): Flow<List<UserEntity>>
+
     @Upsert
     suspend fun insert(item: UserEntity)
 

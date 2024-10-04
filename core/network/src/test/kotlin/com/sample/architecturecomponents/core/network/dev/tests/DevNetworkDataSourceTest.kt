@@ -187,4 +187,14 @@ class DevNetworkDataSourceTest {
         assertEquals(details, subject.getUserDetails(url = "url").body())
     }
 
+    @Test
+    fun getUserDetailsErrorTest() = runTest(testDispatcher) {
+        assertEquals(404, subject.getUserDetails(url = "").code())
+    }
+
+    @Test
+    fun getRepositoryDetailsErrorTest() = runTest(testDispatcher) {
+        assertEquals(404, subject.getRepositoryDetails(owner = "", repo = "").code())
+    }
+
 }

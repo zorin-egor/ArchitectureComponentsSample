@@ -18,11 +18,11 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ThemesViewModel @Inject constructor(
-    private val userDataRepository: ThemeRepository,
+    private val themeRepository: ThemeRepository,
 ) : ViewModel() {
 
     val themesUiState: StateFlow<ThemesUiState> =
-        userDataRepository.themeData
+        themeRepository.themeData
             .map { userData ->
                 Success(
                     settings = UserEditableThemes(
@@ -40,19 +40,19 @@ class ThemesViewModel @Inject constructor(
 
     fun updateThemeBrand(themeBrand: ThemeBrand) {
         viewModelScope.launch {
-            userDataRepository.setThemeBrand(themeBrand)
+            themeRepository.setThemeBrand(themeBrand)
         }
     }
 
     fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         viewModelScope.launch {
-            userDataRepository.setDarkThemeConfig(darkThemeConfig)
+            themeRepository.setDarkThemeConfig(darkThemeConfig)
         }
     }
 
     fun updateDynamicColorPreference(useDynamicColor: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setDynamicColorPreference(useDynamicColor)
+            themeRepository.setDynamicColorPreference(useDynamicColor)
         }
     }
 }

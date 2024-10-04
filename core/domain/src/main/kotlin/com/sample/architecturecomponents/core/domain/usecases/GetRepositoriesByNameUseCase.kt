@@ -6,13 +6,12 @@ import com.sample.architecturecomponents.core.di.Dispatcher
 import com.sample.architecturecomponents.core.di.Dispatchers
 import com.sample.architecturecomponents.core.model.Repository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import org.jetbrains.annotations.TestOnly
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
@@ -20,74 +19,57 @@ import javax.inject.Inject
 
 class GetRepositoriesByNameUseCase @Inject constructor(
     private val repositoriesRepository: RepositoriesRepository,
-    @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher,
 ) {
+
     companion object {
         private const val LIMIT = 30L
         private const val START_PAGE = 1L
     }
 
+    @TestOnly
+    constructor(
+        repositoriesRepository: RepositoriesRepository,
+        @Dispatcher(Dispatchers.IO) dispatcher: CoroutineDispatcher,
+        limitPerPage: Long = LIMIT
+    ) : this(
+        repositoriesRepository = repositoriesRepository,
+        dispatcher = dispatcher
+    ) {
+        limit = limitPerPage
+    }
+
     private val repositories = ArrayList<Repository>()
-    private val mutex = Any()
+    private val lock = Any()
     private var previousName = ""
     private var hasNext = true
     private var page = AtomicLong(START_PAGE)
+    private var limit = LIMIT
 
-    operator fun invoke(): Flow<Result<List<Repository>>> {
-        Timber.d("invoke($hasNext, $previousName) - next")
+    operator fun invoke(name: String = previousName): Flow<Result<List<Repository>>> {
+        Timber.d("invoke($name, $previousName) - new")
 
-        synchronized(mutex) {
-            if (!hasNext || previousName.isEmpty()) {
-                return flowOf(Result.Success(repositories.toList()))
+        synchronized(lock) {
+            when {
+                name == previousName && !hasNext -> return flowOf(Result.Success(repositories.toList()))
+                name != previousName -> page.set(START_PAGE)
+                name.isEmpty() -> return emptyFlow()
             }
         }
 
-        return repositoriesRepository.getRepositoriesByName(name = previousName, page = page.get() + 1, limit = LIMIT)
+        return repositoriesRepository.getRepositoriesByName(name = name, page = page.get(), limit = limit)
             .map { new ->
-                if (new is Result.Success && new.data.isNotEmpty()) {
-                    synchronized(mutex) {
+                if (new is Result.Success) {
+                    synchronized(lock) {
+                        if (name != previousName) repositories.clear()
+                        previousName = name
                         page.incrementAndGet()
-                        hasNext = new.data.size >= LIMIT
+                        hasNext = new.data.size >= limit
                         new.data.forEach { item ->
                             if (repositories.find { it.id == item.id } == null) {
                                 repositories.add(item)
                             }
                         }
-                        Result.Success(repositories.toList())
-                    }
-                } else {
-                    new
-                }
-            }
-            .onCompletion {
-                Timber.d("invoke($hasNext, $previousName) - onCompletion")
-                delay(500)
-            }
-            .flowOn(dispatcher)
-    }
-
-    operator fun invoke(name: String): Flow<Result<List<Repository>>> {
-        Timber.d("invoke($name, $previousName) - new")
-
-        synchronized(mutex) {
-            if (name == previousName && repositories.isNotEmpty()) {
-                return flowOf(Result.Success(repositories.toList()))
-            }
-        }
-
-        return repositoriesRepository.getRepositoriesByName(name = name, page = START_PAGE, limit = LIMIT)
-            .onStart {
-                Timber.d("invoke($name, $previousName) - onStart")
-                delay(500)
-            }
-            .map { new ->
-                if (new is Result.Success && new.data.isNotEmpty()) {
-                    synchronized(mutex) {
-                        previousName = name
-                        page.getAndSet(START_PAGE)
-                        hasNext = new.data.size >= LIMIT
-                        repositories.clear()
-                        repositories.addAll(new.data)
                         Result.Success(repositories.toList())
                     }
                 } else {

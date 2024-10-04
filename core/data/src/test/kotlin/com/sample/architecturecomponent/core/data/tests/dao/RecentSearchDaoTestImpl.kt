@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class RecentSearchDaoTest : RecentSearchDao {
+class RecentSearchDaoTestImpl : RecentSearchDao {
 
     private val dbStateFlow = MutableStateFlow(emptyList<RecentSearchEntity>())
 
