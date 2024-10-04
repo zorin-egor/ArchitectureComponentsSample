@@ -37,7 +37,6 @@ jobs:
         with:
           validate-wrappers: true
           gradle-home-cache-cleanup: true
-          cache-disabled: true
 
       - name: Check build-logic
         run: ./gradlew check -p build-logic
