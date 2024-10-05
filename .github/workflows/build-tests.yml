@@ -9,11 +9,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-  RELEASE_SIGN_KEY_ALIAS: ${{ secrets.RELEASE_SIGN_KEY_ALIAS }}
-  RELEASE_SIGN_KEY_PASSWORD: ${{ secrets.RELEASE_SIGN_KEY_PASSWORD }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -60,6 +55,10 @@ jobs:
 #        run: ./gradlew testDevDebug
 
       - name: Build release APK and AAB
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          RELEASE_SIGN_KEY_ALIAS: ${{ secrets.RELEASE_SIGN_KEY_ALIAS }}
+          RELEASE_SIGN_KEY_PASSWORD: ${{ secrets.RELEASE_SIGN_KEY_PASSWORD }}
         run: |
           ./gradlew assembleProdRelease
           ./gradlew bundleProdRelease
