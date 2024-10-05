@@ -38,10 +38,6 @@ Run the following command to get and analyse compose compiler metrics:
 ## Screenshots
 <p align="center">
   <a>
-    <img alt="ArchitectureComponentsSample" src="https://github.com/user-attachments/assets/40108436-ea58-405a-9a4a-a840db507053" />
-  </a>
-  <br/>
-  <a>
     <img alt="ArchitectureComponentsSample" src="https://github.com/user-attachments/assets/2c40e579-618a-4169-9d45-46cf5601cea9" />
   </a>
 </p>
