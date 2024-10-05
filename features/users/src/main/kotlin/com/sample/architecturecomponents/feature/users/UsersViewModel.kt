@@ -47,7 +47,7 @@ class UsersViewModel @Inject constructor(
     private fun Flow<Result<List<User>>>.getUsers(): Job =
         mapNotNull { item ->
             when(item) {
-                Result.Loading -> if (_state.value is UsersUiState.Loading) UsersUiState.Loading else null
+                Result.Loading -> null
                 is Result.Error -> throw item.exception
                 is Result.Success -> UsersUiState.Success(users = item.data, isBottomProgress = false)
             }

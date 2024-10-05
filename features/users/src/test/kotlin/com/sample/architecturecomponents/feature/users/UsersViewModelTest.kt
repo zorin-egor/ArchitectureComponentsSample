@@ -8,7 +8,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class UsersViewModelTest {
 
@@ -35,7 +34,7 @@ class UsersViewModelTest {
     @Test
     fun loadingUsersViewModelTest() = runTest {
         val items = viewModel.state.first()
-        assertEquals(UsersUiState.Loading, items)
+        assert(items is UsersUiState.Success)
     }
 
 }
