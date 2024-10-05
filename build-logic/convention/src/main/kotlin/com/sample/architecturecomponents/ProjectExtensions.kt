@@ -20,8 +20,10 @@ fun Properties.setProperties(path: String, onNotExist: (() -> Unit)? = null) {
         load(FileInputStream(propertiesFile))
     } else {
         onNotExist?.invoke()
-        val writer = FileWriter(propertiesFile, false)
-        store(writer, null)
+            ?: kotlin.run {
+                val writer = FileWriter(propertiesFile, false)
+                store(writer, null)
+            }
     }
 }
 

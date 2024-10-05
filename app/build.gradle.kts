@@ -12,7 +12,7 @@ plugins {
 
 val appCode = 2
 val appVersion = "0.0.2"
-val keystorePath = "$rootDir${File.separator}app${File.separator}keystore${File.separator}"
+val keystorePath = "$projectDir${File.separator}keystore${File.separator}"
 
 android {
     namespace = "com.sample.architecturecomponents.app"
@@ -39,6 +39,14 @@ android {
         storePassword = System.getenv("KEYSTORE_PASSWORD")
         keyAlias = System.getenv("RELEASE_SIGN_KEY_ALIAS")
         keyPassword = System.getenv("RELEASE_SIGN_KEY_PASSWORD")
+
+        println("""
+            Data for signing: 
+                path: $keystorePath
+                storePwd: ${storePassword?.first()}-${storePassword?.last()}
+                keyAlias: ${keyAlias?.first()}-${keyAlias?.last()}
+                keyPwd: ${keyPassword?.first()}-${keyPassword?.last()}
+        """.trimIndent())
     }
 
     buildTypes {
