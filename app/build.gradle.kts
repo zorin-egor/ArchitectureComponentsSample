@@ -35,6 +35,7 @@ android {
         name = Flavor.prod.name,
         propertiesPath = "${keystorePath}keystore.properties",
         keystorePath = "${keystorePath}app.keystore",
+        printSignData = true
     ) {
         storePassword = System.getenv("KEYSTORE_PASSWORD")
         keyAlias = System.getenv("RELEASE_SIGN_KEY_ALIAS")

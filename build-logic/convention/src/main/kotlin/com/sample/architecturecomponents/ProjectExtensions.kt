@@ -11,6 +11,9 @@ import java.io.FileInputStream
 import java.io.FileWriter
 import java.util.Properties
 
+private val String.asSecretForPrint: String
+    get() = firstOrNull()?.let { "$it****${last()}"} ?: "-"
+
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -53,9 +56,9 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
                 println("""
                     Data for signing: 
                         path: $keystorePath
-                        storePwd: ${storePassword?.first()}****${storePassword?.last()}
-                        keyAlias: ${keyAlias?.first()}****${keyAlias?.last()}
-                        keyPwd: ${keyPassword?.first()}****${keyPassword?.last()}
+                        storePwd: ${storePassword?.asSecretForPrint} 
+                        keyAlias: ${keyAlias?.asSecretForPrint }
+                        keyPwd: ${keyPassword?.asSecretForPrint }
                     """.trimIndent())
             }
         }
