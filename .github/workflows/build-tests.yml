@@ -61,7 +61,7 @@ jobs:
 
       - name: Build release APK and AAB
         run: |
-          ./gradlew assembleProdRelease --stacktrace
+          ./gradlew assembleProdRelease
           ./gradlew bundleProdRelease
 
       - name: Upload APK

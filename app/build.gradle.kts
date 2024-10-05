@@ -39,14 +39,6 @@ android {
         storePassword = System.getenv("KEYSTORE_PASSWORD")
         keyAlias = System.getenv("RELEASE_SIGN_KEY_ALIAS")
         keyPassword = System.getenv("RELEASE_SIGN_KEY_PASSWORD")
-
-        println("""
-            Data for signing: 
-                path: $keystorePath
-                storePwd: ${storePassword?.first()}-${storePassword?.last()}
-                keyAlias: ${keyAlias?.first()}-${keyAlias?.last()}
-                keyPwd: ${keyPassword?.first()}-${keyPassword?.last()}
-        """.trimIndent())
     }
 
     buildTypes {

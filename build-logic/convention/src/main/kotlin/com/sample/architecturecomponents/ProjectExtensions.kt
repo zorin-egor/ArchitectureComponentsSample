@@ -31,6 +31,7 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
     name: String,
     propertiesPath: String,
     keystorePath: String,
+    printSignData: Boolean = true,
     onPropertiesNotExist: (SigningConfig.() -> Unit)? = null
 ) {
     signingConfigs {
@@ -47,6 +48,16 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
             keyPassword = properties[::keyPassword.name].toString()
             keyAlias = properties[::keyAlias.name].toString()
             storePassword = properties[::storePassword.name].toString()
+
+            if (printSignData) {
+                println("""
+                    Data for signing: 
+                        path: $keystorePath
+                        storePwd: ${storePassword?.first()}****${storePassword?.last()}
+                        keyAlias: ${keyAlias?.first()}****${keyAlias?.last()}
+                        keyPwd: ${keyPassword?.first()}****${keyPassword?.last()}
+                    """.trimIndent())
+            }
         }
     }
 }
