@@ -49,7 +49,13 @@ class UsersViewModel @Inject constructor(
             when(item) {
                 Result.Loading -> null
                 is Result.Error -> throw item.exception
-                is Result.Success -> UsersUiState.Success(users = item.data, isBottomProgress = false)
+                is Result.Success -> {
+                    if (item.data.isEmpty()) {
+                        UsersUiState.Empty
+                    } else {
+                        UsersUiState.Success(users = item.data, isBottomProgress = false)
+                    }
+                }
             }
         }
         .onEach {

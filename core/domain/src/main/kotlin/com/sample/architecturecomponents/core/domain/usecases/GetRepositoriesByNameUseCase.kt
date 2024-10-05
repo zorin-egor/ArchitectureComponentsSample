@@ -47,7 +47,7 @@ class GetRepositoriesByNameUseCase @Inject constructor(
     private var limit = LIMIT
 
     operator fun invoke(name: String = previousName): Flow<Result<List<Repository>>> {
-        Timber.d("invoke($name, $previousName) - new")
+        Timber.d("invoke($name, $previousName)")
 
         synchronized(lock) {
             when {

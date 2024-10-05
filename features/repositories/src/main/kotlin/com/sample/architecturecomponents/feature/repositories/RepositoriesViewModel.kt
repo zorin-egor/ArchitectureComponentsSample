@@ -60,7 +60,11 @@ class RepositoriesViewModel @Inject constructor(
                 is Result.Error -> throw item.exception
                 is Result.Success -> {
                     setRecentSearchUseCase(query = query, tag = RecentSearchTags.Repositories)
-                    RepositoriesByNameUiStates.Success(repositories = item.data, isBottomProgress = false)
+                    if (item.data.isEmpty()) {
+                        RepositoriesByNameUiStates.Empty
+                    } else {
+                        RepositoriesByNameUiStates.Success(repositories = item.data, isBottomProgress = false)
+                    }
                 }
             }
 
