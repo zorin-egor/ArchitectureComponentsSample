@@ -14,6 +14,10 @@ val appCode = 2
 val appVersion = "0.0.2"
 val keystorePath = "$projectDir${File.separator}keystore${File.separator}"
 
+task("testPrints") {
+    println("Key alias: ${System.getenv("RELEASE_SIGN_KEY_ALIAS")}")
+}
+
 android {
     namespace = "com.sample.architecturecomponents.app"
 
