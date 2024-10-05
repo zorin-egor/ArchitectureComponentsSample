@@ -1,15 +1,12 @@
 package com.sample.architecturecomponents.feature.users
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.network.exceptions.EmptyException
-import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class UsersViewModel @Inject constructor(
     private val getSearchContentsUseCase: GetUsersUseCase,
-    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<UsersUiState>(UsersUiState.Loading)
@@ -51,7 +47,7 @@ class UsersViewModel @Inject constructor(
     private fun Flow<Result<List<User>>>.getUsers(): Job =
         mapNotNull { item ->
             when(item) {
-                Result.Loading -> UsersUiState.Loading
+                Result.Loading -> if (_state.value is UsersUiState.Loading) UsersUiState.Loading else null
                 is Result.Error -> throw item.exception
                 is Result.Success -> UsersUiState.Success(users = item.data, isBottomProgress = false)
             }
@@ -65,7 +61,7 @@ class UsersViewModel @Inject constructor(
             Timber.e(it)
             when(it) {
                 EmptyException -> _state.emit(UsersUiState.Empty)
-                else -> _action.emit(UsersActions.ShowError(context.getErrorMessage(it)))
+                else -> _action.emit(UsersActions.ShowError(it))
             }
             setBottomProgress(false)
         }

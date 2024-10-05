@@ -13,6 +13,6 @@ dependencies {
     implementation(libs.bundles.coil)
     implementation(libs.androidx.compose.constraint.layout)
 
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(projects.core.testing)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(projects.core.testing)
 }

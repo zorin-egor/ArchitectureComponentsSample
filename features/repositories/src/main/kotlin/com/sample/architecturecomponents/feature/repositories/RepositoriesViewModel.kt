@@ -1,6 +1,5 @@
 package com.sample.architecturecomponents.feature.repositories
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
@@ -12,9 +11,7 @@ import com.sample.architecturecomponents.core.model.RecentSearch
 import com.sample.architecturecomponents.core.model.RecentSearchTags
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.exceptions.EmptyException
-import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +35,6 @@ class RepositoriesViewModel @Inject constructor(
     private val getReposByNameUseCase: GetRepositoriesByNameUseCase,
     private val getRecentSearchUseCase: GetRecentSearchUseCase,
     private val setRecentSearchUseCase: SetRecentSearchUseCase,
-    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<RepositoriesByNameUiState>(RepositoriesByNameUiState(
@@ -78,8 +74,7 @@ class RepositoriesViewModel @Inject constructor(
             delay(500)
         }
         .catch {
-            val error = context.getErrorMessage(it)
-            Timber.e(error)
+            Timber.e(it)
 
             when(it) {
                 EmptyException -> _state.emit(RepositoriesByNameUiState(
@@ -87,7 +82,7 @@ class RepositoriesViewModel @Inject constructor(
                     recentSearch = emptyList(),
                     state = RepositoriesByNameUiStates.Empty
                 ))
-                else -> _action.emit(RepositoriesActions.ShowError(error))
+                else -> _action.emit(RepositoriesActions.ShowError(it))
             }
 
             setBottomProgress(false)

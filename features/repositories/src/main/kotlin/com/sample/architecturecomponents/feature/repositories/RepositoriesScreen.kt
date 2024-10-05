@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
 import com.sample.architecturecomponents.core.designsystem.component.ExposedSearchTextField
 import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
+import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import com.sample.architecturecomponents.core.ui.widgets.ListContentWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimplePlaceholderContent
 import com.sample.architecturecomponents.feature.repositories.widgets.RepositoriesItemContent
@@ -31,13 +33,14 @@ fun RepositoriesScreen(
 ) {
     Timber.d("RepositoriesScreen()")
 
+    val context = LocalContext.current
     val reposUiState: RepositoriesByNameUiState by viewModel.state.collectAsStateWithLifecycle()
     val reposAction: RepositoriesActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
 
     when(val action = reposAction) {
         is RepositoriesActions.ShowError -> {
             LaunchedEffect(key1 = action.error.hashCode()) {
-                onShowSnackbar(action.error, null)
+                onShowSnackbar(context.getErrorMessage(action.error), null)
             }
         }
         else -> {}

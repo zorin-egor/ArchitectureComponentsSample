@@ -12,6 +12,6 @@ dependencies {
     implementation(projects.core.domain)
     implementation(libs.bundles.coil)
 
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(projects.core.testing)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(projects.core.testing)
 }

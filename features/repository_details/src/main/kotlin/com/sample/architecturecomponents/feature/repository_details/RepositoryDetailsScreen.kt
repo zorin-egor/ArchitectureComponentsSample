@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.common.extensions.getShareIntent
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
+import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import com.sample.architecturecomponents.core.ui.ext.rootViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationState
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationViewModel
@@ -63,7 +64,7 @@ internal fun RepositoryDetailsScreen(
     when(val action = detailsAction) {
         is RepositoryDetailsActions.ShowError -> {
             LaunchedEffect(key1 = action.error.hashCode()) {
-                onShowSnackbar(action.error, null)
+                onShowSnackbar(context.getErrorMessage(action.error), null)
             }
         }
         else -> {}

@@ -41,7 +41,7 @@ class DevNetworkDataSource @Inject constructor(
                     val maxId = maxOf { it.id }
                     when {
                         index < 0 && since > maxId -> emptyList()
-                        index < 0 && since < maxId ->safeSubList(0, perPage.toInt())
+                        index < 0 && since < maxId -> safeSubList(0, perPage.toInt())
                         else -> safeSubList(index + 1, index + 1 + perPage.toInt())
                     }
                 }.let {
