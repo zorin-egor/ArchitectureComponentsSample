@@ -14,20 +14,36 @@ import java.util.Properties
 private val String.asSecretForPrint: String
     get() = firstOrNull()?.let { "$it****${last()}"} ?: "-"
 
+private val SigningConfig.isCredentialsInit: Boolean
+    get() = storeFile?.exists() == true && !keyAlias.isNullOrEmpty() && !storePassword.isNullOrEmpty()
+            && !keyPassword.isNullOrEmpty()
+
+private fun SigningConfig.printSecrets() {
+    println("""
+        Data for signing: 
+            path: ${storeFile?.absolutePath}
+            storePwd: ${storePassword?.asSecretForPrint} 
+            keyAlias: ${keyAlias?.asSecretForPrint }
+            keyPwd: ${keyPassword?.asSecretForPrint }
+        """.trimIndent())
+}
+
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-fun Properties.setProperties(path: String, onNotExist: (() -> Unit)? = null) {
+fun Properties.loadOrCreateEmpty(path: String, onNotExist: (() -> Unit)? = null): Boolean {
     val propertiesFile = File(path)
     if (propertiesFile.exists()) {
         load(FileInputStream(propertiesFile))
-    } else {
-        onNotExist?.invoke()
-            ?: kotlin.run {
-                val writer = FileWriter(propertiesFile, false)
-                store(writer, null)
-            }
+        return true
     }
+
+    println("Properties file does't exist: $path")
+    val writer = FileWriter(propertiesFile, false)
+    store(writer, null)
+    onNotExist?.invoke()
+
+    return false
 }
 
 fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
@@ -39,27 +55,28 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
 ) {
     signingConfigs {
         create(name) {
+            storeFile = File(keystorePath)
+
             val properties = Properties()
             properties[::keyPassword.name] = ""
             properties[::keyAlias.name] = ""
             properties[::storePassword.name] = ""
-            properties.setProperties(propertiesPath) {
+
+            properties.loadOrCreateEmpty(propertiesPath) {
                 onPropertiesNotExist?.invoke(this)
             }
 
-            storeFile = File(keystorePath)
+            if (isCredentialsInit) {
+                if (printSignData) printSecrets()
+                return@create
+            }
+
             keyPassword = properties[::keyPassword.name].toString()
             keyAlias = properties[::keyAlias.name].toString()
             storePassword = properties[::storePassword.name].toString()
 
             if (printSignData) {
-                println("""
-                    Data for signing: 
-                        path: $keystorePath
-                        storePwd: ${storePassword?.asSecretForPrint} 
-                        keyAlias: ${keyAlias?.asSecretForPrint }
-                        keyPwd: ${keyPassword?.asSecretForPrint }
-                    """.trimIndent())
+                printSecrets()
             }
         }
     }

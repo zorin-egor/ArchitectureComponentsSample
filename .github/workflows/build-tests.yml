@@ -26,9 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Debug prints
-        run: echo Key alias':' $RELEASE_SIGN_KEY_ALIAS
-
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
@@ -56,31 +53,28 @@ jobs:
           validate-wrappers: true
           gradle-home-cache-cleanup: true
 
-      - name: Test print
-        run: ./gradlew testPrints
+      - name: Check build-logic
+        run: ./gradlew check -p build-logic
 
-#      - name: Check build-logic
-#        run: ./gradlew check -p build-logic
-#
-#      - name: Test application
-#        run: ./gradlew testDevDebug
+      - name: Test application
+        run: ./gradlew testDevDebug
 
-#      - name: Build release APK and AAB
-#        run: |
-#          ./gradlew assembleProdRelease
-#          ./gradlew bundleProdRelease
-#
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: App apk
-#          path: app/build/outputs/apk/prod/release/*.apk
-#
-#      - name: Upload AAB Bundle
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: App bundle
-#          path: app/build/outputs/bundle/prod/release/*.aab
+      - name: Build release APK and AAB
+        run: |
+          ./gradlew assembleProdRelease
+          ./gradlew bundleProdRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: App apk
+          path: app/build/outputs/apk/prod/release/*.apk
+
+      - name: Upload AAB Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: App bundle
+          path: app/build/outputs/bundle/prod/release/*.aab
 
 #      - name: Check lint
 #        run: ./gradlew :app:lintProdRelease :lint:lint
