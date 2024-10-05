@@ -61,19 +61,12 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
             properties[::storePassword.name] = ""
             properties.loadOrCreateEmpty(propertiesPath)
 
-            val propertyKeyPassword = properties[::keyPassword.name].toString()
-            val propertyKeyAlias = properties[::keyAlias.name].toString()
-            val propertyStorePassword = properties[::storePassword.name].toString()
-            val isPropertiesNotEmpty = propertyKeyPassword.isNotEmpty() && propertyKeyAlias.isNotEmpty()
-                    && propertyStorePassword.isNotEmpty()
+            keyPassword = properties[::keyPassword.name].toString()
+            keyAlias = properties[::keyAlias.name].toString()
+            storePassword = properties[::storePassword.name].toString()
 
-            println("Load properties from file: $isPropertiesNotEmpty")
-
-            if (isPropertiesNotEmpty) {
-                keyPassword = propertyKeyPassword
-                keyAlias = propertyKeyAlias
-                storePassword = propertyStorePassword
-            } else {
+            if (!isCredentialsInit) {
+                println("Properties from file is empty")
                 onPropertiesNotExist?.invoke(this)
             }
 

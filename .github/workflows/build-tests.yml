@@ -74,14 +74,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: App bundle
-          path: app/build/outputs/bundle/prod/release/*.aab
+          path: app/build/outputs/bundle/prodRelease/*.aab
 
-#      - name: Check lint
-#        run: ./gradlew :app:lintProdRelease :lint:lint
-#
-#      - name: Upload lint html reports
-#        if: always()
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: lint-reports
-#          path: '**/build/reports/lint-results-*.html'
+      - name: Check lint
+        run: ./gradlew :app:lintProdRelease :lint:lint
+
+      - name: Upload lint html reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: '**/build/reports/lint-results-*.html'
