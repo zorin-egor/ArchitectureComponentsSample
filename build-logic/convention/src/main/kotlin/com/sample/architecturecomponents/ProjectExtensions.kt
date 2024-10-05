@@ -31,7 +31,7 @@ private fun SigningConfig.printSecrets() {
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-fun Properties.loadOrCreateEmpty(path: String, onNotExist: (() -> Unit)? = null): Boolean {
+fun Properties.loadOrCreateEmpty(path: String): Boolean {
     val propertiesFile = File(path)
     if (propertiesFile.exists()) {
         load(FileInputStream(propertiesFile))
@@ -41,8 +41,6 @@ fun Properties.loadOrCreateEmpty(path: String, onNotExist: (() -> Unit)? = null)
     println("Properties file does't exist: $path")
     val writer = FileWriter(propertiesFile, false)
     store(writer, null)
-    onNotExist?.invoke()
-
     return false
 }
 
@@ -61,19 +59,25 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
             properties[::keyPassword.name] = ""
             properties[::keyAlias.name] = ""
             properties[::storePassword.name] = ""
+            properties.loadOrCreateEmpty(propertiesPath)
 
-            properties.loadOrCreateEmpty(propertiesPath) {
+            val propertyKeyPassword = properties[::keyPassword.name].toString()
+            val propertyKeyAlias = properties[::keyAlias.name].toString()
+            val propertyStorePassword = properties[::storePassword.name].toString()
+            val isPropertiesNotEmpty = propertyKeyPassword.isNotEmpty() && propertyKeyAlias.isNotEmpty()
+                    && propertyStorePassword.isNotEmpty()
+
+            println("Load properties from file: $isPropertiesNotEmpty")
+
+            if (isPropertiesNotEmpty) {
+                keyPassword = propertyKeyPassword
+                keyAlias = propertyKeyAlias
+                storePassword = propertyStorePassword
+            } else {
                 onPropertiesNotExist?.invoke(this)
             }
 
-            if (isCredentialsInit) {
-                if (printSignData) printSecrets()
-                return@create
-            }
-
-            keyPassword = properties[::keyPassword.name].toString()
-            keyAlias = properties[::keyAlias.name].toString()
-            storePassword = properties[::storePassword.name].toString()
+            println("Is credentials init: $isCredentialsInit")
 
             if (printSignData) {
                 printSecrets()
