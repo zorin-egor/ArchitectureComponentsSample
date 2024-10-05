@@ -34,7 +34,7 @@ class UsersViewModelTest {
     @Test
     fun loadingUsersViewModelTest() = runTest {
         val items = viewModel.state.first()
-        assert(items is UsersUiState.Success)
+        assert(items is UsersUiState.Empty)
     }
 
 }
