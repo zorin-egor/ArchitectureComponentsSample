@@ -3,7 +3,10 @@ package com.sample.architecturecomponents.feature.users
 import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
 import com.sample.architecturecomponents.core.testing.tests.repositories.UsersRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.util.MainDispatcherRule
-import kotlinx.coroutines.flow.first
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -32,9 +35,10 @@ class UsersViewModelTest {
     }
 
     @Test
-    fun loadingUsersViewModelTest() = runTest {
-        val items = viewModel.state.first()
-        assert(items is UsersUiState.Empty)
+    fun getEmptyUsersViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+        val items = viewModel.state.buffer().take(2).toList()
+        assert(items[0] is UiState.Loading)
+        assert(items[1] is UiState.Empty)
     }
 
 }

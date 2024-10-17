@@ -31,11 +31,12 @@ import coil.compose.rememberAsyncImagePainter
 import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
+import com.sample.architecturecomponents.feature.users.models.UsersEvents
 
 @Composable
 fun UsersItemContent(
     user: User,
-    onUserClick: (User) -> Unit,
+    onEventAction: (UsersEvents) -> Unit,
     modifier: Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -47,6 +48,8 @@ fun UsersItemContent(
             isError = state is AsyncImagePainter.State.Error
         },
     )
+
+    val onUserClick = remember {{ onEventAction(UsersEvents.OnUserClick(user)) }}
 
     Card(
         modifier = modifier.then(Modifier.height(100.dp)),
@@ -61,7 +64,7 @@ fun UsersItemContent(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
-                    onClick = { onUserClick(user) },
+                    onClick = onUserClick,
                 )
         ) {
 

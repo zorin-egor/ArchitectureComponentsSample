@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -14,8 +15,11 @@ import com.sample.architecturecomponents.core.designsystem.component.CircularCon
 import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.R
 import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
 import com.sample.architecturecomponents.core.ui.widgets.ListContentWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimplePlaceholderContent
+import com.sample.architecturecomponents.feature.users.models.UsersActions
+import com.sample.architecturecomponents.feature.users.models.UsersEvents
 import com.sample.architecturecomponents.feature.users.widgets.UsersItemContent
 import timber.log.Timber
 
@@ -23,50 +27,61 @@ import timber.log.Timber
 fun UsersScreen(
     onUserClick: (Long, String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
-    modifier: Modifier = Modifier,
     viewModel: UsersViewModel = hiltViewModel(),
 ) {
     Timber.d("UsersScreen()")
 
     val context = LocalContext.current
-    val usersUiState: UsersUiState by viewModel.state.collectAsStateWithLifecycle()
-    val usersAction: UsersActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
+    val usersUiState by viewModel.state.collectAsStateWithLifecycle()
+    val usersAction by viewModel.action.collectAsStateWithLifecycle(initialValue = UsersActions.None)
+    val nextUsers: () -> Unit = remember {{ viewModel.setEvent(UsersEvents.NextUser) }}
 
     Timber.d("UsersScreen() - state: $usersUiState, $usersAction")
 
     when(val state = usersUiState) {
-        UsersUiState.Loading -> CircularContent()
-        UsersUiState.Empty -> SimplePlaceholderContent(
+        UiState.Loading -> CircularContent()
+
+        UiState.Empty -> SimplePlaceholderContent(
             header = R.string.empty_placeholder_header,
             title = R.string.empty_placeholder_title,
             image = AppIcons.Empty,
             imageContentDescription = R.string.empty_placeholder_header
         )
-        is UsersUiState.Success -> {
+
+        is UiState.Success -> {
             ListContentWidget(
-                items = state.users,
+                items = state.item.users,
                 onKey = { it.id.toString() },
-                onBottomEvent = viewModel::nextUsers,
-                isBottomProgress = state.isBottomProgress
+                onBottomEvent = nextUsers,
+                isBottomProgress = state.item.isBottomProgress
             ) { user ->
                 UsersItemContent(
                     user = user,
-                    onUserClick = { onUserClick(user.id, user.url) },
+                    onEventAction = viewModel::setEvent,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)
                 )
             }
         }
+
+        else -> {}
     }
 
     when(val action = usersAction) {
+        UsersActions.None -> {}
+
+        is UsersActions.NavigateToDetails -> {
+            onUserClick(action.id, action.url)
+            viewModel.setEvent(UsersEvents.None)
+        }
+
         is UsersActions.ShowError -> {
             LaunchedEffect(key1 = action.error.hashCode()) {
                 onShowSnackbar(context.getErrorMessage(action.error), null)
             }
         }
-        else -> {}
+
     }
 }
 
