@@ -31,8 +31,7 @@ class ThemesViewModel @Inject constructor(
                         darkThemeConfig = userData.darkThemeConfig,
                     ),
                 )
-            }
-            .stateIn(
+            }.stateIn(
                 scope = viewModelScope,
                 started = WhileSubscribed(5.seconds.inWholeMilliseconds),
                 initialValue = Loading,

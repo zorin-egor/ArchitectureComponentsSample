@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.data.repositories.settings.SettingsRepository
 import com.sample.architecturecomponents.core.notifications.NotificationActionsRes
+import com.sample.architecturecomponents.feature.settings.models.SettingsActions
+import com.sample.architecturecomponents.feature.settings.models.SettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,12 +49,12 @@ class SettingsViewModel @Inject constructor(
 
     fun postNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                progressNotificationJob?.cancel()
-                progressNotificationJob = viewModelScope.launch {
-                    if (!randomNotification()) {
-                        _action.emit(SettingsActions.RequestPermission(android.Manifest.permission.POST_NOTIFICATIONS))
-                    }
+            progressNotificationJob?.cancel()
+            progressNotificationJob = viewModelScope.launch {
+                if (!randomNotification()) {
+                    _action.emit(SettingsActions.RequestPermission(android.Manifest.permission.POST_NOTIFICATIONS))
                 }
+            }
         }
     }
 

@@ -34,6 +34,8 @@ import com.sample.architecturecomponents.core.ui.widgets.IconSwitchWidget
 import com.sample.architecturecomponents.core.ui.widgets.SettingsColumnBlockWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimpleDialog
 import com.sample.architecturecomponents.core.ui.widgets.TwoLinesButtonWidget
+import com.sample.architecturecomponents.feature.settings.models.SettingsActions
+import com.sample.architecturecomponents.feature.settings.models.SettingsUiState
 import timber.log.Timber
 import com.sample.architecturecomponents.core.ui.R as UiR
 
@@ -42,9 +44,8 @@ fun SettingsScreen(
     showThemeDialog: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
-
-    val settingsUiState: SettingsUiState by viewModel.state.collectAsStateWithLifecycle()
-    val settingsAction: SettingsActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
+    val settingsUiState by viewModel.state.collectAsStateWithLifecycle()
+    val settingsAction by viewModel.action.collectAsStateWithLifecycle(initialValue = SettingsActions.None)
 
     val context = LocalContext.current
     val mainUrl = stringResource(id = R.string.feature_settings_main_url)

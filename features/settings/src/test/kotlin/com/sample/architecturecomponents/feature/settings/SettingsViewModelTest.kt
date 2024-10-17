@@ -5,6 +5,7 @@ import com.sample.architecturecomponents.core.model.SettingsPreference
 import com.sample.architecturecomponents.core.testing.tests.notifications.NotificationActionsResTestImpl
 import com.sample.architecturecomponents.core.testing.tests.repositories.SettingsRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.util.MainDispatcherRule
+import com.sample.architecturecomponents.feature.settings.models.SettingsUiState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

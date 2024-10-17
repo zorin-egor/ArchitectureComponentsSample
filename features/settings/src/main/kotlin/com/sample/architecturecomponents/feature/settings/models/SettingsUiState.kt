@@ -1,4 +1,4 @@
-package com.sample.architecturecomponents.feature.settings
+package com.sample.architecturecomponents.feature.settings.models
 
 import com.sample.architecturecomponents.core.model.SettingsData
 
