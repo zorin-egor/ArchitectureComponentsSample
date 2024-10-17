@@ -1,18 +1,19 @@
 package com.sample.architecturecomponents.feature.user_details
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUserDetailsUseCase
 import com.sample.architecturecomponents.core.model.UserDetails
+import com.sample.architecturecomponents.core.network.exceptions.EmptyException
+import com.sample.architecturecomponents.core.ui.viewmodels.BaseViewModel
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import com.sample.architecturecomponents.feature.user_details.models.UserDetailsActions
+import com.sample.architecturecomponents.feature.user_details.models.UserDetailsEvent
 import com.sample.architecturecomponents.feature.user_details.navigation.UserDetailsArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class UserDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getUserDetailsUseCase: GetUserDetailsUseCase,
-) : ViewModel() {
+) : BaseViewModel<UiState<UserDetails>, UserDetailsActions, UserDetailsEvent>() {
 
     private val usersArgs: UserDetailsArgs = UserDetailsArgs(savedStateHandle)
 
@@ -34,28 +35,37 @@ class UserDetailsViewModel @Inject constructor(
     var userDetails: UserDetails? = null
         private set
 
-    private val _action = MutableSharedFlow<UserDetailsActions>(replay = 0, extraBufferCapacity = 1)
+    override fun setEvent(item: UserDetailsEvent) {
+        when(item) {
+            UserDetailsEvent.None -> setAction(UserDetailsActions.None)
+            UserDetailsEvent.NavigationBack -> { /* For analytic */ }
+            UserDetailsEvent.ShareProfile -> userDetails?.let { setAction(UserDetailsActions.ShareUrl(it.url)) }
+        }
+    }
 
-    val action: Flow<UserDetailsActions?> = _action.asSharedFlow()
-
-    val state: StateFlow<UserDetailsUiState> = getUserDetailsUseCase(userId = userId, url = userUrl)
+    override val state: StateFlow<UiState<UserDetails>> = getUserDetailsUseCase(userId = userId, url = userUrl)
         .mapNotNull { item ->
             when(item) {
-                Result.Loading -> null
-                is Result.Error -> throw item.exception
+                Result.Loading -> UiState.Loading
+
+                is Result.Error -> {
+                    when(item.exception) {
+                        EmptyException -> UiState.Empty
+                        else -> throw item.exception
+                    }
+                }
+
                 is Result.Success -> {
                     userDetails = item.data
-                    UserDetailsUiState.Success(userDetails = item.data)
+                    UiState.Success(item.data)
                 }
             }
-        }
-        .catch {
-            Timber.e(it)
-            _action.emit(UserDetailsActions.ShowError(it))
-        }
-        .stateIn(
+        }.catch { error ->
+            Timber.e(error)
+            setAction(UserDetailsActions.ShowError(error))
+        }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserDetailsUiState.Loading,
+            started = SharingStarted.Lazily,
+            initialValue = UiState.Loading,
         )
 }

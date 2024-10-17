@@ -50,7 +50,6 @@ fun NavGraphBuilder.userDetailsScreen(
     ) {
         UserDetailsScreen(
             isTopBarVisible = isTopBarVisible,
-            onUrlClick = onUrlClick,
             onShowSnackbar = onShowSnackbar
         )
     }

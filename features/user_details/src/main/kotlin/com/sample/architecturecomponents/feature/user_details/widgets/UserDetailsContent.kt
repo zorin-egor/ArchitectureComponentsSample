@@ -40,7 +40,6 @@ import com.sample.architecturecomponents.feature.user_details.R
 fun UserDetailsContent(
     isTopBarVisible: Boolean,
     userDetails: UserDetails,
-    onUrlClick: (String) -> Unit,
     onShareClick: (UserDetails) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -54,6 +53,7 @@ fun UserDetailsContent(
         },
     )
 
+    val onShareProfileClick = remember {{ onShareClick(userDetails) }}
     val scroll = rememberScrollState()
 
     Card(
@@ -86,7 +86,7 @@ fun UserDetailsContent(
                         modifier = Modifier.wrapContentSize()
                             .padding(16.dp)
                             .align(Alignment.TopEnd)
-                            .clickable { onShareClick(userDetails) }
+                            .clickable(onClick = onShareProfileClick)
                     )
                 }
             }

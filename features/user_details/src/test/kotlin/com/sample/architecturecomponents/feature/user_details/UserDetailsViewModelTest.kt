@@ -4,9 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import com.sample.architecturecomponents.core.domain.usecases.GetUserDetailsUseCase
 import com.sample.architecturecomponents.core.testing.tests.repositories.UserDetailsRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.util.MainDispatcherRule
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_ID_ARG
 import com.sample.architecturecomponents.feature.user_details.navigation.USER_URL_ARG
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -41,9 +44,10 @@ class UserDetailsViewModelTest {
     }
 
     @Test
-    fun loadingUsersViewModelTest() = runTest {
-        val items = viewModel.state.first()
-        assertEquals(UserDetailsUiState.Loading, items)
+    fun getEmptyUserDetailsViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+        val items = viewModel.state.buffer().take(2).toList()
+        assertEquals(UiState.Loading, items[0])
+        assertEquals(UiState.Empty, items[1])
     }
 
 }
