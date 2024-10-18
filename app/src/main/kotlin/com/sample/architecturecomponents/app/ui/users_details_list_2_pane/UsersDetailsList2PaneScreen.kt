@@ -124,9 +124,7 @@ internal fun UsersListScreen(
                     }
                     userDetailsScreen(
                         isTopBarVisible = !listDetailNavigator.isListPaneVisible(),
-                        onBackClick = listDetailNavigator::navigateBack,
                         onShowSnackbar = onShowSnackbar,
-                        onUrlClick = onUrlClick,
                     )
                 }
             }

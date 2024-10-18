@@ -29,6 +29,6 @@ fun NavGraphBuilder.usersScreen(
     composable(
         route = USERS_ROUTE,
     ) {
-        UsersScreen(onUserClick = onUserClick, onShowSnackbar = onShowSnackbar )
+        UsersScreen(onUserClick = onUserClick, onShowSnackbar = onShowSnackbar)
     }
 }

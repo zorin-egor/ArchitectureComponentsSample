@@ -66,7 +66,7 @@ data class NetworkRepository(
     @SerialName("owner") val owner: NetworkUser,
     @SerialName("private") val `private`: Boolean,
     @SerialName("pulls_url") val pullsUrl: String,
-    @SerialName("pushed_at") val pushedAt: String,
+    @SerialName("pushed_at") val pushedAt: String?,
     @SerialName("releases_url") val releasesUrl: String,
     @SerialName("size") val size: Long,
     @SerialName("ssh_url") val sshUrl: String,

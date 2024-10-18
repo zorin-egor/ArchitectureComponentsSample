@@ -44,7 +44,7 @@ class UserDetailsViewModelTest {
     }
 
     @Test
-    fun getEmptyUserDetailsViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+    fun getEmptyDataViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
         val items = viewModel.state.buffer().take(2).toList()
         assertEquals(UiState.Loading, items[0])
         assertEquals(UiState.Empty, items[1])

@@ -4,6 +4,8 @@ import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
 import com.sample.architecturecomponents.core.model.User
 import com.sample.architecturecomponents.core.testing.tests.repositories.UsersRepositoryTestImpl
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -25,7 +27,7 @@ class GetUsersUseCaseTest {
 
     @Test
     fun getUsersEmptyData() = runTest(dispatcher) {
-        val result = userCase(id = 0).toList()
+        val result = userCase(id = 0).buffer().take(2).toList()
         assert(result.size == 2)
         assertEquals(emptyList(), (result[1] as Result.Success<List<User>>).data)
     }
@@ -52,8 +54,8 @@ class GetUsersUseCaseTest {
             )
         }
 
-        val first = userCase(id = 4).toList()[1] as Result.Success
-        val other = (0..2).map { userCase().toList()[1] as Result.Success }
+        val first = userCase(id = 4).buffer().take(2).toList()[1] as Result.Success
+        val other = (0..2).map { userCase().buffer().take(2).toList()[1] as Result.Success }
         val otherTotal = other.sumOf { it.data.size }
 
         assertEquals(45, first.data.size + otherTotal)

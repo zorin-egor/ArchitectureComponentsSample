@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -35,13 +33,13 @@ import com.sample.architecturecomponents.core.ui.ext.getHyperLink
 import com.sample.architecturecomponents.core.ui.ext.toAnnotatedString
 import com.sample.architecturecomponents.core.ui.widgets.TwoSeparatedTextWidget
 import com.sample.architecturecomponents.feature.repository_details.R
+import com.sample.architecturecomponents.feature.repository_details.models.RepositoryDetailsEvents
 
 @Composable
 fun RepositoryDetailsContent(
     isTopBarVisible: Boolean,
     repositoryDetails: RepositoryDetails,
-    onUrlClick: (String) -> Unit,
-    onShareClick: (RepositoryDetails) -> Unit,
+    onEventAction: (RepositoryDetailsEvents) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -54,9 +52,8 @@ fun RepositoryDetailsContent(
         },
     )
 
-    val context = LocalContext.current
+    val onShareProfileClick = remember {{ onEventAction(RepositoryDetailsEvents.ShareProfile) }}
     val scroll = rememberScrollState()
-    val scheme = MaterialTheme.colorScheme
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -89,7 +86,7 @@ fun RepositoryDetailsContent(
                             .wrapContentSize()
                             .padding(16.dp)
                             .align(Alignment.TopEnd)
-                            .clickable { onShareClick(repositoryDetails) }
+                            .clickable(onClick = onShareProfileClick)
                     )
                 }
             }
@@ -129,7 +126,7 @@ fun RepositoryDetailsContent(
                 )
             }
 
-            repositoryDetails.pushedAt.toFormatterDateTime?.toAnnotatedString()?.let {
+            repositoryDetails.pushedAt?.toFormatterDateTime?.toAnnotatedString()?.let {
                 TwoSeparatedTextWidget(
                     headerResId = R.string.feature_repository_details_pushed_at,
                     title = it

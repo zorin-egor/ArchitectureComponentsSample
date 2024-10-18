@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUserDetailsUseCase
 import com.sample.architecturecomponents.core.model.UserDetails
-import com.sample.architecturecomponents.core.network.exceptions.EmptyException
-import com.sample.architecturecomponents.core.ui.viewmodels.BaseViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import com.sample.architecturecomponents.core.ui.viewmodels.UiStateViewModel
 import com.sample.architecturecomponents.feature.user_details.models.UserDetailsActions
 import com.sample.architecturecomponents.feature.user_details.models.UserDetailsEvent
 import com.sample.architecturecomponents.feature.user_details.navigation.UserDetailsArgs
@@ -24,7 +23,9 @@ import javax.inject.Inject
 class UserDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getUserDetailsUseCase: GetUserDetailsUseCase,
-) : BaseViewModel<UiState<UserDetails>, UserDetailsActions, UserDetailsEvent>() {
+) : UiStateViewModel<UserDetails, UserDetailsActions, UserDetailsEvent>(
+    initialAction = UserDetailsActions.None
+) {
 
     private val usersArgs: UserDetailsArgs = UserDetailsArgs(savedStateHandle)
 
@@ -32,8 +33,7 @@ class UserDetailsViewModel @Inject constructor(
 
     private val userUrl = usersArgs.userUrl
 
-    var userDetails: UserDetails? = null
-        private set
+    private var userDetails: UserDetails? = null
 
     override fun setEvent(item: UserDetailsEvent) {
         when(item) {
@@ -49,10 +49,10 @@ class UserDetailsViewModel @Inject constructor(
                 Result.Loading -> UiState.Loading
 
                 is Result.Error -> {
-                    when(item.exception) {
-                        EmptyException -> UiState.Empty
-                        else -> throw item.exception
-                    }
+                    getLastSuccessStateOrNull<UserDetails>()?.let {
+                        setAction(UserDetailsActions.ShowError(item.exception))
+                        return@mapNotNull null
+                    } ?: UiState.Empty
                 }
 
                 is Result.Success -> {

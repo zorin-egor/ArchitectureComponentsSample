@@ -3,9 +3,8 @@ package com.sample.architecturecomponents.feature.users
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetUsersUseCase
-import com.sample.architecturecomponents.core.network.exceptions.EmptyException
-import com.sample.architecturecomponents.core.ui.viewmodels.BaseViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import com.sample.architecturecomponents.core.ui.viewmodels.UiStateViewModel
 import com.sample.architecturecomponents.feature.users.models.UsersActions
 import com.sample.architecturecomponents.feature.users.models.UsersEvents
 import com.sample.architecturecomponents.feature.users.models.UsersUiModel
@@ -25,13 +24,16 @@ import javax.inject.Inject
 @HiltViewModel
 class UsersViewModel @Inject constructor(
     private val getSearchContentsUseCase: GetUsersUseCase,
-) : BaseViewModel<UiState<UsersUiModel>, UsersActions, UsersEvents>() {
+) : UiStateViewModel<UsersUiModel, UsersActions, UsersEvents>(
+    initialAction = UsersActions.None
+) {
 
-    private val isNextUsers = MutableStateFlow(true)
+    private val _nextUsers = MutableStateFlow(true)
 
-    override val state: StateFlow<UiState<UsersUiModel>> = isNextUsers.filter { it }
+    override val state: StateFlow<UiState<UsersUiModel>> = _nextUsers.filter { it }
         .flatMapConcat {
             Timber.d("UsersViewModel() - flatMapConcat: $it")
+            _nextUsers.update { false }
             getSearchContentsUseCase()
         }.mapNotNull { item ->
             Timber.d("UsersViewModel() - mapNotNull: $item")
@@ -42,15 +44,13 @@ class UsersViewModel @Inject constructor(
                     ?: UiState.Loading
 
                 is Result.Error -> {
-                    when(item.exception) {
-                        EmptyException -> UiState.Empty
-                        else -> throw item.exception
-                    }
+                    getLastSuccessStateOrNull<UsersUiModel>()?.let {
+                        setAction(UsersActions.ShowError(item.exception))
+                        return@mapNotNull null
+                    } ?: UiState.Empty
                 }
 
                 is Result.Success -> {
-                    isNextUsers.update { false }
-
                     if (item.data.isEmpty()) {
                         UiState.Empty
                     } else {
@@ -60,7 +60,6 @@ class UsersViewModel @Inject constructor(
             }
         }.catch { error ->
             Timber.e(error)
-            isNextUsers.update { false }
             setAction(UsersActions.ShowError(error))
             updateSuccessState<UsersUiModel> {
                 it.copy(isBottomProgress = false)
@@ -73,7 +72,7 @@ class UsersViewModel @Inject constructor(
 
     override fun setEvent(item: UsersEvents) {
         when(item) {
-            UsersEvents.NextUser -> isNextUsers.update { true }
+            UsersEvents.NextUser -> _nextUsers.update { true }
 
             is UsersEvents.OnUserClick -> setAction(UsersActions.NavigateToDetails(
                 id = item.item.id,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -97,7 +98,6 @@ fun AppRoot(appState: AppState) {
         }
 
         Scaffold(
-            modifier = Modifier.semantics { testTagsAsResourceId = true },
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
             contentWindowInsets = WindowInsets.safeDrawing,
@@ -111,7 +111,9 @@ fun AppRoot(appState: AppState) {
                         modifier = Modifier.testTag("AppBottomBar"),
                     )
                 }
-            }
+            },
+            modifier = Modifier.semantics { testTagsAsResourceId = true }
+                .imePadding()
         ) { padding ->
             Row(
                 Modifier

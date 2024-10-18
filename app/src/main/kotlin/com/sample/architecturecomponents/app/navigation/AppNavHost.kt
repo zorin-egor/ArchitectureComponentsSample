@@ -73,10 +73,6 @@ private fun NavGraphBuilder.usersDetailsPaneScreen(
         )
         userDetailsScreen(
             isTopBarVisible = true,
-            onBackClick = navController::navigateUp,
-            onUrlClick = {
-                Timber.d("userDetailsScreen($it)")
-            },
             onShowSnackbar = onShowSnackbar
         )
     }

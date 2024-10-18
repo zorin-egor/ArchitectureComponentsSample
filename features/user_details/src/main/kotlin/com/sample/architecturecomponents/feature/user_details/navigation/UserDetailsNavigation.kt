@@ -37,8 +37,6 @@ fun NavController.navigateToUserDetails(userId: Long, userUrl: String, navOption
 
 fun NavGraphBuilder.userDetailsScreen(
     isTopBarVisible: Boolean,
-    onBackClick: () -> Unit,
-    onUrlClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     composable(

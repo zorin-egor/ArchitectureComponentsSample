@@ -35,12 +35,13 @@ import com.sample.architecturecomponents.core.ui.ext.getHyperLink
 import com.sample.architecturecomponents.core.ui.ext.toAnnotatedString
 import com.sample.architecturecomponents.core.ui.widgets.TwoSeparatedTextWidget
 import com.sample.architecturecomponents.feature.user_details.R
+import com.sample.architecturecomponents.feature.user_details.models.UserDetailsEvent
 
 @Composable
 fun UserDetailsContent(
     isTopBarVisible: Boolean,
     userDetails: UserDetails,
-    onShareClick: (UserDetails) -> Unit,
+    onEventAction: (UserDetailsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -53,7 +54,7 @@ fun UserDetailsContent(
         },
     )
 
-    val onShareProfileClick = remember {{ onShareClick(userDetails) }}
+    val onShareProfileClick = remember {{ onEventAction(UserDetailsEvent.ShareProfile) }}
     val scroll = rememberScrollState()
 
     Card(

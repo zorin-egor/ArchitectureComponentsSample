@@ -4,6 +4,8 @@ import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoriesByNameUseCase
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.testing.tests.repositories.RepositoriesRepositoryTestImpl
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -26,7 +28,7 @@ class GetRepositoriesByNameUseCaseTest {
 
     @Test
     fun getRepositoriesByNameLoading() = runTest(dispatcher) {
-        val result = userCase(name = "value").toList()
+        val result = userCase(name = "value").buffer().take(2).toList()
         assert(result.size == 2)
         assertEquals(Result.Loading, result[0])
         assertEquals(emptyList(), (result[1] as Result.Success<List<Repository>>).data)
@@ -56,9 +58,9 @@ class GetRepositoriesByNameUseCaseTest {
             )
         }
 
-        val first = userCase(name = "name1").toList()[1] as Result.Success
-        val second = userCase().toList()[1] as Result.Success
-        val third = userCase().toList()[1] as Result.Success
+        val first = userCase(name = "name1").buffer().take(2).toList()[1] as Result.Success
+        val second = userCase().buffer().take(2).toList()[1] as Result.Success
+        val third = userCase().buffer().take(2).toList()[1] as Result.Success
 
         assert(first.data.size + second.data.size + third.data.size == 25)
     }

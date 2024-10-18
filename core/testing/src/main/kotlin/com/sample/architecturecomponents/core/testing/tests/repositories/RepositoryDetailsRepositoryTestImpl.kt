@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.take
 
 
 class RepositoryDetailsRepositoryTestImpl : RepositoryDetailsRepository {
@@ -24,7 +23,7 @@ class RepositoryDetailsRepositoryTestImpl : RepositoryDetailsRepository {
             }
         }.onStart {
             emit(Result.Loading)
-        }.take(2)
+        }
 
     override suspend fun insert(item: RepositoryDetails) {
         details.tryEmit(item)

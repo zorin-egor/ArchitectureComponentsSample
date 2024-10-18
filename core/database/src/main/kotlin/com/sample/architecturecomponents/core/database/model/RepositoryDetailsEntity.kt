@@ -29,7 +29,7 @@ data class RepositoryDetailsEntity(
     @ColumnInfo(name = "watchers_count") val watchersCount: Int,
     @ColumnInfo(name = "created_at") val createdAt: Instant,
     @ColumnInfo(name = "updated_at") val updatedAt: Instant,
-    @ColumnInfo(name = "pushed_at") val pushedAt: Instant,
+    @ColumnInfo(name = "pushed_at", defaultValue = "'NULL'") val pushedAt: Instant?,
     @ColumnInfo(name = "default_branch") val defaultBranch: String,
     @ColumnInfo(name = "stargazers_count") val stargazersCount: Int,
     @ColumnInfo(name = "description") val description: String?,

@@ -1,8 +1,7 @@
 package com.sample.architecturecomponents.core.ui.ext
 
 import android.content.Context
-import com.sample.architecturecomponents.core.network.exceptions.EmptyException
-import com.sample.architecturecomponents.core.network.exceptions.NetworkException
+
 import com.sample.architecturecomponents.core.ui.R
 import java.net.HttpURLConnection
 import java.net.UnknownHostException
@@ -21,11 +20,7 @@ val NETWORK_ERRORS = mapOf(
 
 fun Context.getErrorMessage(error: Throwable): String {
     return when(error) {
-        EmptyException -> getString(R.string.error_network_empty)
         is UnknownHostException -> getString(R.string.error_network_no_internet)
-        is NetworkException -> NETWORK_ERRORS[error.errorCode]
-            ?.let { runCatching { getString(it) }}
-            ?.getOrNull()
         else -> error.message
     } ?: getString(R.string.error_unknown)
 }

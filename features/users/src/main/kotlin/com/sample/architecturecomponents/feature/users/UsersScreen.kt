@@ -33,7 +33,7 @@ fun UsersScreen(
 
     val context = LocalContext.current
     val usersUiState by viewModel.state.collectAsStateWithLifecycle()
-    val usersAction by viewModel.action.collectAsStateWithLifecycle(initialValue = UsersActions.None)
+    val usersAction by viewModel.action.collectAsStateWithLifecycle()
     val nextUsers: () -> Unit = remember {{ viewModel.setEvent(UsersEvents.NextUser) }}
 
     Timber.d("UsersScreen() - state: $usersUiState, $usersAction")
@@ -77,8 +77,10 @@ fun UsersScreen(
         }
 
         is UsersActions.ShowError -> {
-            LaunchedEffect(key1 = action.error.hashCode()) {
+            Timber.d("User action: $action")
+            LaunchedEffect(key1 = action) {
                 onShowSnackbar(context.getErrorMessage(action.error), null)
+                viewModel.setEvent(UsersEvents.None)
             }
         }
 

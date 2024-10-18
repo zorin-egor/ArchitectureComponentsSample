@@ -7,7 +7,6 @@ import com.sample.architecturecomponents.core.di.Dispatchers
 import com.sample.architecturecomponents.core.model.Repository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -51,9 +50,9 @@ class GetRepositoriesByNameUseCase @Inject constructor(
 
         synchronized(lock) {
             when {
+                name.isEmpty() -> return flowOf(Result.Success(data = emptyList()))
                 name == previousName && !hasNext -> return flowOf(Result.Success(repositories.toList()))
                 name != previousName -> page.set(START_PAGE)
-                name.isEmpty() -> return emptyFlow()
             }
         }
 
@@ -70,6 +69,8 @@ class GetRepositoriesByNameUseCase @Inject constructor(
                                 repositories.add(item)
                             }
                         }
+
+                        Timber.d("map() - $repositories")
                         Result.Success(repositories.toList())
                     }
                 } else {

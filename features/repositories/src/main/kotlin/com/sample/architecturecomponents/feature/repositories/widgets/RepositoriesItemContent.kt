@@ -35,12 +35,13 @@ import com.sample.architecturecomponents.core.domain.ext.toFormatterDateTime
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.ui.ext.BorderCircleImageRequest
 import com.sample.architecturecomponents.core.ui.widgets.ImageLoadingWidget
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesEvents
 import kotlinx.datetime.Clock
 
 @Composable
 fun RepositoriesItemContent(
     repository: Repository,
-    onRepositoryClick: (Repository) -> Unit,
+    onEventAction: (RepositoriesEvents) -> Unit,
     modifier: Modifier
 ) {
     val materialTheme = MaterialTheme.colorScheme
@@ -56,6 +57,8 @@ fun RepositoriesItemContent(
         ).build()
     )
 
+    val onEventActionClick = remember {{ onEventAction(RepositoriesEvents.OnRepositoryClick(repository)) }}
+
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
@@ -66,7 +69,7 @@ fun RepositoriesItemContent(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
-                    onClick = { onRepositoryClick(repository) },
+                    onClick = onEventActionClick,
                 )
         ) {
             val (image, name, desc, starsIcon, forksIcon, startTitle, forksTitle, dateTime) = createRefs()
@@ -266,7 +269,7 @@ fun RepositoriesItemContentPreview() {
             stargazersCount = 0,
             description = "description",
         ),
-        onRepositoryClick = {},
+        onEventAction = {},
         modifier = Modifier.height(200.dp)
     )
 }

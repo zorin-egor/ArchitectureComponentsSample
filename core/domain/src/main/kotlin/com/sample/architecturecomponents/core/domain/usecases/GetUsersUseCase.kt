@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.jetbrains.annotations.TestOnly
+import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
@@ -40,12 +42,15 @@ class GetUsersUseCase @Inject constructor(
     private val lock = Any()
     private val users = ArrayList<User>()
     private var lastId = AtomicLong(SINCE_ID)
-    private var hasNext = true
+    private var hasNext = AtomicBoolean(true)
     private var limit = LIMIT
 
     operator fun invoke(id: Long = lastId.get()): Flow<Result<List<User>>> {
+        Timber.d("GetUsersUseCase($id)")
+
         synchronized(lock) {
-            if (id == lastId.get() && !hasNext) {
+            if (id == lastId.get() && !hasNext.get()) {
+                Timber.d("GetUsersUseCase() - no more: ${hasNext.get()}")
                 return flowOf(Result.Success(users.toList()))
             }
         }
@@ -55,7 +60,7 @@ class GetUsersUseCase @Inject constructor(
                 when(new) {
                     is Result.Success -> {
                         val items = synchronized(lock) {
-                            hasNext = new.data.size >= limit
+                            hasNext.getAndSet(new.data.size >= limit)
                             if (new.data.isEmpty()) return@synchronized users.toList()
                             if (id != lastId.get()) users.clear()
                             lastId.set(new.data.last().id)
@@ -66,6 +71,8 @@ class GetUsersUseCase @Inject constructor(
                             }
                             users.toList()
                         }
+
+                        Timber.d("GetUsersUseCase() - items: ${users.size}")
                         Result.Success(items)
                     }
                     else -> new

@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +19,9 @@ import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import com.sample.architecturecomponents.core.ui.ext.rootViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationState
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationViewModel
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import com.sample.architecturecomponents.feature.repository_details.models.RepositoryDetailsActions
+import com.sample.architecturecomponents.feature.repository_details.models.RepositoryDetailsEvents
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_DETAILS_ROUTE_PATH
 import com.sample.architecturecomponents.feature.repository_details.widgets.RepositoryDetailsContent
 import timber.log.Timber
@@ -39,8 +42,17 @@ internal fun RepositoryDetailsScreen(
         Timber.d("rememberLauncherForActivityResult($result)")
     }
 
-    val detailsState: RepositoryDetailsUiState by viewModel.state.collectAsStateWithLifecycle()
-    val detailsAction: RepositoryDetailsActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
+    val onShareClick: (String) -> Unit = remember {{
+        resultActivity.launch(
+            input = context.getShareIntent(
+                body = it,
+                title = context.getString(R.string.feature_repository_details_share_title)
+            ),
+        )
+    }}
+
+    val detailsState by viewModel.state.collectAsStateWithLifecycle()
+    val detailsAction by viewModel.action.collectAsStateWithLifecycle()
 
     val topBarNavigationState = topBarViewModel?.collect(key = REPOSITORY_DETAILS_ROUTE_PATH)
         ?.collectAsStateWithLifecycle(initialValue = TopBarNavigationState.None)
@@ -48,23 +60,24 @@ internal fun RepositoryDetailsScreen(
     when(val action = topBarNavigationState?.value) {
         is TopBarNavigationState.Menu -> {
             Timber.d("TopBarNavigationState: menu")
-            viewModel.repositoryDetails?.htmlUrl?.let {
-                resultActivity.launch(
-                    input = context.getShareIntent(
-                        body = it,
-                        title = stringResource(id = R.string.feature_repository_details_share_title)
-                    ),
-                )
-            }
+            viewModel.setEvent(RepositoryDetailsEvents.ShareProfile)
             topBarViewModel.emit(REPOSITORY_DETAILS_ROUTE_PATH, TopBarNavigationState.None)
+        }
+        is TopBarNavigationState.Back -> {
+            viewModel.setEvent(RepositoryDetailsEvents.NavigationBack)
         }
         else -> Timber.d("TopBarNavigationState: $action")
     }
 
     when(val action = detailsAction) {
+        is RepositoryDetailsActions.ShareUrl -> {
+            onShareClick(action.url)
+            viewModel.setEvent(RepositoryDetailsEvents.None)
+        }
         is RepositoryDetailsActions.ShowError -> {
-            LaunchedEffect(key1 = action.error.hashCode()) {
+            LaunchedEffect(key1 = action) {
                 onShowSnackbar(context.getErrorMessage(action.error), null)
+                viewModel.setEvent(RepositoryDetailsEvents.None)
             }
         }
         else -> {}
@@ -73,20 +86,13 @@ internal fun RepositoryDetailsScreen(
     Timber.d("RepositoryDetailsScreen() - state: $detailsState, $detailsAction")
 
     when (val state = detailsState) {
-        RepositoryDetailsUiState.Loading -> CircularContent()
-        is RepositoryDetailsUiState.Success -> RepositoryDetailsContent(
+        UiState.Loading -> CircularContent()
+        is UiState.Success -> RepositoryDetailsContent(
             isTopBarVisible = isTopBarVisible,
-            repositoryDetails = state.repositoryDetails,
-            onUrlClick = onUrlClick,
-            onShareClick = {
-                resultActivity.launch(
-                    input = context.getShareIntent(
-                        body = it.htmlUrl,
-                        title = context.getString(R.string.feature_repository_details_share_title)
-                    ),
-                )
-            },
+            repositoryDetails = state.item,
+            onEventAction = viewModel::setEvent,
             modifier = Modifier.fillMaxSize().padding(8.dp)
         )
+        else -> {}
     }
 }

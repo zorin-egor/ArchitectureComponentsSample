@@ -14,7 +14,7 @@ data class RepositoryDetails(
     val watchersCount: Int,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val pushedAt: Instant,
+    val pushedAt: Instant?,
     val defaultBranch: String,
     val stargazersCount: Int,
     val description: String?,

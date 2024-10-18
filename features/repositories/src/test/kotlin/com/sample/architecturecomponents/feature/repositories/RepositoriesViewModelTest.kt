@@ -6,7 +6,10 @@ import com.sample.architecturecomponents.core.domain.usecases.SetRecentSearchUse
 import com.sample.architecturecomponents.core.testing.tests.repositories.RecentSearchRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.repositories.RepositoriesRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.util.MainDispatcherRule
-import kotlinx.coroutines.flow.first
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -50,9 +53,9 @@ class RepositoriesViewModelTest {
     }
 
     @Test
-    fun loadingUsersViewModelTest() = runTest {
-        val items = viewModel.state.first()
-        assertEquals(RepositoriesByNameUiStates.Start, items.state)
+    fun getEmptyDataViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+        val items = viewModel.state.buffer().take(1).toList()
+        assertEquals(UiState.Empty, items[0].repoState)
     }
 
 }

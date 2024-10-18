@@ -16,7 +16,9 @@ import com.sample.architecturecomponents.core.database.model.UserDetailsEntity
 import com.sample.architecturecomponents.core.database.model.UserEntity
 import com.sample.architecturecomponents.core.database.model.asExternalModels
 import com.sample.architecturecomponents.core.model.RecentSearchTags
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import org.junit.After
@@ -156,6 +158,16 @@ class AppDatabaseDaoTest {
             0,
             savedUserDetailsEntities?.asExternalModels()?.id
         )
+    }
+
+    @Test
+    fun getEmptyUserById() = runTest {
+        val user = usersDao.getUserById(-1)
+            .take(1)
+            .filterNotNull()
+            .first()
+
+        println(user)
     }
 
 }

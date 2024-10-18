@@ -4,9 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoryDetailsByOwnerUseCase
 import com.sample.architecturecomponents.core.testing.tests.repositories.RepositoryDetailsRepositoryTestImpl
 import com.sample.architecturecomponents.core.testing.tests.util.MainDispatcherRule
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_ID
 import com.sample.architecturecomponents.feature.repository_details.navigation.REPOSITORY_OWNER
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -41,9 +44,10 @@ class RepositoryDetailsViewModelTest {
     }
 
     @Test
-    fun loadingUsersViewModelTest() = runTest {
-        val items = viewModel.state.first()
-        assertEquals(RepositoryDetailsUiState.Loading, items)
+    fun getEmptyDataViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+        val items = viewModel.state.buffer().take(2).toList()
+        assertEquals(UiState.Loading, items[0])
+        assertEquals(UiState.Empty, items[1])
     }
 
 }

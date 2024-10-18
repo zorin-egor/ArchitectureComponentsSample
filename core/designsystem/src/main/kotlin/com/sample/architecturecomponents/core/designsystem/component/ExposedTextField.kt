@@ -33,7 +33,7 @@ data class SearchTextDataItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExposedSearchTextField(
+fun ExposedTextField(
     searchQuery: String,
     options: List<SearchTextDataItem>,
     onSearchQueryChanged: (SearchTextDataItem) -> Unit,
@@ -49,26 +49,26 @@ fun ExposedSearchTextField(
     imeAction: ImeAction = ImeAction.Search,
     keyboardType: KeyboardType = KeyboardType.Text,
 ) {
-    Timber.d("ExposedSearchTextField($options)")
+    Timber.d("ExposedTextField($searchQuery, $options)")
 
     var expanded by remember { mutableStateOf(isExpanded && !isFocusRequest && options.isNotEmpty()) }
 
     ExposedDropdownMenuBox(
         expanded = expanded && options.isNotEmpty(),
         onExpandedChange = {
-            Timber.d("ExposedSearchTextField() - onExpandedChange($it)")
+            Timber.d("ExposedTextField() - onExpandedChange($it)")
             expanded = false
         },
         modifier = modifier.padding(8.dp)
     ) {
-        Timber.d("ExposedSearchTextField() - SearchTextField($searchQuery)")
+        Timber.d("ExposedTextField($searchQuery)")
 
         SearchTextField(
             searchQuery = searchQuery,
             contentDescriptionSearch = contentDescriptionSearch,
             contentDescriptionClose = contentDescriptionClose,
             onSearchQueryChanged = {
-                Timber.d("ExposedSearchTextField() - onSearchQueryChanged($searchQuery, $it)")
+                Timber.d("ExposedTextField() - onSearchQueryChanged($searchQuery, $it)")
                 if (!expanded) {
                     expanded = true
                 }
@@ -90,7 +90,7 @@ fun ExposedSearchTextField(
         DropdownMenu(
             expanded = expanded && options.isNotEmpty(),
             onDismissRequest = {
-                Timber.d("ExposedSearchTextField() - onDismissRequest()")
+                Timber.d("ExposedTextField() - onDismissRequest()")
                 expanded = false
             },
             offset = DpOffset(x = 0.dp, y = 8.dp),
@@ -104,7 +104,7 @@ fun ExposedSearchTextField(
                     text = { Text(text = option.text) },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     onClick = {
-                        Timber.d("ExposedSearchTextField() - onClick($option)")
+                        Timber.d("ExposedTextField() - onClick($option)")
                         expanded = false
                         onSearchQueryChanged(option)
                     },

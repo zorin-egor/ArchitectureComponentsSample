@@ -3,6 +3,8 @@ package com.sample.architecturecomponent.core.domain
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoryDetailsByOwnerUseCase
 import com.sample.architecturecomponents.core.testing.tests.repositories.RepositoryDetailsRepositoryTestImpl
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -23,7 +25,7 @@ class GetRepositoryDetailsUseCaseTest {
 
     @Test
     fun getRepositoryDetailsEmptyData() = runTest(dispatcher) {
-        val items = userCase(owner = "", repo = "").toList()
+        val items = userCase(owner = "", repo = "").buffer().take(2).toList()
         assertEquals(2, items.size)
         assertEquals(Result.Loading, items.first())
         assert(items[1] is Result.Error)

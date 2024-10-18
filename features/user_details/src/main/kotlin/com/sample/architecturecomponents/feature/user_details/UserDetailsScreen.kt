@@ -10,13 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.common.extensions.getShareIntent
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
-import com.sample.architecturecomponents.core.model.UserDetails
 import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
 import com.sample.architecturecomponents.core.ui.ext.rootViewModel
 import com.sample.architecturecomponents.core.ui.viewmodels.TopBarNavigationState
@@ -43,17 +41,17 @@ internal fun UserDetailsScreen(
         Timber.d("rememberLauncherForActivityResult($result)")
     }
 
-    val onShareClick: (UserDetails) -> Unit = remember {{
+    val onShareClick: (String) -> Unit = remember {{
         resultActivity.launch(
             input = context.getShareIntent(
-                body = it.url,
+                body = it,
                 title = context.getString(R.string.feature_user_details_share_title)
             ),
         )
     }}
 
     val detailsState by viewModel.state.collectAsStateWithLifecycle()
-    val detailsAction by viewModel.action.collectAsStateWithLifecycle(initialValue = UserDetailsActions.None)
+    val detailsAction by viewModel.action.collectAsStateWithLifecycle()
 
     val topBarNavigationState = topBarViewModel?.collect(key = USER_DETAILS_ROUTE_PATH)
         ?.collectAsStateWithLifecycle(initialValue = TopBarNavigationState.None)
@@ -64,29 +62,20 @@ internal fun UserDetailsScreen(
             viewModel.setEvent(UserDetailsEvent.ShareProfile)
             topBarViewModel.emit(USER_DETAILS_ROUTE_PATH, TopBarNavigationState.None)
         }
-
         is TopBarNavigationState.Back -> viewModel.setEvent(UserDetailsEvent.NavigationBack)
-
         else -> Timber.d("TopBarNavigationState: $action")
     }
 
     when (val action = detailsAction) {
         UserDetailsActions.None -> {}
-
-        is UserDetailsActions.ShowError -> {
-            LaunchedEffect(key1 = action.error) {
-                onShowSnackbar(context.getErrorMessage(action.error), null)
-            }
-        }
-
         is UserDetailsActions.ShareUrl -> {
-            viewModel.userDetails?.url?.let {
-                resultActivity.launch(
-                    input = context.getShareIntent(
-                        body = it,
-                        title = stringResource(id = R.string.feature_user_details_share_title)
-                    ),
-                )
+            onShareClick(action.url)
+            viewModel.setEvent(UserDetailsEvent.None)
+        }
+        is UserDetailsActions.ShowError -> {
+            LaunchedEffect(key1 = action) {
+                onShowSnackbar(context.getErrorMessage(action.error), null)
+                viewModel.setEvent(UserDetailsEvent.None)
             }
         }
     }
@@ -98,12 +87,11 @@ internal fun UserDetailsScreen(
         is UiState.Success -> UserDetailsContent(
             isTopBarVisible = isTopBarVisible,
             userDetails = state.item,
-            onShareClick = onShareClick,
+            onEventAction = viewModel::setEvent,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp)
         )
-
         else -> {}
     }
 }

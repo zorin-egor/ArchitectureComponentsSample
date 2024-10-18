@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "c20ea2416f03ebb80b6240b9dcb1c2da",
+    "version": 5,
+    "identityHash": "cc59881f54bcda4bd61cc626975ebad9",
     "entities": [
       {
         "tableName": "Users",
@@ -343,7 +343,7 @@
       },
       {
         "tableName": "RepositoryDetails",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `html_url` TEXT NOT NULL, `avatar_url` TEXT, `node_id` TEXT NOT NULL, `forks` INTEGER NOT NULL, `watchers_count` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `pushed_at` INTEGER, `default_branch` TEXT NOT NULL, `stargazers_count` INTEGER NOT NULL, `description` TEXT, `tags_url` TEXT NOT NULL, `branches_url` TEXT NOT NULL, `commits_url` TEXT NOT NULL, `topics` TEXT NOT NULL, `license` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repo_id` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `owner` TEXT NOT NULL, `name` TEXT NOT NULL, `html_url` TEXT NOT NULL, `avatar_url` TEXT, `node_id` TEXT NOT NULL, `forks` INTEGER NOT NULL, `watchers_count` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `pushed_at` INTEGER DEFAULT 'NULL', `default_branch` TEXT NOT NULL, `stargazers_count` INTEGER NOT NULL, `description` TEXT, `tags_url` TEXT NOT NULL, `branches_url` TEXT NOT NULL, `commits_url` TEXT NOT NULL, `topics` TEXT NOT NULL, `license` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -421,7 +421,8 @@
             "fieldPath": "pushedAt",
             "columnName": "pushed_at",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": false,
+            "defaultValue": "'NULL'"
           },
           {
             "fieldPath": "defaultBranch",
@@ -563,7 +564,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c20ea2416f03ebb80b6240b9dcb1c2da')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cc59881f54bcda4bd61cc626975ebad9')"
     ]
   }
 }

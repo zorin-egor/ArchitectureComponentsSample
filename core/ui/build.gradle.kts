@@ -19,7 +19,6 @@ dependencies {
     api(libs.androidx.compose.material3.windowSizeClass)
 
     implementation(libs.accompanist.permissions)
-    implementation(projects.core.network)
     implementation(libs.androidx.core.ktx)
     implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)

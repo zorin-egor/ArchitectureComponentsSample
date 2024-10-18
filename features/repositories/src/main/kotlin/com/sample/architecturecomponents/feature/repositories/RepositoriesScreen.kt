@@ -8,17 +8,21 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sample.architecturecomponents.core.designsystem.component.CircularContent
-import com.sample.architecturecomponents.core.designsystem.component.ExposedSearchTextField
+import com.sample.architecturecomponents.core.designsystem.component.ExposedTextField
 import com.sample.architecturecomponents.core.designsystem.icon.AppIcons
 import com.sample.architecturecomponents.core.ui.ext.getErrorMessage
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
 import com.sample.architecturecomponents.core.ui.widgets.ListContentWidget
 import com.sample.architecturecomponents.core.ui.widgets.SimplePlaceholderContent
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesActions
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesEvents
 import com.sample.architecturecomponents.feature.repositories.widgets.RepositoriesItemContent
 import timber.log.Timber
 import com.sample.architecturecomponents.core.ui.R as CoreUiR
@@ -34,13 +38,19 @@ fun RepositoriesScreen(
     Timber.d("RepositoriesScreen()")
 
     val context = LocalContext.current
-    val reposUiState: RepositoriesByNameUiState by viewModel.state.collectAsStateWithLifecycle()
-    val reposAction: RepositoriesActions? by viewModel.action.collectAsStateWithLifecycle(initialValue = null)
+    val onNextRepositories = remember {{ viewModel.setEvent(RepositoriesEvents.NextRepositories) }}
+    val reposUiState by viewModel.state.collectAsStateWithLifecycle()
+    val reposAction by viewModel.action.collectAsStateWithLifecycle()
 
     when(val action = reposAction) {
+        is RepositoriesActions.NavigationToDetails -> {
+            onRepositoryClick(action.owner, action.name)
+            viewModel.setEvent(RepositoriesEvents.None)
+        }
         is RepositoriesActions.ShowError -> {
-            LaunchedEffect(key1 = action.error.hashCode()) {
+            LaunchedEffect(key1 = action) {
                 onShowSnackbar(context.getErrorMessage(action.error), null)
+                viewModel.setEvent(RepositoriesEvents.None)
             }
         }
         else -> {}
@@ -51,50 +61,51 @@ fun RepositoriesScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        ExposedSearchTextField(
-            searchQuery = reposUiState.query,
-            options = reposUiState.recentSearch,
+        val queryState by viewModel.searchQuery.collectAsStateWithLifecycle()
+        val searchState = (reposUiState.searchState as? UiState.Success)?.item
+        val options = searchState?.recentSearch ?: emptyList()
+
+        ExposedTextField(
+            searchQuery = queryState,
+            options = options,
             contentDescriptionSearch = "contentDescriptionSearch",
             contentDescriptionClose = "contentDescriptionClose",
             onSearchQueryChanged = {
                 Timber.d("RepositoriesScreen() - onSearchQueryChanged: $it")
-                viewModel.queryRepositories(it.text)
+                viewModel.setEvent(RepositoriesEvents.SearchQuery(it.text))
                 if (it.text.isEmpty()) {
                     onSearchClear?.invoke()
                 }
-            },
-            onSearchTriggered = {
-                Timber.d("RepositoriesScreen() - onSearchTriggered: $it")
             },
             modifier = Modifier.wrapContentHeight().fillMaxWidth(),
             placeholder = R.string.feature_repositories_by_name_search_title,
             isFocusRequest = true,
         )
 
-        when(val state = reposUiState.state) {
-            RepositoriesByNameUiStates.Loading -> CircularContent()
-            RepositoriesByNameUiStates.Empty -> SimplePlaceholderContent(
+        when(val state = reposUiState.repoState) {
+            UiState.Loading -> CircularContent()
+            UiState.Empty -> SimplePlaceholderContent(
                 header = CoreUiR.string.empty_placeholder_header,
                 title = CoreUiR.string.empty_placeholder_title,
                 image = AppIcons.Empty,
                 imageContentDescription = CoreUiR.string.empty_placeholder_header
             )
-            RepositoriesByNameUiStates.Start -> SimplePlaceholderContent(
+            is UiState.Error -> SimplePlaceholderContent(
                 header = CoreUiR.string.search_placeholder_header,
                 title = CoreUiR.string.search_placeholder_title,
                 image = AppIcons.Search,
                 imageContentDescription = CoreUiR.string.search_placeholder_header
             )
-            is RepositoriesByNameUiStates.Success -> {
+            is UiState.Success -> {
                 ListContentWidget(
-                    items = state.repositories,
+                    items = state.item.repositories,
                     onKey = { it.id.toString() },
-                    onBottomEvent = viewModel::nextRepositories,
-                    isBottomProgress = state.isBottomProgress
+                    onBottomEvent = onNextRepositories,
+                    isBottomProgress = state.item.isBottomProgress,
                 ) { repository ->
                     RepositoriesItemContent(
                         repository = repository,
-                        onRepositoryClick = { onRepositoryClick(it.owner, it.name) },
+                        onEventAction = viewModel::setEvent,
                         modifier = Modifier.fillMaxWidth()
                             .height(110.dp)
                     )

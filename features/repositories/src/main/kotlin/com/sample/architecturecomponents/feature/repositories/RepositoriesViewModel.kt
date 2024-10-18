@@ -1,6 +1,5 @@
 package com.sample.architecturecomponents.feature.repositories
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sample.architecturecomponents.core.common.result.Result
 import com.sample.architecturecomponents.core.designsystem.component.SearchTextDataItem
@@ -8,25 +7,30 @@ import com.sample.architecturecomponents.core.domain.usecases.GetRecentSearchUse
 import com.sample.architecturecomponents.core.domain.usecases.GetRepositoriesByNameUseCase
 import com.sample.architecturecomponents.core.domain.usecases.SetRecentSearchUseCase
 import com.sample.architecturecomponents.core.model.RecentSearch
-import com.sample.architecturecomponents.core.model.RecentSearchTags
 import com.sample.architecturecomponents.core.model.Repository
 import com.sample.architecturecomponents.core.network.exceptions.EmptyException
+import com.sample.architecturecomponents.core.ui.viewmodels.StateViewModel
+import com.sample.architecturecomponents.core.ui.viewmodels.UiState
+import com.sample.architecturecomponents.feature.repositories.models.RecentSearchUiModel
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesActions
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesEvents
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesUiModel
+import com.sample.architecturecomponents.feature.repositories.models.RepositoriesUiState
+import com.sample.architecturecomponents.feature.repositories.models.emptyRepositoriesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,144 +39,123 @@ class RepositoriesViewModel @Inject constructor(
     private val getReposByNameUseCase: GetRepositoriesByNameUseCase,
     private val getRecentSearchUseCase: GetRecentSearchUseCase,
     private val setRecentSearchUseCase: SetRecentSearchUseCase,
-) : ViewModel() {
+) : StateViewModel<RepositoriesUiState, RepositoriesActions, RepositoriesEvents>(
+    initialAction = RepositoriesActions.None
+) {
 
-    private val _state = MutableStateFlow<RepositoriesByNameUiState>(RepositoriesByNameUiState(
-        query = "",
-        recentSearch = emptyList(),
-        state = RepositoriesByNameUiStates.Start
-    ))
+    private val _searchQuery = MutableStateFlow("")
 
-    val state: StateFlow<RepositoriesByNameUiState> = _state.asStateFlow()
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private val _action = MutableSharedFlow<RepositoriesActions>(replay = 0, extraBufferCapacity = 1)
+    private val _nextRepositories = MutableStateFlow(true)
 
-    val action: SharedFlow<RepositoriesActions> = _action.asSharedFlow()
-    private val previousQuery: String get() = _state.value.query
+    private val _nextRepositoriesFlow = _nextRepositories.filter { it }
 
-    private var recentSearchJob: Job? = null
-    private var organizationsJob: Job? = null
+    override val state: StateFlow<RepositoriesUiState> =
+        _searchQuery.combine(_nextRepositoriesFlow) { search, next ->
+            Timber.d("combine($search, $next) - trigger")
+            _nextRepositories.update { false }
+            search
+        }.flatMapLatest { searchQuery ->
+            Timber.d("combine($searchQuery) - flatMapLatest")
 
-    private fun Flow<Result<List<Repository>>>.getOrganizations(query: String): Job =
-        mapNotNull { item ->
-            val state = when(item) {
-                Result.Loading -> return@mapNotNull null
-                is Result.Error -> throw item.exception
-                is Result.Success -> {
-                    setRecentSearchUseCase(query = query, tag = RecentSearchTags.Repositories)
-                    if (item.data.isEmpty()) {
-                        RepositoriesByNameUiStates.Empty
-                    } else {
-                        RepositoriesByNameUiStates.Success(repositories = item.data, isBottomProgress = false)
-                    }
+            val searchFlow = getRecentSearchUseCase(query = searchQuery)
+                .mapNotNull { mapTo(item = it, query = searchQuery, lastItemCacheState?.searchState) }
+                .catch { Timber.e(t = it, message = "Search flow") }
+
+            val repoFlow = getReposByNameUseCase(name = searchQuery)
+                .onStart { delay(500) }
+                .mapNotNull { mapTo(item = it, previousState = lastItemCacheState?.repoState) }
+                .catch {
+                    Timber.e(t = it, message = "Repo flow")
+                    setAction(RepositoriesActions.ShowError(it))
                 }
+
+            repoFlow.combine(searchFlow) { repoState, searchState ->
+                Timber.d("combine(${repoState::class.simpleName}, ${searchState::class.simpleName}) - merge")
+                RepositoriesUiState(
+                    searchState = searchState,
+                    repoState = repoState
+                )
             }
+    }.catch { error ->
+        Timber.e(t = error, message = "catch")
+        setAction(RepositoriesActions.ShowError(error))
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyRepositoriesUiState
+    )
 
-            _state.value.copy(
-                query = query,
-                state =state
-            )
-        }
-        .onEach {
-            _state.emit(it)
-            delay(500)
-        }
-        .catch {
-            Timber.e(it)
-
-            when(it) {
-                EmptyException -> _state.emit(RepositoriesByNameUiState(
-                    query = query,
-                    recentSearch = emptyList(),
-                    state = RepositoriesByNameUiStates.Empty
-                ))
-                else -> _action.emit(RepositoriesActions.ShowError(it))
-            }
-
-            setBottomProgress(false)
-        }
-        .launchIn(scope = viewModelScope)
-
-    fun queryRepositories(name: String) {
-        Timber.d("queryRepositories($name)")
-
-        val query = _state.value.query
-        if (name == query) {
-            Timber.d("queryRepositories() - previous name: $query")
-            return
-        }
-
-        organizationsJob?.cancel()
-
-        if (name.trim().isEmpty()) {
-            _state.tryEmit(RepositoriesByNameUiState(
-                query = "",
-                recentSearch = emptyList(),
-                state = RepositoriesByNameUiStates.Start
+    override fun setEvent(item: RepositoriesEvents) {
+        Timber.d("setEvents($item)")
+        when(item) {
+            RepositoriesEvents.None -> setAction(RepositoriesActions.None)
+            RepositoriesEvents.NextRepositories -> _nextRepositories.tryEmit(true)
+            is RepositoriesEvents.SearchQuery -> _searchQuery.tryEmit(item.query)
+            is RepositoriesEvents.OnRepositoryClick -> setAction(RepositoriesActions.NavigationToDetails(
+                owner = item.item.owner,
+                name = item.item.name
             ))
-            return
-        }
-
-        setQuery(name)
-
-        recentSearchJob?.cancel()
-        recentSearchJob = viewModelScope.launch {
-            getRecentSearchUseCase(query = name, tag = RecentSearchTags.Repositories)
-                .mapNotNull {
-                    when(it) {
-                        Result.Loading -> null
-                        is Result.Error -> emptyList()
-                        is Result.Success -> it.data.let(::mapTo)
-                    }
-                }
-                .catch { Timber.e(it) }
-                .collect {
-                    Timber.d("getRecentSearchUseCase() - collect($it)")
-                    setRecentSearch(items = it)
-                }
-
-            organizationsJob = getReposByNameUseCase(name = name)
-                .onStart {
-                    Timber.d("queryRepositories() - onStart")
-                    _state.emit(_state.value.copy(
-                        query = name,
-                        state = RepositoriesByNameUiStates.Loading
-                    ))
-                }
-                .getOrganizations(query = name)
         }
     }
 
-    fun nextRepositories() {
-        if (organizationsJob?.isActive == true) return
-        organizationsJob = getReposByNameUseCase()
-            .onStart {
-                Timber.d("nextRepositories() - onStart")
-                setBottomProgress(true)
+    private fun mapTo(item: Result<List<RecentSearch>>, query: String, previousState: UiState<RecentSearchUiModel>?): UiState<RecentSearchUiModel>? {
+        return when(item) {
+            Result.Loading -> UiState.Success(RecentSearchUiModel(
+                query = query,
+                recentSearch = emptyList()
+            ))
+
+            is Result.Error -> {
+                Timber.e(t = item.exception, message = "search mapTo")
+                previousState
             }
-            .getOrganizations(query = previousQuery)
-    }
 
-    private suspend fun setBottomProgress(isBottomProgress: Boolean) {
-        val prevState = _state.value
-        val prevStates = prevState.state
-        if (prevStates is RepositoriesByNameUiStates.Success) {
-            _state.emit(prevState.copy(state = prevStates.copy(isBottomProgress = isBottomProgress)))
+            is Result.Success -> {
+                setRecentSearchUseCase(query)
+                UiState.Success(RecentSearchUiModel(
+                    query = query,
+                    recentSearch = mapTo(item.data)
+                ))
+            }
         }
     }
 
-    private suspend fun setRecentSearch(items: List<SearchTextDataItem>) {
-        _state.emit(_state.value.copy(recentSearch = items))
+    private fun mapTo(item: Result<List<Repository>>, previousState: UiState<RepositoriesUiModel>?): UiState<RepositoriesUiModel>? {
+        val successState = previousState as? UiState.Success
+
+        return when(item) {
+            Result.Loading -> successState?.item?.copy(isBottomProgress = true)
+                ?.let { UiState.Success(it) }
+                ?: UiState.Loading
+
+            is Result.Error -> {
+                setAction(RepositoriesActions.ShowError(item.exception))
+                when {
+                    successState != null -> successState.copy(item = successState.item.copy(isBottomProgress = false))
+                    item.exception is EmptyException -> UiState.Empty
+                    else -> UiState.Error(item.exception)
+                }
+            }
+
+            is Result.Success -> {
+                if (item.data.isNotEmpty()) {
+                    UiState.Success(RepositoriesUiModel(
+                        repositories = item.data,
+                        isBottomProgress = false
+                    ))
+                } else {
+                    UiState.Empty
+                }
+            }
+        }
     }
 
-    private fun setQuery(query: String) {
-        _state.tryEmit(_state.value.copy(query = query))
-    }
+    private fun mapTo(item: RecentSearch): SearchTextDataItem =
+        SearchTextDataItem(id = item.tag.name, text = item.value)
+
+    private fun mapTo(item: List<RecentSearch>): List<SearchTextDataItem> =
+        item.map(::mapTo)
 
 }
-
-private fun mapTo(item: RecentSearch): SearchTextDataItem =
-    SearchTextDataItem(id = item.tag.name, text = item.value)
-
-private fun mapTo(item: List<RecentSearch>): List<SearchTextDataItem> =
-    item.map(::mapTo)

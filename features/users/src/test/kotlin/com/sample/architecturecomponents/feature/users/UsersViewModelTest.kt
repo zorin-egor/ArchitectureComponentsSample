@@ -35,7 +35,7 @@ class UsersViewModelTest {
     }
 
     @Test
-    fun getEmptyUsersViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
+    fun getEmptyDataViewModelTest() = runTest(mainDispatcherRule.testDispatcher) {
         val items = viewModel.state.buffer().take(2).toList()
         assert(items[0] is UiState.Loading)
         assert(items[1] is UiState.Empty)

@@ -112,7 +112,7 @@ fun SearchTextField(
     }}
 
     val onValueChangeAction: (TextFieldValue) -> Unit = remember {{
-        if (inputFilter(it.text) && it.text != searchQuery.text) {
+        if (inputFilter(it.text)) {
             Timber.d("SearchTextField() - onValueChangeAction($it)")
             onSearchQueryChanged(it.text)
         }
