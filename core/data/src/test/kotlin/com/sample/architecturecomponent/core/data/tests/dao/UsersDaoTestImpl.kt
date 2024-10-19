@@ -36,11 +36,13 @@ class UsersDaoTestImpl : UsersDao {
             }
         }
 
-    override fun getUsersUntilSinceId(sinceId: Long, limit: Long): Flow<List<UserEntity>> =
+    override fun getUsersUntilSinceId(sinceId: Long, lastId: Long, limit: Long): Flow<List<UserEntity>> =
         dbStateFlow.map { flow ->
-            when(val index = flow.indexOfFirst { it.userId == sinceId }) {
-                in Int.MIN_VALUE until 0 -> emptyList()
-                else -> flow.safeSubList(index + 1, index + 1 + limit.toInt())
+            val sinceIndex = flow.indexOfFirst { it.id == sinceId }
+            val lastIndex = flow.indexOfFirst { it.id == lastId }
+            when {
+                sinceIndex < 0 || lastIndex < 0 -> emptyList()
+                else -> flow.safeSubList(sinceIndex + 1, (lastIndex + limit + 1).toInt())
             }
         }
 

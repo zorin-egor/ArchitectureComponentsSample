@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -31,7 +31,7 @@ class UsersViewModel @Inject constructor(
     private val _nextUsers = MutableStateFlow(true)
 
     override val state: StateFlow<UiState<UsersUiModel>> = _nextUsers.filter { it }
-        .flatMapConcat {
+        .flatMapLatest {
             Timber.d("UsersViewModel() - flatMapConcat: $it")
             _nextUsers.update { false }
             getSearchContentsUseCase()
@@ -71,8 +71,10 @@ class UsersViewModel @Inject constructor(
         )
 
     override fun setEvent(item: UsersEvents) {
+        Timber.d("setEvents($item)")
+
         when(item) {
-            UsersEvents.NextUser -> _nextUsers.update { true }
+            UsersEvents.NextUser -> _nextUsers.tryEmit(true)
 
             is UsersEvents.OnUserClick -> setAction(UsersActions.NavigateToDetails(
                 id = item.item.id,

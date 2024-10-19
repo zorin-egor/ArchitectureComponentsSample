@@ -14,11 +14,13 @@ class UsersRepositoryTestImpl : UsersRepository {
 
     private val users = MutableStateFlow(emptyList<User>())
 
-    override fun getUsers(sinceId: Long, limit: Long): Flow<Result<List<User>>> {
+    override fun getUsers(sinceId: Long, lastId: Long, limit: Long): Flow<Result<List<User>>> {
         return users.map<List<User>, Result<List<User>>> { flow ->
-            val items = when(val index = flow.indexOfFirst { it.id == sinceId }) {
-                in Int.MIN_VALUE until 0 -> emptyList()
-                else -> flow.safeSubList(index + 1, (index + 1 + limit).toInt())
+            val sinceIndex = flow.indexOfFirst { it.id == sinceId }
+            val lastIndex = flow.indexOfFirst { it.id == lastId }
+            val items = when {
+                sinceIndex < 0 || lastIndex < 0 -> emptyList()
+                else -> flow.safeSubList(sinceIndex + 1, (lastIndex + limit + 1).toInt())
             }
             Result.Success(items)
         }.onStart {

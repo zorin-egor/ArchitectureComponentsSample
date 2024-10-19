@@ -54,8 +54,8 @@ class GetUsersUseCaseTest {
             )
         }
 
-        val first = userCase(id = 4).buffer().take(2).toList()[1] as Result.Success
-        val other = (0..2).map { userCase().buffer().take(2).toList()[1] as Result.Success }
+        val first = userCase(id = 4).take(2).toList()[1] as Result.Success
+        val other = (0..2).map { userCase().take(2).toList()[1] as Result.Success }
         val otherTotal = other.sumOf { it.data.size }
 
         assertEquals(45, first.data.size + otherTotal)

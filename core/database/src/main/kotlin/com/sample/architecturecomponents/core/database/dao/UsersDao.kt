@@ -25,12 +25,12 @@ interface UsersDao {
 
     @Query("""
         SELECT * FROM
-            (SELECT * FROM Users WHERE user_id < :sinceId ORDER BY user_id)
+            (SELECT * FROM Users WHERE :sinceId <= user_id AND user_id < :lastId ORDER BY user_id)
         UNION
         SELECT * FROM
-            (SELECT * FROM Users WHERE user_id >= :sinceId ORDER BY user_id LIMIT :limit)
+            (SELECT * FROM Users WHERE user_id >= :lastId ORDER BY user_id LIMIT :limit)
     """)
-    fun getUsersUntilSinceId(sinceId: Long, limit: Long = 30): Flow<List<UserEntity>>
+    fun getUsersUntilSinceId(sinceId: Long, lastId: Long, limit: Long = 30): Flow<List<UserEntity>>
 
     @Upsert
     suspend fun insert(item: UserEntity)

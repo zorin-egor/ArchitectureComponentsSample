@@ -9,6 +9,7 @@ import com.sample.architecturecomponents.core.data.repositories.users.UsersRepos
 import com.sample.architecturecomponents.core.database.dao.UsersDao
 import com.sample.architecturecomponents.core.network.NetworkDataSource
 import com.sample.architecturecomponents.core.network.dev.DevNetworkDataSource
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -50,7 +51,7 @@ class UsersRepositoryTest {
 
     @Test
     fun getUsersEmptyTest() = runTest(dispatcher) {
-        val result = subject.getUsers(sinceId = Long.MAX_VALUE).toList()
+        val result = subject.getUsers(sinceId = Long.MAX_VALUE, lastId = Long.MAX_VALUE).take(2).toList()
         assertEquals(2, result.size)
         assertEquals(Result.Loading, result.first())
         assertEquals(Result.Success(emptyList()), result[1])
@@ -58,7 +59,7 @@ class UsersRepositoryTest {
 
     @Test
     fun getUsersSinceTest() = runTest(dispatcher) {
-        val users = subject.getUsers(sinceId = 1, limit = 2).firstSuccess().map { it.login }
+        val users = subject.getUsers(sinceId = 1, lastId = 1, limit = 2).take(2).firstSuccess().map { it.login }
         val expectedNames = listOf("defunkt", "pjhyett")
         assertEquals(expectedNames, users)
     }
