@@ -1,7 +1,6 @@
 package com.sample.architecturecomponents.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -38,8 +37,8 @@ interface UsersDao {
     @Upsert
     suspend fun insert(items: List<UserEntity>)
 
-    @Delete
-    suspend fun delete(item: UserEntity)
+    @Query("DELETE FROM users WHERE user_id = :id")
+    suspend fun delete(id: Long)
 
     @Query("DELETE FROM Users")
     suspend fun delete()

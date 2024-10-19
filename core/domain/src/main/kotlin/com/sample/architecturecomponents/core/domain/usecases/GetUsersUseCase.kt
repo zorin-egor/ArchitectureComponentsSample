@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class GetUsersUseCase @Inject constructor(
     private val usersRepository: UsersRepository,
-    @Dispatcher(Dispatchers.IO) val dispatcher: CoroutineDispatcher,
+    @Dispatcher(Dispatchers.IO) private val dispatcher: CoroutineDispatcher,
 ) {
 
     companion object {

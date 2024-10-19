@@ -52,8 +52,8 @@ class UsersDaoTestImpl : UsersDao {
     override suspend fun insert(items: List<UserEntity>) =
         dbStateFlow.update { flow -> (flow + items).distinctBy(UserEntity::userId) }
 
-    override suspend fun delete(item: UserEntity) =
-        dbStateFlow.update { flow -> flow.toMutableList().apply { remove(item) } }
+    override suspend fun delete(id: Long) =
+        dbStateFlow.update { flow -> flow.toMutableList().apply { removeIf { it.userId == id } } }
 
     override suspend fun delete() =
         dbStateFlow.update { flow -> flow.toMutableList().apply { clear() } }

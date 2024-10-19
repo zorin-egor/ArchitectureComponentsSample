@@ -73,6 +73,6 @@ internal class UsersRepositoryImpl @Inject constructor(
 
     override suspend fun insert(item: User) = usersDao.insert(item.toUserEntity())
 
-    override suspend fun delete(item: User) = usersDao.delete(item.toUserEntity())
+    override suspend fun delete(item: User) = usersDao.delete(item.id)
 
 }
