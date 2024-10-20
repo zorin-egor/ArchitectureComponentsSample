@@ -47,7 +47,9 @@ android {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            productFlavors[Flavor.prod.name].signingConfig = signingConfigs[Flavor.prod.name]
+            if (signingConfigs.find { it.name == Flavor.prod.name } != null) {
+                productFlavors[Flavor.prod.name].signingConfig = signingConfigs[Flavor.prod.name]
+            }
         }
     }
 

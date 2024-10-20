@@ -51,9 +51,14 @@ fun CommonExtension<*, *, *, *, *, *>.createSigningConfig(
     printSignData: Boolean = true,
     onPropertiesNotExist: (SigningConfig.() -> Unit)? = null
 ) {
+    val keystoreFile = File(keystorePath)
+    if (!keystoreFile.exists()) {
+        return
+    }
+
     signingConfigs {
         create(name) {
-            storeFile = File(keystorePath)
+            storeFile = keystoreFile
 
             val properties = Properties()
             properties[::keyPassword.name] = ""
